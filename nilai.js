@@ -1,5 +1,5 @@
 // GANTI dengan link CSV hasil "Publish to Web" dari Google Sheets
-const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRqs_Eed9wnvgrHralGoxXe8VfzUsoTGAASCMwfCbzi4n7jtJhMyoQnBfhx0KTBEQ/pub?output=csv";
+const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRqs_Eed9wnvgrHralGoxXe8VfzUsoTGAASCMwfCbzi4n7jtJhMyoQnBfhx0KTBEQ/pub?gid=1587510872&single=true&output=csv";
 
 function loadCSV(url) {
     return fetch(url).then(response => response.text());

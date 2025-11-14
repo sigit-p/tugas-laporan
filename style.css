@@ -64,3 +64,34 @@ footer {
   font-size: 14px;
   color: #777;
 }
+
+/* Popup overlay */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+/* Popup box */
+.popup-box {
+  background: white;
+  padding: 20px;
+  width: 90%;
+  max-width: 350px;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.2);
+}
+
+.popup-box h3 {
+  margin-top: 0;
+}
+
+.popup-box ul {
+  margin-left: 20px;
+  padding-left: 0;
+}
+

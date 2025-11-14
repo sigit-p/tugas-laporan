@@ -1,63 +1,102 @@
 // GANTI dengan link CSV hasil "Publish to Web" dari Google Sheets
 const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRqs_Eed9wnvgrHralGoxXe8VfzUsoTGAASCMwfCbzi4n7jtJhMyoQnBfhx0KTBEQ/pub?gid=1587510872&single=true&output=csv";
 
+// Daftar nama job (ditampilkan saat popup)
+const jobNames = [
+    "Kelistrikan Dasar (Seri–Paralel)",
+    "Overhaul Motor Starter",
+    "Merangkai Sistem Starter",
+    "Pemeriksaan Pengapian",
+    "Pemeriksaan Pengisian",
+    "Rangkaian Pengapian & Pengisian",
+    "Rangkaian Penerangan"
+];
+
 function loadCSV(url) {
-    return fetch(url).then(response => response.text());
+    return fetch(url).then(r => r.text());
 }
 
 function parseCSV(text) {
     return text.trim().split("\n").map(r => r.split(","));
 }
 
-function hitungBelum(row) {
-    let count = 0;
+function getBelum(row) {
+    let belumList = [];
     for (let i = 1; i <= 7; i++) {
-        if (row[i].trim() === "0" || row[i].trim() === "") {
-            count++;
+        if (row[i].trim() === "" || row[i].trim() === "0") {
+            belumList.push(i);
         }
     }
-    return count === 0 ? "-" : count + " job";
+    return belumList;
 }
 
-function tampilkanData(data) {
-    const table = document.querySelector("#nilaiTable tbody");
-    table.innerHTML = "";
+function showPopup(nama, jobBelum) {
+    const overlay = document.createElement("div");
+    overlay.className = "overlay";
+
+    const box = document.createElement("div");
+    box.className = "popup-box";
+
+    let html = `<h3>${nama}</h3>`;
+    html += "<p>Belum mengumpulkan:</p><ul>";
+
+    jobBelum.forEach(i => {
+        html += `<li>${i}. ${jobNames[i - 1]}</li>`;
+    });
+
+    html += "</ul>";
+
+    box.innerHTML = html;
+    overlay.appendChild(box);
+
+    overlay.addEventListener("click", () => {
+        overlay.remove();
+    });
+
+    document.body.appendChild(overlay);
+}
+
+function loadTable(data) {
+    const tbody = document.querySelector("#nilaiTable tbody");
+    tbody.innerHTML = "";
 
     data.slice(1).forEach(row => {
-        if (row.length < 8) return;
-
-        const belum = hitungBelum(row);
-
+        let belum = getBelum(row);
         const tr = document.createElement("tr");
 
         tr.innerHTML = `
-          <td>${row[0]}</td>
-          <td>${row[1]}</td>
-          <td>${row[2]}</td>
-          <td>${row[3]}</td>
-          <td>${row[4]}</td>
-          <td>${row[5]}</td>
-          <td>${row[6]}</td>
-          <td>${row[7]}</td>
-          <td>${belum !== '-' ? `<span class="badge-belum">${belum}</span>` : '-'}</td>
+            <td>${row[0]}</td>
+            ${row.slice(1, 8).map(v => `<td>${v}</td>`).join("")}
+            <td>
+              ${belum.length === 0 
+                ? "-" 
+                : `<span class="badge-belum" data-nama="${row[0]}" data-belum="${belum.join(",")}">${belum.length} job</span>`
+              }
+            </td>
         `;
 
-        table.appendChild(tr);
+        tbody.appendChild(tr);
+    });
+
+    // Event klik badge
+    document.querySelectorAll(".badge-belum").forEach(b => {
+        b.addEventListener("click", () => {
+            const nama = b.getAttribute("data-nama");
+            const belum = b.getAttribute("data-belum")
+                          .split(",")
+                          .map(n => parseInt(n));
+            showPopup(nama, belum);
+        });
     });
 }
 
-loadCSV(sheetURL).then(text => {
-    const data = parseCSV(text);
-    tampilkanData(data);
-});
+// Load CSV
+loadCSV(sheetURL).then(text => loadTable(parseCSV(text)));
 
 // Pencarian nama
 document.getElementById("searchBox").addEventListener("keyup", function () {
-    const filter = this.value.toLowerCase();
-    const rows = document.querySelectorAll("#nilaiTable tbody tr");
-
-    rows.forEach(row => {
-        const nama = row.children[0].textContent.toLowerCase();
-        row.style.display = nama.includes(filter) ? "" : "none";
+    const f = this.value.toLowerCase();
+    document.querySelectorAll("#nilaiTable tbody tr").forEach(r => {
+        r.style.display = r.children[0].textContent.toLowerCase().includes(f) ? "" : "none";
     });
 });

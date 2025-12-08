@@ -286,3 +286,17 @@ section, footer {
 #nilaiTable {
     margin-top: 0; 
 }
+
+/* Pastikan tabel dapat di-scroll secara horizontal */
+.table-responsive-scroll {
+    overflow-x: auto; /* Kunci utama: Mengaktifkan scroll horizontal jika konten meluap */
+    -webkit-overflow-scrolling: touch; /* Memperbaiki scrolling di perangkat iOS */
+}
+
+/* Opsional: Tentukan lebar minimum tabel */
+#nilaiTable {
+    /* Atur lebar minimum agar semua kolom kecil memiliki ruang. 
+       Anda bisa sesuaikan nilai 700px ini. */
+    min-width: 700px; 
+}
+

@@ -30,6 +30,49 @@ function getUrlParameter(name) {
 };
 
 // ==============================================================================
+// 🌟 TEMPATKAN FUNGSI transformToHorizontal DI SINI (BARIS ~26) 🌟
+// ==============================================================================
+/**
+ * Mengubah data JSON (vertikal per tugas + Nilai Akhir) dari Apps Script
+ * menjadi format array horizontal (satu baris per siswa).
+ */
+function transformToHorizontal(data) {
+    const students = {};
+    const numJobs = jobNames.length;
+    const FINAL_SCORE_NAME = 'Nilai Akhir'; // Diambil dari konfig di atas
+
+    data.forEach(record => {
+        const name = record.nama_siswa;
+        const assignment = record.nama_tugas;
+        const score = record.nilai_status;
+
+        if (!students[name]) {
+            // Inisialisasi: [Nama, Job1...Job7, NilaiAkhir]
+            students[name] = [name, ...Array(numJobs).fill(""), ""]; 
+        }
+
+        // --- Logika Penentuan Indeks Tugas/Job ---
+        const jobIndex = jobNames.findIndex(job => assignment.trim() === job.trim());
+        
+        if (jobIndex !== -1) {
+            // Jika itu adalah Job (Kolom E-K)
+            const isMissing = (String(score).toUpperCase().includes('BELUM KUMPUL') || score === 0 || String(score).trim() === "");
+            
+            students[name][jobIndex + 1] = isMissing
+                ? "" 
+                : score;
+        } else if (assignment.trim() === FINAL_SCORE_NAME) {
+            // Jika itu adalah Nilai Akhir (Kolom L, berada di indeks terakhir + 1)
+            students[name][numJobs + 1] = score; 
+        }
+    });
+
+    // Kembalikan array, ditambahkan header palsu di awal
+    return [["Nama", ...jobNames, FINAL_SCORE_NAME], ...Object.values(students)];
+}
+
+
+// ==============================================================================
 // 2. FUNGSI PEMROSESAN DATA & CALLBACK JSONP
 // ==============================================================================
 // --- Di file nilai.js ---

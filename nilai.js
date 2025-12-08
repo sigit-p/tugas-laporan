@@ -3,7 +3,7 @@
 // ==============================================================================
 
 // GANTI URL INI dengan URL Apps Script API yang sudah Anda deploy
-const API_URL = 'https://script.google.com/macros/s/AKfycbxYJmGSPcGtII1YhcMAyUgp63wZZU3Voc-iqr9TX_cLO4LFxxLsxaiNR7DWGYHH0xp4/exec'; 
+const API_URL = 'https://script.google.com/macros/s/AKfycbwswDuj1YQHP4C6fXfdEa1G1rqW6hvbx6ZCnnfsRJsHC1fb5byCpHtMmU0vIZBgoYqaPg/exec'; 
 
 // Daftar nama job (ditampilkan saat popup). Ini harus urut sesuai kolom di Sheets (E, F, G, H, I, J, K)
 // Kita gunakan nama yang lebih pendek untuk memastikan match dengan data header dari Sheet.

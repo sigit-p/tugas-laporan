@@ -259,3 +259,11 @@ section, footer {
     font-weight: bold; /* Teks tebal agar tegas */
     border-left: 2px solid #ffcc00; /* Border kuning tegas di kiri */
 }
+
+.badge-belum {
+  background: #ef4444;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+}

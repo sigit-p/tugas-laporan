@@ -49,7 +49,6 @@ function showContent(fitur) {
     // Jika Anda menambahkan fitur lain nanti (Materi, Video), tambahkan logika di sini.
 }
 
-
 // ==============================================================================
 // 🌟 TEMPATKAN FUNGSI transformToHorizontal DI SINI (BARIS ~26) 🌟
 // ==============================================================================
@@ -60,7 +59,9 @@ function showContent(fitur) {
 function transformToHorizontal(data) {
     const students = {};
     const numJobs = jobNames.length;
-    const FINAL_SCORE_NAME = 'Nilai Akhir'; // Diambil dari konfig di atas
+    
+    // 🔥🔥 HAPUS BARIS INI (GUNAKAN FINAL_SCORE_NAME GLOBAL) 🔥🔥
+    // const FINAL_SCORE_NAME = 'Nilai Akhir'; // Ini menyebabkan shadowing/kebingungan
 
     data.forEach(record => {
         const name = record.nama_siswa;
@@ -82,7 +83,8 @@ function transformToHorizontal(data) {
             students[name][jobIndex + 1] = isMissing
                 ? "" 
                 : score;
-        } else if (assignment.trim() === FINAL_SCORE_NAME) {
+        } else if (assignment.trim() === FINAL_SCORE_NAME.trim()) { 
+            // 🔥 KOREKSI: Tambahkan .trim() pada FINAL_SCORE_NAME 🔥
             // Jika itu adalah Nilai Akhir (Kolom L, berada di indeks terakhir + 1)
             students[name][numJobs + 1] = score; 
         }
@@ -91,7 +93,6 @@ function transformToHorizontal(data) {
     // Kembalikan array, ditambahkan header palsu di awal
     return [["Nama", ...jobNames, FINAL_SCORE_NAME], ...Object.values(students)];
 }
-
 
 // ==============================================================================
 // 2. FUNGSI PEMROSESAN DATA & CALLBACK JSONP

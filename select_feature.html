@@ -50,34 +50,71 @@
     <p>Portal Pembelajaran • Sigit Prabowo</p> 
 </footer>
 
+// --- SCRIPT: Logika navigasi fitur dan modal ---
 <script>
     const params = new URLSearchParams(window.location.search);
     const mapel = params.get('mapel'); 
     const displayEl = document.getElementById('mapel-display');
     const featureContainer = document.getElementById('feature-buttons');
     const classOptions = ['XI SA', 'XI SB', 'XI SC']; 
+    
+    const modal = document.getElementById('classModal');
+    const modalTitle = document.getElementById('modal-title');
+    const selectedFeatureInput = document.getElementById('selectedFeature');
+    const classButtonsContainer = document.getElementById('class-buttons-container');
+    const closeBtn = document.querySelector('.close-btn');
 
+    // 1. Inisialisasi Tampilan
     if (mapel) {
         displayEl.textContent = `Mata Pelajaran yang dipilih: ${mapel}`;
 
+        // 2. Pasang Event Listener ke Tombol Fitur (Tampilkan Modal)
         featureContainer.querySelectorAll('.btn-primary').forEach(button => {
             button.addEventListener('click', (e) => {
                 e.preventDefault();
                 const fitur = e.target.getAttribute('data-fitur');
                 
-                // Pop-up/Prompt untuk memilih kelas
-                const classSelection = prompt(`Anda memilih: ${fitur}\n\nPilih Kelas (XI SA, XI SB, XI SC):`);
+                modalTitle.textContent = `Pilih Kelas untuk ${fitur}`;
+                selectedFeatureInput.value = fitur; // Simpan fitur yang dipilih
                 
-                if (classSelection && classOptions.includes(classSelection.toUpperCase())) {
-                    const selectedClass = classSelection.toUpperCase();
+                // Tampilkan Modal
+                modal.style.display = 'block';
+                
+                // Hapus tombol kelas yang lama
+                classButtonsContainer.innerHTML = ''; 
+                
+                // Buat tombol kelas baru secara dinamis di Modal
+                classOptions.forEach(cls => {
+                    const buttonEl = document.createElement('a');
+                    buttonEl.href = '#';
+                    buttonEl.className = 'btn-class-select';
+                    buttonEl.textContent = cls;
                     
-                    // Redirect ke nilai.html dengan 3 parameter
-                    window.location.href = `nilai.html?mapel=${mapel}&fitur=${fitur}&class=${selectedClass}`;
-                } else if (classSelection) {
-                    alert('Pilihan kelas tidak valid. Pilih antara XI SA, XI SB, atau XI SC.');
-                }
+                    // Pasang Event Listener saat tombol kelas diklik
+                    buttonEl.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const selectedClass = e.target.textContent;
+                        const selectedFitur = selectedFeatureInput.value;
+                        
+                        // Redirect ke nilai.html dengan 3 parameter
+                        window.location.href = `nilai.html?mapel=${mapel}&fitur=${selectedFitur}&class=${selectedClass}`;
+                    });
+                    
+                    classButtonsContainer.appendChild(buttonEl);
+                });
             });
         });
+        
+        // 3. Logika Menutup Modal
+        closeBtn.onclick = function() {
+            modal.style.display = 'none';
+        }
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
     } else {
         displayEl.textContent = 'Mata Pelajaran tidak valid. Silakan kembali.';
     }

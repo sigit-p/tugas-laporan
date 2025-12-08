@@ -208,12 +208,14 @@ function loadDataJSONP() {
     // **PERBAIKAN LOGIKA LOADING DI SINI**
     const tbody = document.querySelector("#nilaiTable tbody");
     if (tbody) {
-        // Tampilkan ulang baris loading sebelum memanggil API
-        tbody.innerHTML = `
-            <tr><td colspan="10" style="text-align:center;">
-                <span id="loadingIndicator">⏳ Memuat data nilai... Harap tunggu.</span>
-            </td></tr>
-        `;
+tbody.innerHTML = `
+        <tr><td colspan="10" style="text-align:center;">
+            <span id="loadingIndicator">⏳ Memuat data nilai... Harap tunggu.</span>
+            
+            <span id="loadingTimer" style="margin-left: 10px; font-weight: bold;">(0 detik)</span>
+            
+        </td></tr>
+    `;
     }
     const loadingEl = document.getElementById('loadingIndicator');
 

@@ -65,13 +65,19 @@ window.handleApiResponse = function(data) {
     }
     
     // Ambil elemen loading row
-    const loadingRow = document.getElementById('loadingIndicator').closest('tr');
+    const loadingRow = document.getElementById('loadingIndicator');
 
     // **Koreksi Aman:** Cek apakah elemen ada sebelum menghapus
     // Jika elemen ditemukan, hapus (ini membatalkan timeout handler)
-    if (loadingRow) {
-        loadingRow.remove();
-    }
+if (loadingEl) {
+    const loadingRow = loadingEl.closest('tr');
+    if (loadingRow) {
+        loadingRow.remove();
+    }
+} else {
+    // Jika tidak ditemukan, setidaknya hapus sisa loadingTimer jika masih berjalan.
+    clearInterval(loadingInterval);
+}
 
     // Menghapus tag script
     const scriptEl = document.getElementById('jsonp_script');
@@ -331,18 +337,21 @@ function setupRefreshButton() {
 // ==============================================================================
 
 // Mulai proses saat DOM siap
-document.addEventListener('DOMContentLoaded', loadDataJSONP); 
-
-// Panggil fungsi refresh yang baru
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Setup Tombol Refresh
     setupRefreshButton(); 
     
-    // Panggil fungsi loading data utama
-    loadDataJSONP();
-
-// Pencarian nama
-document.getElementById("searchBox").addEventListener("keyup", function () {
-    const f = this.value.toLowerCase();
-    document.querySelectorAll("#nilaiTable tbody tr").forEach(r => {
-        r.style.display = r.children[0].textContent.toLowerCase().includes(f) ? "" : "none";
+    // 2. Muat Data Nilai
+    loadDataJSONP(); 
+    
+    // 3. Setup Pencarian
+    document.getElementById("searchBox").addEventListener("keyup", function () {
+        const f = this.value.toLowerCase();
+        document.querySelectorAll("#nilaiTable tbody tr").forEach(r => {
+            // Pastikan baris data (bukan baris loading/kosong) disaring
+            if (r.children.length > 0) { 
+                r.style.display = r.children[0].textContent.toLowerCase().includes(f) ? "" : "none";
+            }
+        });
     });
 });

@@ -1,118 +1,50 @@
-body {
-  font-family: 'Segoe UI', sans-serif;
-  padding: 20px;
-  background: #f0f2f5;
-  color: #333;
-}
-
-header {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.search-area {
-  text-align: center;
-  margin-bottom: 15px;
-}
-
-#searchBox {
-  padding: 12px;
-  width: 90%;
-  max-width: 400px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 16px;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: white;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-
-th {
-  background: #2563eb;
-  color: white;
-  padding: 10px;
-  font-size: 14px;
-}
-
-td {
-  padding: 8px;
-  border-bottom: 1px solid #eee;
-  text-align: center;
-}
-
-tr:hover {
-  background: #f1f5ff;
-}
-
-.badge-belum {
-  background: #ef4444;
-  color: white;
-  padding: 5px 10px;
-  border-radius: 20px;
-  font-size: 12px;
-}
-
-footer {
-  text-align: center;
-  margin-top: 30px;
-  font-size: 14px;
-  color: #777;
-}
-
-/* Popup overlay */
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 999;
-}
-
-/* Popup box */
-.popup-box {
-  background: white;
-  padding: 20px;
-  width: 90%;
-  max-width: 350px;
-  border-radius: 12px;
-  box-shadow: 0 0 15px rgba(0,0,0,0.2);
-}
-
-.popup-box h3 {
-  margin-top: 0;
-}
-
-.popup-box ul {
-  margin-left: 20px;
-  padding-left: 0;
-}
-
+/* --- Global Reset & Body --- */
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f7f6;
     margin: 0;
     padding: 0;
+    color: #333;
 }
+
+/* --- Perataan Global Konten Utama (Kunci untuk Memperbaiki Layout) --- */
+/* Menerapkan batas lebar maksimal dan pemusatan pada elemen struktural utama */
+header, #main-content, footer {
+    max-width: 950px; /* Batas lebar maksimal (Konten tidak terlalu lebar di desktop) */
+    margin-left: auto;
+    margin-right: auto; /* KUNCI UTAMA: Memusatkan konten di tengah layar */
+}
+
+/* --- Header (Digunakan di nilai.html dan feature.html) --- */
 header {
     background-color: #007bff;
     color: white;
-    padding: 20px;
+    /* Menambahkan padding horizontal agar konten tidak menempel di tepi layar, terutama di HP */
+    padding: 20px 15px; 
+    text-align: center; /* Perataan teks header di tengah */
+}
+header p a {
+    color: #ccf; /* Warna link kembali yang lebih terang */
+    text-decoration: none;
+}
+
+/* --- Section Konten Utama (id="main-content" di nilai.html) --- */
+#main-content {
+    /* Padding di main-content harus diatur untuk mencegah konten menempel di tepi */
+    padding: 10px 15px; /* Padding atas/bawah 10px, kiri/kanan 15px */
+    min-height: 80vh; /* Memastikan konten mengisi sebagian besar tinggi viewport */
+}
+
+/* --- Footer --- */
+footer {
+    padding: 10px 15px;
     text-align: center;
+    margin-top: 30px;
+    font-size: 14px;
+    color: #777;
 }
-section, footer {
-    padding: 20px;
-    max-width: 1000px;
-    margin: 0 auto;
-}
-/* Kartu Menu untuk index.html dan select_feature.html */
+
+/* --- Card Menu (untuk index.html dan feature.html) --- */
 .card-container {
     display: flex;
     flex-wrap: wrap;
@@ -140,35 +72,150 @@ section, footer {
     border-radius: 5px;
     margin-top: 15px;
 }
-/* Konten utama */
+
+/* --- Konten Khusus Fitur (di nilai.html) --- */
 .feature-content {
     background: white;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
-/* Tabel Nilai */
+
+/* --- Search Area (di nilai.html) --- */
+.search-area {
+    text-align: center;
+    margin-bottom: 15px;
+}
+#searchBox {
+    padding: 12px;
+    width: 90%;
+    max-width: 400px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+/* --- Tabel Nilai (di nilai.html) --- */
+/* Kunci responsivitas: Membuat kontainer scroll */
+.table-responsive-scroll {
+    overflow-x: auto; 
+    -webkit-overflow-scrolling: touch; 
+}
+
 #nilaiTable {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
+    margin-top: 0; /* Menghilangkan margin yang tidak perlu */
+    min-width: 700px; /* Lebar minimum agar semua kolom terlihat */
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
-#nilaiTable th, #nilaiTable td {
-    border: 1px solid #ddd;
+
+#nilaiTable th {
+    background: #2563eb;
+    color: white;
+    padding: 10px 8px;
+    font-size: 14px;
+}
+
+#nilaiTable td {
     padding: 8px;
+    border-bottom: 1px solid #eee;
     text-align: center;
 }
 
-#nilaiTable th, 
-#nilaiTable td:first-child { /* Opsional: BOLD Nama Siswa */
-    background-color: #1374ed; /* Background abu-abu terang */
-    color: #333; /* 🔥 WAJIB: Atur warna teks menjadi gelap 🔥 */
-    font-weight: bold; /* Opsional: Agar header lebih menonjol */
-    padding: 10px 8px; /* Sedikit lebih tebal */
+#nilaiTable tr:hover {
+    background: #f1f5ff;
 }
 
+/* Style khusus kolom nama dan Nilai Akhir */
+#nilaiTable td:first-child { 
+    background-color: #f8f9fa; /* Background abu-abu terang */
+    color: #333; 
+    font-weight: bold; 
+}
+.final-score-header {
+    background-color: #007bff !important; 
+    color: white !important;
+}
+.final-score-cell {
+    background-color: #fffbe6; 
+    color: #333; 
+    font-weight: bold; 
+    border-left: 2px solid #ffcc00; 
+}
 
-/* Embed Video */
+/* --- Badge dan Info --- */
+.badge-belum {
+    background: #ef4444;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    cursor: pointer;
+}
+#info-badge-click {
+    text-align: center; 
+    font-weight: bold; 
+    color: #cc0000;
+    margin-top: 10px;
+    margin-bottom: 0px; /* Menghilangkan jarak di bawah agar menempel ke tabel */
+    padding-bottom: 5px; 
+}
+
+/* --- Modal Pop-up --- */
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 100; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0,0,0,0.7); 
+}
+.modal-content {
+    background-color: #fefefe;
+    margin: 10% auto; 
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+.close-btn {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+.close-btn:hover,
+.close-btn:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+.btn-class-select {
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+    padding: 12px;
+    background-color: #007bff;
+    color: white;
+    text-align: center;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+}
+.btn-class-select:hover {
+    background-color: #0056b3;
+}
+
+/* --- Video dan Link List --- */
 .video-container {
     position: relative;
     padding-bottom: 56.25%; /* Rasio 16:9 */
@@ -193,110 +240,3 @@ section, footer {
     padding: 10px;
     border-radius: 4px;
 }
-
-/* --- CSS untuk Modal Pop-up --- */
-.modal {
-    display: none; 
-    position: fixed; 
-    z-index: 100; /* Pastikan di atas semua elemen lain */
-    left: 0;
-    top: 0;
-    width: 100%; 
-    height: 100%; 
-    overflow: auto; 
-    background-color: rgba(0,0,0,0.7); /* Background gelap */
-}
-.modal-content {
-    background-color: #fefefe;
-    margin: 10% auto; /* Jarak dari atas dan tengah secara horizontal */
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 500px;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-}
-.close-btn {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-.close-btn:hover,
-.close-btn:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
-/* Tombol kelas di dalam modal */
-.btn-class-select {
-    display: block;
-    width: 100%;
-    margin: 10px 0;
-    padding: 12px;
-    background-color: #007bff;
-    color: white;
-    text-align: center;
-    border-radius: 5px;
-    text-decoration: none;
-    font-weight: bold;
-}
-.btn-class-select:hover {
-    background-color: #0056b3;
-}
-
-/* --- Penekanan untuk Kolom Nilai Akhir --- */
-.final-score-header {
-    background-color: #007bff !important; /* Biru terang untuk header */
-    color: white !important;
-}
-
-.final-score-cell {
-    /* Background kuning muda agar mencolok */
-    background-color: #fffbe6; 
-    /* Warna teks harus gelap */
-    color: #333; 
-    font-weight: bold; /* Teks tebal agar tegas */
-    border-left: 2px solid #ffcc00; /* Border kuning tegas di kiri */
-}
-
-.badge-belum {
-  background: #ef4444;
-  color: white;
-  padding: 5px 10px;
-  border-radius: 20px;
-  font-size: 12px;
-
-  /* 🔥 TAMBAHKAN BARIS INI 🔥 */
-  cursor: pointer;
-}
-
-#info-badge-click {
-    /* Mengurangi jarak dengan search box di atas */
-    margin-top: 10px; 
-    
-    /* 🔥 Paling Penting: Menghilangkan jarak di bawah agar menempel ke tabel 🔥 */
-    margin-bottom: 0px; 
-    
-    /* Jarak sedikit agar badge tidak terlalu menyentuh border tabel */
-    padding-bottom: 5px; 
-}
-
-/* Memastikan tabel tidak memiliki margin atas yang besar */
-#nilaiTable {
-    margin-top: 0; 
-}
-
-/* Pastikan tabel dapat di-scroll secara horizontal */
-.table-responsive-scroll {
-    overflow-x: auto; /* Kunci utama: Mengaktifkan scroll horizontal jika konten meluap */
-    -webkit-overflow-scrolling: touch; /* Memperbaiki scrolling di perangkat iOS */
-}
-
-/* Opsional: Tentukan lebar minimum tabel */
-#nilaiTable {
-    /* Atur lebar minimum agar semua kolom kecil memiliki ruang. 
-       Anda bisa sesuaikan nilai 700px ini. */
-    min-width: 700px; 
-}
-

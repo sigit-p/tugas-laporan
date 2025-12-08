@@ -197,7 +197,7 @@ function loadDataJSONP() {
             loadingEl.style.display = 'none';
             document.getElementById("nilaiTable").innerHTML = `<p style="color:red;">Gagal memuat data (Timeout). Pastikan URL dan akses Apps Script sudah benar.</p>`;
         }
-    }, 10000); // 10 detik timeout
+    }, 15000); // 10 detik timeout
 }
 
 

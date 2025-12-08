@@ -285,6 +285,7 @@ function loadDataJSONP() {
     script.src = `${API_URL}?sheet=${encodeURIComponent(sheetName)}&callback=handleApiResponse`; 
     
     document.head.appendChild(script);
+}
 
 // ==============================================================================
 // 5. INISIALISASI DAN SEARCH

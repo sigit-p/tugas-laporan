@@ -58,26 +58,27 @@ function showContent(fitur) {
 
 // HARUS menjadi fungsi global (ditempelkan ke window)
 window.handleApiResponse = function(data) {
-  
-    // 🔥 STOP TIMER DI AWAL FUNGSI 🔥
-    if (loadingInterval) {
-        clearInterval(loadingInterval);
-    }
-    
-    // Ambil elemen loading row
-    const loadingRow = document.getElementById('loadingIndicator');
+  
+    // 🔥 STOP TIMER DI AWAL FUNGSI 🔥
+    if (loadingInterval) {
+        clearInterval(loadingInterval);
+    }
+    
+    // 💡 KOREKSI UTAMA: Deklarasi dan Akses Variabel Loading
+    // Ambil elemen loading (span)
+    const loadingEl = document.getElementById('loadingIndicator');
 
-    // **Koreksi Aman:** Cek apakah elemen ada sebelum menghapus
-    // Jika elemen ditemukan, hapus (ini membatalkan timeout handler)
-if (loadingEl) {
-    const loadingRow = loadingEl.closest('tr');
-    if (loadingRow) {
-        loadingRow.remove();
-    }
-} else {
-    // Jika tidak ditemukan, setidaknya hapus sisa loadingTimer jika masih berjalan.
-    clearInterval(loadingInterval);
-}
+    // Cek jika elemen loading ditemukan
+    if (loadingEl) {
+        // Cari baris (<tr>) terdekat dari span loading
+        const loadingRow = loadingEl.closest('tr');
+        
+        // Jika baris loading ditemukan, hapus
+        if (loadingRow) {
+            loadingRow.remove();
+        }
+    } 
+    // Tidak perlu 'else' untuk clearInterval karena sudah di handle di awal fungsi.
 
     // Menghapus tag script
     const scriptEl = document.getElementById('jsonp_script');
@@ -88,16 +89,16 @@ if (loadingEl) {
         document.getElementById("nilaiTable").innerHTML = `<p style="color:red;">ERROR DATA: ${data.error}</p>`;
         return;
     }
-    
-// 🔥 BARIS BARU: 🔥
-    // Data yang diterima sudah dalam bentuk horizontal, langsung gunakan.
-    rawData = data; 
-    
-    console.log("✅ Data Raw Berhasil Diterima & Sudah Horizontal:", rawData); 
-    
-    // Panggil loadTable untuk menampilkan data
-    loadTable(rawData);
+    
+    // Data yang diterima sudah dalam bentuk horizontal, langsung gunakan.
+    rawData = data; 
+    
+    console.log("✅ Data Raw Berhasil Diterima & Sudah Horizontal:", rawData); 
+    
+    // Panggil loadTable untuk menampilkan data
+    loadTable(rawData);
 };
+
 /**
  * Mengambil daftar job yang belum dikumpulkan berdasarkan baris data horizontal.
  */

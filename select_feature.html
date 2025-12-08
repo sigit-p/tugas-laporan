@@ -126,8 +126,14 @@
             }
         }
 
-    } else {
-        displayEl.textContent = 'Mata Pelajaran tidak valid. Silakan kembali.';
+} else {
+        // 🔥 GANTI displayEl.textContent MENJADI displayEl.innerHTML 🔥
+        // Dan tambahkan link <a> ke index.html
+        displayEl.innerHTML = `Mata Pelajaran tidak valid. Silakan 
+                               <a href="index.html" style="color: blue; text-decoration: underline;">kembali</a>.`;
+        
+        // Sembunyikan semua tombol fitur agar hanya pesan error yang terlihat
+        featureContainer.style.display = 'none'; 
     }
 </script>
 

@@ -89,10 +89,11 @@ function getBelum(row) {
     // Dimulai dari indeks 1 (Job 1), hingga 7 (Job 7)
     for (let i = 1; i <= jobNames.length; i++) { 
         
-        // --- KOREKSI PENTING: Konversi ke String sebelum menggunakan .trim() ---
+        // --- KOREKSI PENTING: Ubah ke String sebelum menggunakan .trim() ---
+        // Jika row[i] adalah angka (misalnya 75), String(75) akan menjadi "75".
         const cellValue = String(row[i]).trim();
         
-        // Cek jika kolomnya kosong atau nol.
+        // Cek jika kolomnya kosong ("" yang berasal dari .trim()) atau nol ("0").
         if (cellValue === "" || cellValue === "0") {
             belumList.push(i);
         }

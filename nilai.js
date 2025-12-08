@@ -1,9 +1,48 @@
-// ==============================================================================
-// 1. KONFIGURASI DAN URL API (WAJIB GANTI)
-// ==============================================================================
-
 // GANTI URL INI dengan URL Apps Script API yang sudah Anda deploy
 const API_URL = 'https://script.google.com/macros/s/AKfycbwswDuj1YQHP4C6fXfdEa1G1rqW6hvbx6ZCnnfsRJsHC1fb5byCpHtMmU0vIZBgoYqaPg/exec'; 
+
+// Harus menjadi fungsi global agar bisa dipanggil oleh JSONP
+window.handleApiResponse = function(data) {
+    // Menghapus script yang baru saja digunakan
+    document.getElementById('jsonp_script').remove(); 
+    
+    // Lanjutkan dengan logika pemrosesan data
+    if (data.error) {
+         console.error("Apps Script Error:", data.error);
+         document.getElementById("nilaiTable").innerHTML = `<p style="color:red;">ERROR DATA: ${data.error}</p>`;
+         return;
+    }
+    
+    // 1. Transformasi data JSON vertikal ke format horizontal array 2D
+    rawData = transformToHorizontal(data);
+    
+    // 2. Panggil loadTable
+    loadTable(rawData);
+};
+
+/**
+ * Fungsi utama untuk mengambil data dari Apps Script API menggunakan JSONP.
+ */
+function loadAPI() {
+    // Tampilkan loading indicator
+    const loadingEl = document.getElementById('loadingIndicator'); 
+    if (loadingEl) loadingEl.style.display = 'block';
+
+    // Buat elemen script baru
+    const script = document.createElement('script');
+    script.id = 'jsonp_script';
+    
+    // Tambahkan parameter 'callback=handleApiResponse' ke URL API
+    // handleApiResponse adalah nama fungsi JS yang akan menangani respons
+    script.src = API_URL + '?callback=handleApiResponse'; 
+    
+    // Tambahkan script ke dokumen
+    document.head.appendChild(script);
+
+    // Hapus loading indicator setelah 2 detik (asumsi data sudah dimuat)
+    // Sebaiknya loading indicator dihapus di dalam handleApiResponse
+    if (loadingEl) loadingEl.style.display = 'none';
+}
 
 // Daftar nama job (ditampilkan saat popup). Ini harus urut sesuai kolom di Sheets (E, F, G, H, I, J, K)
 // Kita gunakan nama yang lebih pendek untuk memastikan match dengan data header dari Sheet.

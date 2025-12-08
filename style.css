@@ -266,6 +266,9 @@ section, footer {
   padding: 5px 10px;
   border-radius: 20px;
   font-size: 12px;
+
+  /* 🔥 TAMBAHKAN BARIS INI 🔥 */
+  cursor: pointer;
 }
 
 #info-badge-click {

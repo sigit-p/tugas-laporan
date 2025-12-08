@@ -295,3 +295,48 @@ document.getElementById("searchBox").addEventListener("keyup", function () {
         r.style.display = r.children[0].textContent.toLowerCase().includes(f) ? "" : "none";
     });
 });
+
+// --- DI nilai.js ---
+
+function setupRefreshButton() {
+    const refreshBtn = document.getElementById('refreshDataBtn');
+    
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', async () => {
+            
+            // 1. Tampilkan loading state
+            const originalText = refreshBtn.textContent;
+            refreshBtn.textContent = 'Menyinkronkan... Harap Tunggu';
+            refreshBtn.disabled = true;
+            
+            // 2. Buat URL refresh (memanggil Apps Script dengan action=refresh)
+            const refreshUrl = `${API_URL}?action=refresh`;
+            
+            try {
+                // Panggil API dengan Fetch untuk menjalankan perintah di server
+                const response = await fetch(refreshUrl);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const result = await response.json();
+                
+                // 3. Proses Hasil Sinkronisasi
+                if (result.status === 'success') {
+                    alert('✅ Sinkronisasi data master XLSX berhasil! Memuat ulang data tabel...');
+                    // Muat ulang tabel untuk menampilkan data terbaru
+                    loadDataJSONP(); 
+                } else {
+                    alert(`❌ Sinkronisasi Gagal: ${result.message}`);
+                }
+                
+            } catch (error) {
+                alert('❌ Error Koneksi Server atau Gagal Sinkronisasi.');
+                console.error('Refresh Error:', error);
+            }
+            
+            // 4. Kembalikan tombol ke state normal
+            refreshBtn.textContent = originalText;
+            refreshBtn.disabled = false;
+        });
+    }
+}

@@ -1,47 +1,40 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Cek Nilai Praktik PKSM</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Nilai & Materi Praktik</title>
+    <link rel="stylesheet" href="style.css"> 
 </head>
 <body>
 
 <header>
-  <h1>📘 Cek Nilai Praktik PKSM</h1>
-  <p>Dashboard nilai otomatis dari Google Sheets</p>
+    <h1>📘 Portal Pembelajaran Praktik SMK</h1>
+    <p>Selamat datang. Silakan pilih mata pelajaran untuk mengakses laporan, materi, video, dan kuis.</p>
 </header>
 
-<section class="search-area">
-  <input id="searchBox" type="text" placeholder="Cari nama siswa...">
-</section>
+<section class="menu-utama">
+    <h2>Pilih Mata Pelajaran</h2>
+    <div class="card-container">
+        
+        <div class="card-menu">
+            <h3>PKSM (Kelistrikan Otomotif)</h3>
+            <p>Akses semua sumber daya dan laporan untuk Praktik Kelistrikan.</p>
+            <a href="select_feature.html?mapel=PKSM" class="btn-primary">Akses PKSM</a> 
+        </div>
 
-<section>
-  <table id="nilaiTable">
-    <thead>
-      <tr>
-        <th>Nama</th>
-        <th>Job 1</th>
-        <th>Job 2</th>
-        <th>Job 3</th>
-        <th>Job 4</th>
-        <th>Job 5</th>
-        <th>Job 6</th>
-        <th>Job 7</th>
-        <th>Belum</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- Diisi otomatis oleh JavaScript -->
-    </tbody>
-  </table>
+        <div class="card-menu">
+            <h3>PSSM (Sasis & Pemindah Tenaga)</h3>
+            <p>Akses semua sumber daya dan laporan untuk Praktik Sasis/PSSM.</p>
+            <a href="select_feature.html?mapel=PSSM" class="btn-primary">Akses PSSM</a> 
+        </div>
+        
+        </div>
 </section>
 
 <footer>
-  <p>PKSM XI • GitHub Pages • Live Google Sheets</p>
+    <p>Portal Pembelajaran • Sigit Prabowo</p>
 </footer>
 
-<script src="nilai.js"></script>
 </body>
 </html>

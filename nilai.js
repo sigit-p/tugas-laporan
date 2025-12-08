@@ -147,23 +147,32 @@ function showPopup(nama, jobBelum) {
 
 function loadTable(data) {
     const tbody = document.querySelector("#nilaiTable tbody");
-    // ... (kode pembersihan tbody) ...
+    if (!tbody) {
+        console.error("Elemen #nilaiTable tbody TIDAK DITEMUKAN.");
+        return; 
+    }
+    
+    // 🔥 KOREKSI 1: Membersihkan elemen sisa loading / sekat aneh 🔥
+    // Ini memastikan tbody benar-benar kosong sebelum data baru ditambahkan.
+    tbody.innerHTML = ""; 
+    
+    // console.log("Memulai pengisian tabel dengan data:", data.length, "baris.");
     
     const dataRows = Array.isArray(data) ? data : []; 
     
     dataRows.forEach(row => {
-        // 🔥 1. AMBIL JUMLAH BELUM DARI APPS SCRIPT (Index 8)
+        // 1. AMBIL JUMLAH BELUM DARI APPS SCRIPT (Index 8)
         const belumCount = row[jobNames.length + 1]; // row[8]
         
         // 2. AMBIL DAFTAR JOB BELUM (Dibutuhkan untuk Pop-up)
-        let belumList = getBelum(row); // Ini tetap dibutuhkan untuk pop-up!
+        let belumList = getBelum(row); 
 
         const tr = document.createElement("tr");
 
         // row.slice(1, 8) mengambil Job 1 sampai Job 7
         const jobCells = row.slice(1, jobNames.length + 1).map(v => `<td>${v}</td>`).join("");
         
-        // 🔥 3. AMBIL NILAI AKHIR DARI INDEKS BARU (Index 9)
+        // 3. AMBIL NILAI AKHIR DARI INDEKS BARU (Index 9)
         const finalScore = row[jobNames.length + 2]; // row[9]
 
         tr.innerHTML = `
@@ -180,7 +189,25 @@ function loadTable(data) {
 
         tbody.appendChild(tr);
     });
-    // ... (kode event listener tetap sama)
+    
+    // console.log("✅ Tabel Selesai Diisi.");
+
+    // 🔥 KOREKSI 2: Memperbaiki Event Listener Popup 🔥
+    // Event listener harus dipasang SETELAH semua TR dan badge selesai dibuat
+    document.querySelectorAll(".badge-belum").forEach(b => {
+        b.addEventListener("click", (e) => {
+            
+            // PENTING: Mencegah event click menyebar ke TR/tbody yang memblokir popup
+            e.stopPropagation(); 
+            
+            const nama = b.getAttribute("data-nama");
+            const belum = b.getAttribute("data-belum")
+                                .split(",")
+                                .map(n => parseInt(n));
+            
+            showPopup(nama, belum);
+        });
+    });
 }
 
 // ==============================================================================

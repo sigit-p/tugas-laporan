@@ -3,7 +3,7 @@
 // ==============================================================================
 
 // PASTI GANTI URL INI!
-const API_URL = 'https://script.google.com/macros/s/AKfycbwswDuj1YQHP4C6fXfdEa1G1rqW6hvbx6ZCnnfsRJsHC1fb5byCpHtMmU0vIZBgoYqaPg/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbwswDuj1YQHP4C6fXfdEa1G1rqW6hvbx6ZCnnfsRJsHC1fb5byCpHtMmU0vIZBgoYqaPg/dev';
 
 // Daftar nama job (harus sama persis dengan header di Sheets, E sampai K)
 const jobNames = [

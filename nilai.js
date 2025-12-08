@@ -96,32 +96,36 @@ function transformToHorizontal(data) {
 // ==============================================================================
 // 2. FUNGSI PEMROSESAN DATA & CALLBACK JSONP
 // ==============================================================================
-// --- Di file nilai.js ---
 
 // HARUS menjadi fungsi global (ditempelkan ke window)
 window.handleApiResponse = function(data) {
-    
-    // MENGHAPUS INDIKATOR LOADING DARI HTML AGAR TIMEOUT TIDAK TER-TRIGGER
-    const loadingRow = document.getElementById('loadingIndicator').closest('tr').remove();
+    // Ambil elemen loading row
+    const loadingRow = document.getElementById('loadingIndicator').closest('tr');
 
-    // Menghapus tag script
-    const scriptEl = document.getElementById('jsonp_script');
-    if (scriptEl) scriptEl.remove();
+    // **Koreksi Aman:** Cek apakah elemen ada sebelum menghapus
+    // Jika elemen ditemukan, hapus (ini membatalkan timeout handler)
+    if (loadingRow) {
+        loadingRow.remove();
+    }
 
-    if (data.error) {
-        console.error("Apps Script Error:", data.error);
-        document.getElementById("nilaiTable").innerHTML = `<p style="color:red;">ERROR DATA: ${data.error}</p>`;
-        return;
-    }
-    
-    // 1. Transformasi data JSON vertikal ke format horizontal array 2D
-    rawData = transformToHorizontal(data);
-    
-    console.log("✅ Data Raw Berhasil Diterima:", data); 
-    console.log("➡️ Data Setelah Transformasi (rawData):", rawData);
-    
-    // 2. Panggil loadTable untuk menampilkan data
-    loadTable(rawData);
+    // Menghapus tag script
+    const scriptEl = document.getElementById('jsonp_script');
+    if (scriptEl) scriptEl.remove();
+
+    if (data.error) {
+        console.error("Apps Script Error:", data.error);
+        document.getElementById("nilaiTable").innerHTML = `<p style="color:red;">ERROR DATA: ${data.error}</p>`;
+        return;
+    }
+    
+    // 1. Transformasi data JSON vertikal ke format horizontal array 2D
+    rawData = transformToHorizontal(data);
+    
+    console.log("✅ Data Raw Berhasil Diterima:", data); 
+    console.log("➡️ Data Setelah Transformasi (rawData):", rawData);
+    
+    // 2. Panggil loadTable untuk menampilkan data
+    loadTable(rawData);
 };
 /**
  * Mengambil daftar job yang belum dikumpulkan berdasarkan baris data horizontal.

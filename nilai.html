@@ -1,1 +1,80 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Cek Nilai / Materi</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
+<header>
+    <h1 id="main-header">Memuat Konten...</h1>
+    <p><a href="select_feature.html" id="back-link">← Kembali ke Pilihan Fitur</a></p>
+</header>
+
+<section id="main-content">
+    
+    <div id="content-nilai" class="feature-content" style="display:none;">
+        <h2>Rekap Nilai dan Laporan</h2>
+        <section class="search-area">
+          <input id="searchBox" type="text" placeholder="Cari nama siswa...">
+        </section>
+        
+        <table id="nilaiTable">
+          <thead>
+            <tr>
+              <th>Nama</th>
+              <th>Job 1</th> <th>Job 2</th> <th>Job 3</th> <th>Job 4</th>
+              <th>Job 5</th> <th>Job 6</th> <th>Job 7</th>
+              <th>Nilai Akhir</th>
+              <th>Belum</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="10" style="text-align:center;">
+                <span id="loadingIndicator">⏳ Memuat data nilai... Harap tunggu.</span>
+            </td></tr>
+          </tbody>
+        </table>
+    </div>
+
+    <div id="content-materi" class="feature-content" style="display:none;">
+        <h2 id="materi-header">Dokumen Materi Pelajaran</h2>
+        <p>Silakan unduh atau lihat dokumen materi pelajaran di bawah ini:</p>
+        <ul id="materi-list" class="link-list">
+            <li><a href="#" target="_blank">📄 [Materi 1] Contoh Dokumen Dasar</a></li>
+            <li><a href="#" target="_blank">📄 [Materi 2] Contoh Modul Praktik</a></li>
+            </ul>
+        <hr>
+        <h3>Area Embed PDF (Opsional)</h3>
+    </div>
+    
+    <div id="content-video" class="feature-content" style="display:none;">
+        <h2 id="video-header">Koleksi Video Pembelajaran</h2>
+        <p>Tonton video terkait materi untuk meningkatkan pemahaman:</p>
+        <div class="video-container">
+            </div>
+        <ul id="video-list" class="link-list">
+             <li><a href="#" target="_blank">🎥 [Video 1] Contoh Video Sistem Kerja X</a></li>
+        </ul>
+    </div>
+
+    <div id="content-soal" class="feature-content" style="display:none;">
+        <h2 id="soal-header">Latihan Soal & Kuis Mandiri</h2>
+        <p>Kerjakan latihan soal berikut untuk menguji pemahaman Anda:</p>
+        <ul id="soal-list" class="link-list">
+            <li><a href="#" target="_blank">📝 Latihan Harian Job 3</a></li>
+            <li><a href="#" target="_blank">📝 Evaluasi Akhir Semester</a></li>
+        </ul>
+    </div>
+
+</section>
+
+<footer>
+    <p>Portal Pembelajaran • GitHub Pages</p>
+</footer>
+
+<script src="nilai.js"></script>
+</body>
+</html>

@@ -86,8 +86,14 @@ function transformToHorizontal(data) {
  */
 function getBelum(row) {
     let belumList = [];
+    // Dimulai dari indeks 1 (Job 1), hingga 7 (Job 7)
     for (let i = 1; i <= jobNames.length; i++) { 
-        if (row[i].trim() === "" || row[i].trim() === "0") {
+        
+        // --- KOREKSI PENTING: Konversi ke String sebelum menggunakan .trim() ---
+        const cellValue = String(row[i]).trim();
+        
+        // Cek jika kolomnya kosong atau nol.
+        if (cellValue === "" || cellValue === "0") {
             belumList.push(i);
         }
     }

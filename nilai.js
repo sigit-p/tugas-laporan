@@ -33,12 +33,11 @@ function getUrlParameter(name) {
 // 2. FUNGSI PEMROSESAN DATA & CALLBACK JSONP
 // ==============================================================================
 
+// --- Di file nilai.js ---
+
 // HARUS menjadi fungsi global (ditempelkan ke window)
 window.handleApiResponse = function(data) {
-    const loadingEl = document.getElementById('loadingIndicator'); 
-    if (loadingEl) loadingEl.style.display = 'none';
-
-    // Menghapus tag script
+    // ... (kode awal tetap sama)
     const scriptEl = document.getElementById('jsonp_script');
     if (scriptEl) scriptEl.remove();
 
@@ -48,13 +47,16 @@ window.handleApiResponse = function(data) {
         return;
     }
     
-    // 1. Transformasi data JSON vertikal ke format horizontal
+    // 1. Transformasi data JSON vertikal ke format horizontal array 2D
     rawData = transformToHorizontal(data);
+    
+    // 🔥 TAMBAHKAN DUA BARIS INI 🔥
+    console.log("✅ Data Raw Berhasil Diterima:", data); 
+    console.log("➡️ Data Setelah Transformasi (rawData):", rawData);
     
     // 2. Panggil loadTable untuk menampilkan data
     loadTable(rawData);
 };
-
 
 /**
  * Mengubah data JSON (vertikal per tugas + Nilai Akhir) dari Apps Script

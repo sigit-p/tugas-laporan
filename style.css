@@ -244,3 +244,18 @@ section, footer {
 .btn-class-select:hover {
     background-color: #0056b3;
 }
+
+/* --- Penekanan untuk Kolom Nilai Akhir --- */
+.final-score-header {
+    background-color: #007bff !important; /* Biru terang untuk header */
+    color: white !important;
+}
+
+.final-score-cell {
+    /* Background kuning muda agar mencolok */
+    background-color: #fffbe6; 
+    /* Warna teks harus gelap */
+    color: #333; 
+    font-weight: bold; /* Teks tebal agar tegas */
+    border-left: 2px solid #ffcc00; /* Border kuning tegas di kiri */
+}

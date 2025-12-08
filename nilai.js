@@ -149,9 +149,10 @@ function loadTable(data) {
 
     console.log("Memulai pengisian tabel dengan data:", data.length, "baris.");
     
-    // Pastikan kita bekerja dengan Array, bukan NodeList atau sejenisnya
-    const dataRows = Array.isArray(data) ? data.slice(1) : [];
-
+// 🔥 Menjadi: 🔥
+const dataRows = Array.isArray(data) ? data : []; 
+// Data yang diterima adalah array data siswa, tanpa header.
+    
     dataRows.forEach(row => {
         let belum = getBelum(row);
         const tr = document.createElement("tr");

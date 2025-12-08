@@ -161,23 +161,29 @@ function loadTable(data) {
         console.error("Elemen #nilaiTable tbody tidak ditemukan di HTML.");
         return;
     }
-    tbody.innerHTML = "";
+    // Tidak perlu membersihkan tbody di sini karena window.handleApiResponse
+    // sudah menghapus baris loading (<tr>) sebelumnya.
     
-    // Header row data diabaikan (slice(1))
-    data.slice(1).forEach(row => {
+    // Pastikan kita bekerja dengan Array, bukan NodeList atau sejenisnya
+    const dataRows = Array.isArray(data) ? data.slice(1) : [];
+
+    dataRows.forEach(row => {
         let belum = getBelum(row);
         const tr = document.createElement("tr");
 
         // row.slice(1, jobNames.length + 1) mengambil Job 1 sampai Job 7
+        // jobNames.length = 7
         const jobCells = row.slice(1, jobNames.length + 1).map(v => `<td>${v}</td>`).join("");
         
-        // Nilai Akhir berada di indeks 8 (jika 7 Job) atau jobNames.length + 1
+        // Nilai Akhir berada di indeks 8 (yaitu jobNames.length + 1)
         const finalScore = row[jobNames.length + 1] || "-"; 
 
+        // Pastikan tidak ada spasi atau tag yang terpotong di dalam tr.innerHTML
         tr.innerHTML = `
             <td>${row[0]}</td>
             ${jobCells}
-            <td>${finalScore}</td> <td>
+            <td>${finalScore}</td>
+            <td>
               ${belum.length === 0 
                 ? "-" 
                 : `<span class="badge-belum" data-nama="${row[0]}" data-belum="${belum.join(",")}">${belum.length} job</span>`
@@ -199,7 +205,6 @@ function loadTable(data) {
         });
     });
 }
-
 
 // ==============================================================================
 // 4. FUNGSI INISIALISASI UTAMA (MENGGANTIKAN loadAPI lama)

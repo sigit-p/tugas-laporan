@@ -30,6 +30,27 @@ function getUrlParameter(name) {
 };
 
 // ==============================================================================
+// 1.5. FUNGSI UTILITAS TAMPILAN
+// ==============================================================================
+
+/**
+ * Mengontrol tampilan div konten yang dipilih (Nilai, Materi, Video, Soal).
+ */
+function showContent(fitur) {
+    // Sembunyikan semua konten fitur
+    document.querySelectorAll('.feature-content').forEach(el => {
+        el.style.display = 'none';
+    });
+
+    // Tampilkan konten yang sesuai
+    if (fitur === 'Nilai') {
+        document.getElementById('content-nilai').style.display = 'block';
+    } 
+    // Jika Anda menambahkan fitur lain nanti (Materi, Video), tambahkan logika di sini.
+}
+
+
+// ==============================================================================
 // 🌟 TEMPATKAN FUNGSI transformToHorizontal DI SINI (BARIS ~26) 🌟
 // ==============================================================================
 /**
@@ -225,6 +246,9 @@ function loadDataJSONP() {
     if (!classParam || !mapelParam || !fiturParam || fiturParam !== 'Nilai') {
         return; 
     }
+
+    // 🌟 PANGGILAN DI SINI 🌟
+    showContent(fiturParam);
     
     // --- Langkah 1: Atur Tampilan Header ---
     const headerEl = document.getElementById('main-header');

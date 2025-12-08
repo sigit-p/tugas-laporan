@@ -281,21 +281,6 @@ function loadDataJSONP() {
     document.head.appendChild(script);
 }
 
-// ==============================================================================
-// 5. INISIALISASI DAN SEARCH
-// ==============================================================================
-
-// Mulai proses saat DOM siap
-document.addEventListener('DOMContentLoaded', loadDataJSONP); 
-
-// Pencarian nama
-document.getElementById("searchBox").addEventListener("keyup", function () {
-    const f = this.value.toLowerCase();
-    document.querySelectorAll("#nilaiTable tbody tr").forEach(r => {
-        r.style.display = r.children[0].textContent.toLowerCase().includes(f) ? "" : "none";
-    });
-});
-
 // --- DI nilai.js ---
 
 function setupRefreshButton() {
@@ -340,3 +325,24 @@ function setupRefreshButton() {
         });
     }
 }
+
+// ==============================================================================
+// 5. INISIALISASI DAN SEARCH
+// ==============================================================================
+
+// Mulai proses saat DOM siap
+document.addEventListener('DOMContentLoaded', loadDataJSONP); 
+
+// Panggil fungsi refresh yang baru
+    setupRefreshButton(); 
+    
+    // Panggil fungsi loading data utama
+    loadDataJSONP();
+
+// Pencarian nama
+document.getElementById("searchBox").addEventListener("keyup", function () {
+    const f = this.value.toLowerCase();
+    document.querySelectorAll("#nilaiTable tbody tr").forEach(r => {
+        r.style.display = r.children[0].textContent.toLowerCase().includes(f) ? "" : "none";
+    });
+});

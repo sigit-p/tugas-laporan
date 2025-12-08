@@ -1,32 +1,9 @@
-// Tempatkan fungsi helper ini di bagian atas nilai.js
-function loadJsonpScript(url, callbackName, cleanupFunction) {
-    const script = document.createElement('script');
-    script.src = url + '&callback=' + callbackName;
-    document.head.appendChild(script);
-
-    const cleanup = () => {
-        if (script.parentNode) {
-            document.head.removeChild(script);
-        }
-        // Panggil fungsi cleanup khusus setelah selesai
-        if (cleanupFunction) {
-            cleanupFunction();
-        }
-        // Hapus fungsi global setelah dieksekusi atau gagal
-        delete window[callbackName];
-    };
-    
-    // Cleanup otomatis setelah load atau error
-    script.onload = cleanup;
-    script.onerror = cleanup; 
-}
-
 // ==============================================================================
 // 1. KONFIGURASI DAN URL API (WAJIB GANTI)
 // ==============================================================================
 
 // PASTI GANTI URL INI!
-const API_URL = 'https://script.google.com/macros/s/AKfycbwswDuj1YQHP4C6fXfdEa1G1rqW6hvbx6ZCnnfsRJsHC1fb5byCpHtMmU0vIZBgoYqaPg/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbxKFkVK4Fi2cGmtMXz0az3UhOCmc5rD-bn-Auw4KOXj/dev';
 
 // Daftar nama job (harus sama persis dengan header di Sheets, E sampai K)
 const jobNames = [
@@ -313,47 +290,45 @@ function loadDataJSONP() {
 
 // --- DI nilai.js ---
 
-// --- DI nilai.js ---
-// ... (Pastikan Anda sudah memiliki API_URL yang berakhiran /exec)
-
 function setupRefreshButton() {
     const refreshBtn = document.getElementById('refreshDataBtn');
     
     if (refreshBtn) {
-        refreshBtn.addEventListener('click', () => {
+        refreshBtn.addEventListener('click', async () => {
             
             // 1. Tampilkan loading state
             const originalText = refreshBtn.textContent;
             refreshBtn.textContent = 'Menyinkronkan... Harap Tunggu';
             refreshBtn.disabled = true;
-
-            // 2. Buat nama callback yang UNIK (Mencegah error duplikat)
-            const uniqueId = new Date().getTime(); 
-            const callbackName = 'handleRefreshResponse_' + uniqueId; 
             
-            // 3. Buat URL refresh (memanggil Apps Script dengan action=refresh)
+            // 2. Buat URL refresh (memanggil Apps Script dengan action=refresh)
             const refreshUrl = `${API_URL}?action=refresh`;
             
-            // 4. Definisikan fungsi callback secara global di window
-            window[callbackName] = function(response) {
-                console.log('Sinkronisasi Selesai. Respons Server:', response);
-                
-                // Kembalikan tombol ke state normal
-                refreshBtn.textContent = originalText;
-                refreshBtn.disabled = false;
-
-                // Proses Hasil Sinkronisasi
-                if (response && response.status === 'success') {
-                     alert('✅ Sinkronisasi data master XLSX berhasil! Memuat ulang data tabel...');
-                     // Muat ulang tabel untuk menampilkan data terbaru (panggil fungsi loadDataJSONP Anda)
-                     loadDataJSONP(); 
-                } else {
-                     alert('❌ Sinkronisasi Gagal: ' + (response ? response.message : 'Respons server tidak valid.'));
+            try {
+                // Panggil API dengan Fetch untuk menjalankan perintah di server
+                const response = await fetch(refreshUrl);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
-            };
+                const result = await response.json();
+                
+                // 3. Proses Hasil Sinkronisasi
+                if (result.status === 'success') {
+                    alert('✅ Sinkronisasi data master XLSX berhasil! Memuat ulang data tabel...');
+                    // Muat ulang tabel untuk menampilkan data terbaru
+                    loadDataJSONP(); 
+                } else {
+                    alert(`❌ Sinkronisasi Gagal: ${result.message}`);
+                }
+                
+            } catch (error) {
+                alert('❌ Error Koneksi Server atau Gagal Sinkronisasi.');
+                console.error('Refresh Error:', error);
+            }
             
-            // 5. Panggil fungsi JSONP Loader
-            loadJsonpScript(refreshUrl, callbackName);
+            // 4. Kembalikan tombol ke state normal
+            refreshBtn.textContent = originalText;
+            refreshBtn.disabled = false;
         });
     }
 }

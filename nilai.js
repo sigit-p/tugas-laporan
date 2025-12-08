@@ -217,13 +217,13 @@ function loadTable(data) {
         tr.innerHTML = `
             <td>${row[0]}</td>
             ${jobCells}
-            <td>${finalScore}</td>
             <td>
               ${belum.length === 0 
                 ? "-" 
                 : `<span class="badge-belum" data-nama="${row[0]}" data-belum="${belum.join(",")}">${belum.length} job</span>`
               }
             </td>
+            <td>${finalScore}</td>
         `;
 
         tbody.appendChild(tr);

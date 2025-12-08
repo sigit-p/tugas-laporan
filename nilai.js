@@ -19,6 +19,9 @@ const jobNames = [
 let rawData = []; // Data setelah diubah ke format horizontal
 const FINAL_SCORE_NAME = 'Nilai Akhir'; // Nama tugas untuk nilai akhir (Kolom L)
 
+// 🔥 VARIABEL GLOBAL BARU UNTUK KONTROL TIMER 🔥
+let loadingInterval; 
+let secondsElapsed = 0;
 // ==============================================================================
 // FUNGSI UNTUK MEMBACA PARAMETER URL
 // ==============================================================================
@@ -55,7 +58,13 @@ function showContent(fitur) {
 
 // HARUS menjadi fungsi global (ditempelkan ke window)
 window.handleApiResponse = function(data) {
-    // Ambil elemen loading row
+  
+    // 🔥 STOP TIMER DI AWAL FUNGSI 🔥
+    if (loadingInterval) {
+        clearInterval(loadingInterval);
+    }
+    
+    // Ambil elemen loading row
     const loadingRow = document.getElementById('loadingIndicator').closest('tr');
 
     // **Koreksi Aman:** Cek apakah elemen ada sebelum menghapus
@@ -205,17 +214,35 @@ function loadDataJSONP() {
     // Sheet Name HANYA MENGGUNAKAN KELAS
     const sheetName = classParam; 
 
-    // **PERBAIKAN LOGIKA LOADING DI SINI**
-    const tbody = document.querySelector("#nilaiTable tbody");
-    if (tbody) {
-        // Tampilkan ulang baris loading sebelum memanggil API
-        tbody.innerHTML = `
-            <tr><td colspan="10" style="text-align:center;">
-                <span id="loadingIndicator">⏳ Memuat data nilai... Harap tunggu.</span>
-            </td></tr>
-        `;
-    }
-    const loadingEl = document.getElementById('loadingIndicator');
+// **PERBAIKAN LOGIKA LOADING DI SINI**
+    const tbody = document.querySelector("#nilaiTable tbody");
+    if (tbody) {
+        // Tampilkan ulang baris loading sebelum memanggil API
+        tbody.innerHTML = `
+            <tr><td colspan="10" style="text-align:center;">
+                <span id="loadingIndicator">⏳ Memuat data nilai... Harap tunggu.</span>
+                
+                <span id="loadingTimer" style="margin-left: 10px; font-weight: bold;">(0 detik)</span>
+
+            </td></tr>
+        `;
+    }
+    const loadingEl = document.getElementById('loadingIndicator');
+
+    // Pastikan timer di-reset sebelum start
+    secondsElapsed = 0;
+    
+    // 🔥 START TIMER (Interval akan berjalan setiap 1 detik) 🔥
+    loadingInterval = setInterval(() => {
+        secondsElapsed++;
+        const timerEl = document.getElementById('loadingTimer');
+        if (timerEl) {
+            timerEl.textContent = `(${secondsElapsed} detik)`;
+        } else {
+            // Berhenti jika elemen loading sudah hilang (kasus error/terhapus)
+            clearInterval(loadingInterval);
+        }
+    }, 1000); // Update setiap 1000 milidetik (1 detik)
 
     // Buat elemen script baru
     const script = document.createElement('script');

@@ -161,7 +161,7 @@ section, footer {
 
 #nilaiTable th, 
 #nilaiTable td:first-child { /* Opsional: BOLD Nama Siswa */
-    background-color: #e9ecef; /* Background abu-abu terang */
+    background-color: #1374ed; /* Background abu-abu terang */
     color: #333; /* 🔥 WAJIB: Atur warna teks menjadi gelap 🔥 */
     font-weight: bold; /* Opsional: Agar header lebih menonjol */
     padding: 10px 8px; /* Sedikit lebih tebal */

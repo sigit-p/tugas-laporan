@@ -83,10 +83,17 @@ function transformToHorizontal(data) {
             students[name][jobIndex + 1] = isMissing
                 ? "" 
                 : score;
+        // --- Kode yang sudah dimodifikasi ---
         } else if (assignment.trim() === FINAL_SCORE_NAME.trim()) { 
-            // 🔥 KOREKSI: Tambahkan .trim() pada FINAL_SCORE_NAME 🔥
-            // Jika itu adalah Nilai Akhir (Kolom L, berada di indeks terakhir + 1)
-            students[name][numJobs + 1] = score; 
+            // Memastikan nilai adalah angka sebelum dibulatkan
+            const numericScore = parseFloat(score); 
+            
+            // Jika nilai valid, bulatkan ke bilangan bulat terdekat
+            if (!isNaN(numericScore)) {
+                students[name][numJobs + 1] = Math.round(numericScore); // 🔥 PEMBULATAN 🔥
+            } else {
+                students[name][numJobs + 1] = score; // Pertahankan jika bukan angka (misal: teks)
+            }
         }
     });
 

@@ -32,12 +32,15 @@ function getUrlParameter(name) {
 // ==============================================================================
 // 2. FUNGSI PEMROSESAN DATA & CALLBACK JSONP
 // ==============================================================================
-
 // --- Di file nilai.js ---
 
 // HARUS menjadi fungsi global (ditempelkan ke window)
 window.handleApiResponse = function(data) {
-    // ... (kode awal tetap sama)
+    
+    // MENGHAPUS INDIKATOR LOADING DARI HTML AGAR TIMEOUT TIDAK TER-TRIGGER
+    const loadingRow = document.getElementById('loadingIndicator').closest('tr').remove();
+
+    // Menghapus tag script
     const scriptEl = document.getElementById('jsonp_script');
     if (scriptEl) scriptEl.remove();
 
@@ -50,53 +53,12 @@ window.handleApiResponse = function(data) {
     // 1. Transformasi data JSON vertikal ke format horizontal array 2D
     rawData = transformToHorizontal(data);
     
-    // 🔥 TAMBAHKAN DUA BARIS INI 🔥
     console.log("✅ Data Raw Berhasil Diterima:", data); 
     console.log("➡️ Data Setelah Transformasi (rawData):", rawData);
     
     // 2. Panggil loadTable untuk menampilkan data
     loadTable(rawData);
 };
-
-/**
- * Mengubah data JSON (vertikal per tugas + Nilai Akhir) dari Apps Script
- * menjadi format array horizontal (satu baris per siswa).
- */
-function transformToHorizontal(data) {
-    const students = {};
-    const numJobs = jobNames.length;
-
-    data.forEach(record => {
-        const name = record.nama_siswa;
-        const assignment = record.nama_tugas;
-        const score = record.nilai_status;
-
-        if (!students[name]) {
-            // Inisialisasi: [Nama, Job1...Job7, NilaiAkhir]
-            students[name] = [name, ...Array(numJobs).fill(""), ""]; 
-        }
-
-        // --- Logika Penentuan Indeks Tugas/Job ---
-        const jobIndex = jobNames.findIndex(job => assignment.trim() === job.trim());
-        
-        if (jobIndex !== -1) {
-            // Jika itu adalah Job (Kolom E-K)
-            const isMissing = (String(score).toUpperCase().includes('BELUM KUMPUL') || score === 0 || String(score).trim() === "");
-            
-            students[name][jobIndex + 1] = isMissing
-                ? "" 
-                : score;
-        } else if (assignment.trim() === FINAL_SCORE_NAME) {
-            // Jika itu adalah Nilai Akhir (Kolom L, berada di indeks terakhir + 1)
-            students[name][numJobs + 1] = score; // Indeks: 1 (Nama) + 7 Jobs = 8. + 1 = 9 (Index 9)
-        }
-    });
-
-    // Kembalikan array, ditambahkan header palsu di awal
-    return [["Nama", ...jobNames, FINAL_SCORE_NAME], ...Object.values(students)];
-}
-
-
 /**
  * Mengambil daftar job yang belum dikumpulkan berdasarkan baris data horizontal.
  */
@@ -210,11 +172,10 @@ function loadDataJSONP() {
     const fiturParam = getUrlParameter('fitur'); 
 
     if (!classParam || !mapelParam || !fiturParam || fiturParam !== 'Nilai') {
-        // Jika parameter tidak lengkap atau fitur bukan Nilai, jangan panggil API
         return; 
     }
     
-    // --- Langkah 1: Atur Tampilan Header (Diambil dari select_feature.html) ---
+    // --- Langkah 1: Atur Tampilan Header ---
     const headerEl = document.getElementById('main-header');
     headerEl.textContent = `${fiturParam.toUpperCase()} ${mapelParam} Kelas ${classParam}`;
     document.getElementById('page-title').textContent = `${fiturParam} ${mapelParam}`;
@@ -222,11 +183,20 @@ function loadDataJSONP() {
     
     // --- Langkah 2: Memuat Data dari API ---
     
-    // Sheet Name HANYA MENGGUNAKAN KELAS (sesuai permintaan terakhir Anda)
-    const sheetName = classParam; // Contoh: 'XI SA'
+    // Sheet Name HANYA MENGGUNAKAN KELAS
+    const sheetName = classParam; 
 
-    const loadingEl = document.getElementById('loadingIndicator'); 
-    if (loadingEl) loadingEl.textContent = '⏳ Memuat data nilai... Harap tunggu.';
+    // **PERBAIKAN LOGIKA LOADING DI SINI**
+    const tbody = document.querySelector("#nilaiTable tbody");
+    if (tbody) {
+        // Tampilkan ulang baris loading sebelum memanggil API
+        tbody.innerHTML = `
+            <tr><td colspan="10" style="text-align:center;">
+                <span id="loadingIndicator">⏳ Memuat data nilai... Harap tunggu.</span>
+            </td></tr>
+        `;
+    }
+    const loadingEl = document.getElementById('loadingIndicator');
 
     // Buat elemen script baru
     const script = document.createElement('script');
@@ -239,13 +209,16 @@ function loadDataJSONP() {
 
     // *Opsional: Tambahkan Timeout Error Handler*
     setTimeout(() => {
-        if (loadingEl && loadingEl.style.display !== 'none') {
-            loadingEl.style.display = 'none';
-            document.getElementById("nilaiTable").innerHTML = `<p style="color:red;">Gagal memuat data (Timeout). Pastikan URL dan akses Apps Script sudah benar.</p>`;
+        // Cek jika loadingEl masih ada di DOM (belum dihapus oleh handleApiResponse)
+        if (loadingEl && loadingEl.textContent.includes('Memuat data')) {
+            const tableBody = document.getElementById("nilaiTable").querySelector('tbody');
+            if(tableBody) {
+                 // Tampilkan pesan error di dalam tabel
+                 tableBody.innerHTML = `<tr><td colspan="10" style="color:red; text-align:center;">Gagal memuat data (Timeout). Pastikan URL API sudah benar.</td></tr>`;
+            }
         }
     }, 15000); // 15 detik timeout
 }
-
 
 // ==============================================================================
 // 5. INISIALISASI DAN SEARCH

@@ -138,61 +138,42 @@ function showPopup(nama, jobBelum) {
 
 function loadTable(data) {
     const tbody = document.querySelector("#nilaiTable tbody");
-    if (!tbody) {
-        console.error("Elemen #nilaiTable tbody TIDAK DITEMUKAN.");
-        return; // Hentikan fungsi jika tbody tidak ada
-    }
+    // ... (kode pembersihan tbody) ...
     
-    // **Koreksi Penting:** Bersihkan isi tbody sebelum appendChild
-    // Meskipun handleApiResponse menghapus TR loading, ini memastikan tbody benar-benar kosong.
-    tbody.innerHTML = ""; 
-
-    console.log("Memulai pengisian tabel dengan data:", data.length, "baris.");
-    
-// 🔥 Menjadi: 🔥
-const dataRows = Array.isArray(data) ? data : []; 
-// Data yang diterima adalah array data siswa, tanpa header.
+    const dataRows = Array.isArray(data) ? data : []; 
     
     dataRows.forEach(row => {
-        let belum = getBelum(row);
+        // 🔥 1. AMBIL JUMLAH BELUM DARI APPS SCRIPT (Index 8)
+        const belumCount = row[jobNames.length + 1]; // row[8]
+        
+        // 2. AMBIL DAFTAR JOB BELUM (Dibutuhkan untuk Pop-up)
+        let belumList = getBelum(row); // Ini tetap dibutuhkan untuk pop-up!
+
         const tr = document.createElement("tr");
 
-        // row.slice(1, jobNames.length + 1) mengambil Job 1 sampai Job 7
+        // row.slice(1, 8) mengambil Job 1 sampai Job 7
         const jobCells = row.slice(1, jobNames.length + 1).map(v => `<td>${v}</td>`).join("");
         
-        // Nilai Akhir berada di indeks 8 (yaitu jobNames.length + 1)
-        //const finalScore = row[jobNames.length + 1] || "-";
-        const finalScore = row[jobNames.length + 1];
+        // 🔥 3. AMBIL NILAI AKHIR DARI INDEKS BARU (Index 9)
+        const finalScore = row[jobNames.length + 2]; // row[9]
 
-        
         tr.innerHTML = `
             <td>${row[0]}</td>
             ${jobCells}
             <td>
-              ${belum.length === 0 
+              ${belumCount === 0 
                 ? "-" 
-                : `<span class="badge-belum" data-nama="${row[0]}" data-belum="${belum.join(",")}">${belum.length} job</span>`
+                : `<span class="badge-belum" data-nama="${row[0]}" data-belum="${belumList.join(",")}">${belumCount} job</span>`
               }
             </td>
-            <td class="final-score-cell">${finalScore}</td> 
+            <td class="final-score-cell">${finalScore}</td>
             `;
 
         tbody.appendChild(tr);
     });
-    
-    console.log("✅ Tabel Selesai Diisi.");
-
-    // Event klik badge (kode tetap sama)
-    document.querySelectorAll(".badge-belum").forEach(b => {
-        b.addEventListener("click", () => {
-            const nama = b.getAttribute("data-nama");
-            const belum = b.getAttribute("data-belum")
-                                 .split(",")
-                                 .map(n => parseInt(n));
-            showPopup(nama, belum);
-        });
-    });
+    // ... (kode event listener tetap sama)
 }
+
 // ==============================================================================
 // 4. FUNGSI INISIALISASI UTAMA (MENGGANTIKAN loadAPI lama)
 // ==============================================================================

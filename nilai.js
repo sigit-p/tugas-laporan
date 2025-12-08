@@ -89,11 +89,14 @@ function transformToHorizontal(data) {
             const numericScore = parseFloat(score); 
             
             // Jika nilai valid, bulatkan ke bilangan bulat terdekat
-            if (!isNaN(numericScore)) {
-                students[name][numJobs + 1] = Math.round(numericScore); // 🔥 PEMBULATAN 🔥
-            } else {
-                students[name][numJobs + 1] = score; // Pertahankan jika bukan angka (misal: teks)
-            }
+// 🔥 PERUBAHAN UTAMA DI SINI 🔥
+    if (!isNaN(numericScore) && numericScore > 0) {
+        // Jika nilai valid dan lebih dari 0, bulatkan
+        students[name][numJobs + 1] = Math.round(numericScore); 
+    } else {
+        // Jika nilai 0, atau kosong, atau NaN, SET MENJADI 0
+        students[name][numJobs + 1] = 0; 
+    }
         }
     });
 
@@ -212,8 +215,10 @@ function loadTable(data) {
         const jobCells = row.slice(1, jobNames.length + 1).map(v => `<td>${v}</td>`).join("");
         
         // Nilai Akhir berada di indeks 8 (yaitu jobNames.length + 1)
-        const finalScore = row[jobNames.length + 1] || "-"; 
+        //const finalScore = row[jobNames.length + 1] || "-";
+        const finalScore = row[jobNames.length + 1];
 
+        
         tr.innerHTML = `
             <td>${row[0]}</td>
             ${jobCells}

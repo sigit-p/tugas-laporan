@@ -267,3 +267,19 @@ section, footer {
   border-radius: 20px;
   font-size: 12px;
 }
+
+#info-badge-click {
+    /* Mengurangi jarak dengan search box di atas */
+    margin-top: 10px; 
+    
+    /* 🔥 Paling Penting: Menghilangkan jarak di bawah agar menempel ke tabel 🔥 */
+    margin-bottom: 0px; 
+    
+    /* Jarak sedikit agar badge tidak terlalu menyentuh border tabel */
+    padding-bottom: 5px; 
+}
+
+/* Memastikan tabel tidak memiliki margin atas yang besar */
+#nilaiTable {
+    margin-top: 0; 
+}

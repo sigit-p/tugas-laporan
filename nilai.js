@@ -223,7 +223,7 @@ function loadTable(data) {
                 : `<span class="badge-belum" data-nama="${row[0]}" data-belum="${belum.join(",")}">${belum.length} job</span>`
               }
             </td>
-            <td>${finalScore}</td>
+            <td class="final-score-cell">${finalScore}</td> `;
         `;
 
         tbody.appendChild(tr);

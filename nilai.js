@@ -286,6 +286,18 @@ function loadDataJSONP() {
     
     document.head.appendChild(script);
 
+// *Opsional: Tambahkan Timeout Error Handler* <--- HAPUS BLOK INI!
+setTimeout(() => {
+    // Cek jika loadingEl masih ada di DOM (belum dihapus oleh handleApiResponse)
+    if (loadingEl && loadingEl.textContent.includes('Memuat data')) {
+        const tableBody = document.getElementById("nilaiTable").querySelector('tbody');
+        if(tableBody) {
+             // Tampilkan pesan error di dalam tabel
+             tableBody.innerHTML = `<tr><td colspan="10" style="color:red; text-align:center;">Gagal memuat data (Timeout). Pastikan URL API sudah benar.</td></tr>`;
+        }
+    }
+}, 15000); // 15 detik timeout
+    
 // ==============================================================================
 // 5. INISIALISASI DAN SEARCH
 // ==============================================================================

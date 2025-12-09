@@ -32,6 +32,25 @@ function getUrlParameter(name) {
     return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
 };
 
+// 🔥🔥 LOKASI TERBAIK UNTUK KODE CATATAN KHUSUS (DI SINI) 🔥🔥
+const classParam = getUrlParameter('class'); 
+const mapelParam = getUrlParameter('mapel'); 
+const jobNoteContainer = document.getElementById('jobNoteContainer');
+
+if (jobNoteContainer) {
+    if (classParam === 'XI SB' && mapelParam === 'PKSM') {
+        // Konten catatan khusus untuk XI SB PKSM
+        const noteHtml = `
+            <div style="background-color: #fff3cd; color: #856404; padding: 15px; border: 1px solid #ffeeba; border-radius: 5px; margin-bottom: 20px;">
+                <strong>💡 Catatan Penting:</strong> Untuk kelas **XI SB PKSM**, data yang ditampilkan saat ini hanya mencakup **5 Job** (Job 1 hingga Job 5). Job sisanya akan di-update setelah selesai praktik.
+            </div>
+        `;
+        jobNoteContainer.innerHTML = noteHtml;
+    } else {
+        jobNoteContainer.innerHTML = '';
+    }
+}
+
 // ==============================================================================
 // 1.5. FUNGSI UTILITAS TAMPILAN
 // ==============================================================================

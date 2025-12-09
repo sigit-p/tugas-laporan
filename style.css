@@ -286,3 +286,20 @@ section, footer {
 #nilaiTable {
     margin-top: 0; 
 }
+/* CSS untuk wadah tabel yang dapat di-scroll */
+.table-scroll-wrapper {
+    /* Kunci utama: Mengaktifkan scroll horizontal jika konten (tabel) meluap */
+    overflow-x: auto; 
+    
+    /* Opsional: Memperbaiki pengalaman scrolling di perangkat sentuh */
+    -webkit-overflow-scrolling: touch; 
+}
+
+/* Penting: Tentukan lebar minimum agar tabel memanjang di luar layar mobile */
+#nilaiTable {
+    width: 100%; /* Pastikan tabel menggunakan lebar wadah maksimal */
+    
+    /* 🔥 KUNCI: Atur lebar minimum yang cukup untuk menampilkan semua kolom. 
+       Angka 800px adalah contoh, Anda bisa menyesuaikannya. */
+    min-width: 800px; 
+}

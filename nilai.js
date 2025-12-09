@@ -43,7 +43,7 @@ if (jobNoteContainer) {
         const noteHtml = `
             <div style="background-color: #fff3cd; color: #856404; padding: 15px; border: 1px solid #ffeeba; border-radius: 5px; margin-bottom: 20px;">
                 <strong>💡 Catatan Penting:</strong> Untuk PKSM kelas *XI TSMB*, baru praktek 5 kali. Jadi wajib mengumpulkan laporan 5 job saja sesuai yang telah dipraktekan.
-            </div>
+            </div> Untuk beres atau belum bisa dilihat pada kolom belum. Untuk kelas XI TSMB harusnya belum 2 Job.
         `;
         jobNoteContainer.innerHTML = noteHtml;
     } else {

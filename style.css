@@ -1,61 +1,118 @@
-/* ==================================================================== */
-/* --- 1. GLOBAL & BODY --- */
-/* ==================================================================== */
 body {
-    /* Menggabungkan style dari kedua blok body */
+  font-family: 'Segoe UI', sans-serif;
+  padding: 20px;
+  background: #f0f2f5;
+  color: #333;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.search-area {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+#searchBox {
+  padding: 12px;
+  width: 90%;
+  max-width: 400px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+th {
+  background: #2563eb;
+  color: white;
+  padding: 10px;
+  font-size: 14px;
+}
+
+td {
+  padding: 8px;
+  border-bottom: 1px solid #eee;
+  text-align: center;
+}
+
+tr:hover {
+  background: #f1f5ff;
+}
+
+.badge-belum {
+  background: #ef4444;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+}
+
+footer {
+  text-align: center;
+  margin-top: 30px;
+  font-size: 14px;
+  color: #777;
+}
+
+/* Popup overlay */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+/* Popup box */
+.popup-box {
+  background: white;
+  padding: 20px;
+  width: 90%;
+  max-width: 350px;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.2);
+}
+
+.popup-box h3 {
+  margin-top: 0;
+}
+
+.popup-box ul {
+  margin-left: 20px;
+  padding-left: 0;
+}
+
+body {
     font-family: Arial, sans-serif;
     background-color: #f4f7f6;
     margin: 0;
-    padding: 0; 
-    color: #333;
+    padding: 0;
 }
-
-/* ==================================================================== */
-/* --- 2. PERATAAN UTAMA & STRUKTUR --- */
-/* ==================================================================== */
-
-/* Menargetkan kontainer utama untuk membatasi lebar di desktop dan memusatkan konten */
-header, #main-content, footer, section {
-    max-width: 950px; 
-    margin-left: auto;
-    margin-right: auto; 
-}
-
-/* Header */
 header {
     background-color: #007bff;
     color: white;
+    padding: 20px;
     text-align: center;
-    padding: 20px 15px; 
-    margin-bottom: 20px; 
 }
-
-/* Footer */
-footer {
-    text-align: center;
-    padding: 10px 15px; 
-    margin-top: 30px;
-    font-size: 14px;
-    color: #777;
+section, footer {
+    padding: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
 }
-
-/* Konten Utama Section */
-#main-content {
-    padding: 10px 15px; 
-}
-
-
-/* ==================================================================== */
-/* --- 3. KARTU MENU (select_feature.html) --- */
-/* ==================================================================== */
-
-/* Fix: Membuat judul "Pilih Menu Pembelajaran" rata tengah */
-.selection-area h2 {
-    text-align: center;
-    padding-top: 20px; 
-    margin-bottom: 20px;
-}
-
+/* Kartu Menu untuk index.html dan select_feature.html */
 .card-container {
     display: flex;
     flex-wrap: wrap;
@@ -83,193 +140,149 @@ footer {
     border-radius: 5px;
     margin-top: 15px;
 }
+/* Konten utama */
 .feature-content {
     background: white;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+/* Tabel Nilai */
+#nilaiTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+#nilaiTable th, #nilaiTable td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
 
-/* ==================================================================== */
-/* 🔥🔥🔥 KOREKSI START: GANTIKAN BAGIAN 4 YANG LAMA DENGAN INI 🔥🔥🔥 */
-/* ==================================================================== */
+#nilaiTable th, 
+#nilaiTable td:first-child { /* Opsional: BOLD Nama Siswa */
+    background-color: #1374ed; /* Background abu-abu terang */
+    color: #333; /* 🔥 WAJIB: Atur warna teks menjadi gelap 🔥 */
+    font-weight: bold; /* Opsional: Agar header lebih menonjol */
+    padding: 10px 8px; /* Sedikit lebih tebal */
+}
 
-/* Latar belakang gelap (Overlay) - Sesuai dengan class .modal-overlay di nilai.html */
-.modal-overlay {
-    position: fixed; /* Membuat modal melayang di atas semua konten */
+
+/* Embed Video */
+.video-container {
+    position: relative;
+    padding-bottom: 56.25%; /* Rasio 16:9 */
+    height: 0;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+.video-container iframe {
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.7); /* Warna semi-transparan */
-    z-index: 1000; /* Pastikan berada di paling atas */
-    
-    /* Gunakan FLEX untuk memposisikan kotak di tengah layar */
-    display: flex; 
-    justify-content: center;
-    align-items: center;
-}
-
-/* Kotak konten modal - Sesuai dengan class .modal-content-box di nilai.html */
-.modal-content-box {
-    background: #fff;
-    width: 90%;
-    max-width: 400px; /* Batasi lebar untuk tampilan mobile */
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    padding: 20px;
-    box-sizing: border-box; 
-}
-
-/* Header Modal */
-.modal-header-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 10px;
-    margin-bottom: 10px;
-}
-
-/* Tombol Tutup (Sesuai dengan ID #closeModalBtn) */
-.close-btn {
-    background: none;
-    border: none;
-    font-size: 1.5em; 
-    cursor: pointer;
-    color: #555;
-    padding: 0;
-    line-height: 1;
-}
-
-/* Isi Modal */
-.modal-body-container {
-    padding-top: 10px;
-    max-height: 70vh; 
-    overflow-y: auto; /* Memungkinkan scrolling jika daftar tugas panjang */
-}
-
-/* Tambahan: Pertahankan style lama .btn-class-select (yang ini sudah ada di kode Anda) */
-.btn-class-select {
-    display: block;
-    width: 100%;
-    margin: 10px 0;
-    padding: 12px;
-    background-color: #007bff;
-    color: white;
-    text-align: center;
-    border-radius: 5px;
-    text-decoration: none;
-    font-weight: bold;
-}
-.btn-class-select:hover {
-    background-color: #0056b3;
-}
-
-/* ==================================================================== */
-/* --- 5. SEARCH & TABEL (nilai.html) --- */
-/* ==================================================================== */
-/* ... (Bagian 5 dan 6 di bawah ini tetap sama seperti kode Anda) ... */
-.search-area {
-    text-align: center;
-    margin-bottom: 15px;
-}
-#searchBox {
-    padding: 12px;
-    width: 90%;
-    max-width: 400px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 16px;
-}
-.table-responsive-scroll {
-    overflow-x: auto; 
-    -webkit-overflow-scrolling: touch; 
-}
-#nilaiTable {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 0; 
-    min-width: 700px; 
-    background: white;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-#nilaiTable th {
-    background: #2563eb;
-    color: white;
-    padding: 10px 8px;
-    font-size: 14px;
-}
-#nilaiTable td {
-    padding: 8px;
-    border-bottom: 1px solid #eee;
-    text-align: center;
-}
-#nilaiTable tr:hover {
-    background: #f1f5ff;
-}
-#nilaiTable td:first-child { 
-    background-color: #f8f9fa; 
-    color: #333; 
-    font-weight: bold; 
-}
-
-/* --- Badge & Info --- */
-.badge-belum {
-    background: #ef4444;
-    color: white;
-    padding: 5px 10px;
-    border-radius: 20px;
-    font-size: 12px;
-    cursor: pointer;
-}
-#info-badge-click {
-    text-align: center; 
-    font-weight: bold; 
-    color: #cc0000;
-    margin-top: 10px;
-    margin-bottom: 0px; 
-    padding-bottom: 5px; 
-}
-
-/* --- Penekanan Nilai Akhir --- */
-.final-score-header {
-    background-color: #007bff !important; 
-    color: white !important;
-}
-.final-score-cell {
-    background-color: #fffbe6; 
-    color: #333; 
-    font-weight: bold; 
-    border-left: 2px solid #ffcc00; 
-}
-
-/* ==================================================================== */
-/* --- 6. VIDEO & LINK LIST --- */
-/* ==================================================================== */
-.video-container {
-    position: relative;
-    padding-bottom: 56.25%; 
-    height: 0;
-    overflow: hidden;
-    margin-bottom: 20px;
-}
-.video-container iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
 }
 .link-list {
-    list-style-type: none;
-    padding: 0;
+    list-style-type: none;
+    padding: 0;
 }
 .link-list li {
-    background: #f8f9fa;
-    margin-bottom: 5px;
-    padding: 10px;
-    border-radius: 4px;
+    background: #f8f9fa;
+    margin-bottom: 5px;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+/* --- CSS untuk Modal Pop-up --- */
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 100; /* Pastikan di atas semua elemen lain */
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0,0,0,0.7); /* Background gelap */
+}
+.modal-content {
+    background-color: #fefefe;
+    margin: 10% auto; /* Jarak dari atas dan tengah secara horizontal */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+.close-btn {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+.close-btn:hover,
+.close-btn:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+/* Tombol kelas di dalam modal */
+.btn-class-select {
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+    padding: 12px;
+    background-color: #007bff;
+    color: white;
+    text-align: center;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+}
+.btn-class-select:hover {
+    background-color: #0056b3;
+}
+
+/* --- Penekanan untuk Kolom Nilai Akhir --- */
+.final-score-header {
+    background-color: #007bff !important; /* Biru terang untuk header */
+    color: white !important;
+}
+
+.final-score-cell {
+    /* Background kuning muda agar mencolok */
+    background-color: #fffbe6; 
+    /* Warna teks harus gelap */
+    color: #333; 
+    font-weight: bold; /* Teks tebal agar tegas */
+    border-left: 2px solid #ffcc00; /* Border kuning tegas di kiri */
+}
+
+.badge-belum {
+  background: #ef4444;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+
+  /* 🔥 TAMBAHKAN BARIS INI 🔥 */
+  cursor: pointer;
+}
+
+#info-badge-click {
+    /* Mengurangi jarak dengan search box di atas */
+    margin-top: 10px; 
+    
+    /* 🔥 Paling Penting: Menghilangkan jarak di bawah agar menempel ke tabel 🔥 */
+    margin-bottom: 0px; 
+    
+    /* Jarak sedikit agar badge tidak terlalu menyentuh border tabel */
+    padding-bottom: 5px; 
+}
+
+/* Memastikan tabel tidak memiliki margin atas yang besar */
+#nilaiTable {
+    margin-top: 0; 
 }

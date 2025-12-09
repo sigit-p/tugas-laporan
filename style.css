@@ -6,7 +6,7 @@ body {
     font-family: Arial, sans-serif;
     background-color: #f4f7f6;
     margin: 0;
-    padding: 0; /* KUNCI: Menghilangkan padding dari body untuk perataan global */
+    padding: 0; 
     color: #333;
 }
 
@@ -16,9 +16,9 @@ body {
 
 /* Menargetkan kontainer utama untuk membatasi lebar di desktop dan memusatkan konten */
 header, #main-content, footer, section {
-    max-width: 950px; /* Batas lebar maksimal konten */
+    max-width: 950px; 
     margin-left: auto;
-    margin-right: auto; /* KUNCI: Memusatkan konten di tengah layar */
+    margin-right: auto; 
 }
 
 /* Header */
@@ -26,14 +26,14 @@ header {
     background-color: #007bff;
     color: white;
     text-align: center;
-    padding: 20px 15px; /* Menambahkan padding di dalam header agar tidak menempel di tepi HP */
-    margin-bottom: 20px; /* Dari style lama */
+    padding: 20px 15px; 
+    margin-bottom: 20px; 
 }
 
 /* Footer */
 footer {
     text-align: center;
-    padding: 10px 15px; /* Menambahkan padding di dalam footer */
+    padding: 10px 15px; 
     margin-top: 30px;
     font-size: 14px;
     color: #777;
@@ -41,7 +41,6 @@ footer {
 
 /* Konten Utama Section */
 #main-content {
-    /* Hanya padding vertikal. Padding horizontal 15px sudah ditangani oleh elemen header/footer */
     padding: 10px 15px; 
 }
 
@@ -53,7 +52,7 @@ footer {
 /* Fix: Membuat judul "Pilih Menu Pembelajaran" rata tengah */
 .selection-area h2 {
     text-align: center;
-    padding-top: 20px; /* Jaga jarak dari header/atas */
+    padding-top: 20px; 
     margin-bottom: 20px;
 }
 
@@ -92,24 +91,23 @@ footer {
 }
 
 /* ==================================================================== */
-/* --- 4. MODAL/POPUP (KOREKSI UNTUK POP-UP TUGAS BELUM KUMPUL) --- */
+/* 🔥🔥🔥 KOREKSI START: GANTIKAN BAGIAN 4 YANG LAMA DENGAN INI 🔥🔥🔥 */
 /* ==================================================================== */
 
 /* Latar belakang gelap (Overlay) - Sesuai dengan class .modal-overlay di nilai.html */
 .modal-overlay {
-    position: fixed; /* Kunci 1: Membuat modal melayang di atas semua konten */
+    position: fixed; /* Membuat modal melayang di atas semua konten */
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.7); /* Warna semi-transparan */
-    z-index: 1000; /* Kunci 2: Pastikan berada di paling atas */
+    z-index: 1000; /* Pastikan berada di paling atas */
     
     /* Gunakan FLEX untuk memposisikan kotak di tengah layar */
     display: flex; 
     justify-content: center;
     align-items: center;
-    /* Mulai tersembunyi, JavaScript akan mengubah display ke 'flex' */
 }
 
 /* Kotak konten modal - Sesuai dengan class .modal-content-box di nilai.html */
@@ -120,7 +118,7 @@ footer {
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     padding: 20px;
-    box-sizing: border-box; /* Pastikan padding tidak menambah lebar */
+    box-sizing: border-box; 
 }
 
 /* Header Modal */
@@ -151,9 +149,7 @@ footer {
     overflow-y: auto; /* Memungkinkan scrolling jika daftar tugas panjang */
 }
 
-/* Hapus CSS lama untuk .modal dan .modal-content jika masih ada */
-
-/* Tambahan: Pastikan style lama .btn-class-select tetap ada jika digunakan di halaman lain */
+/* Tambahan: Pertahankan style lama .btn-class-select (yang ini sudah ada di kode Anda) */
 .btn-class-select {
     display: block;
     width: 100%;
@@ -169,117 +165,111 @@ footer {
 .btn-class-select:hover {
     background-color: #0056b3;
 }
+
 /* ==================================================================== */
 /* --- 5. SEARCH & TABEL (nilai.html) --- */
 /* ==================================================================== */
+/* ... (Bagian 5 dan 6 di bawah ini tetap sama seperti kode Anda) ... */
 .search-area {
-    text-align: center;
-    margin-bottom: 15px;
+    text-align: center;
+    margin-bottom: 15px;
 }
 #searchBox {
-    padding: 12px;
-    width: 90%;
-    max-width: 400px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 16px;
+    padding: 12px;
+    width: 90%;
+    max-width: 400px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
 }
 .table-responsive-scroll {
-    overflow-x: auto; 
-    -webkit-overflow-scrolling: touch; 
+    overflow-x: auto; 
+    -webkit-overflow-scrolling: touch; 
 }
 #nilaiTable {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 0; 
-    min-width: 700px; 
-    background: white;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0; 
+    min-width: 700px; 
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 #nilaiTable th {
-    background: #2563eb;
-    color: white;
-    padding: 10px 8px;
-    font-size: 14px;
+    background: #2563eb;
+    color: white;
+    padding: 10px 8px;
+    font-size: 14px;
 }
 #nilaiTable td {
-    padding: 8px;
-    border-bottom: 1px solid #eee;
-    text-align: center;
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+    text-align: center;
 }
 #nilaiTable tr:hover {
-    background: #f1f5ff;
+    background: #f1f5ff;
 }
-#nilaiTable td:first-child { 
-    background-color: #f8f9fa; 
-    color: #333; 
-    font-weight: bold; 
+#nilaiTable td:first-child { 
+    background-color: #f8f9fa; 
+    color: #333; 
+    font-weight: bold; 
 }
 
 /* --- Badge & Info --- */
 .badge-belum {
-    background: #ef4444;
-    color: white;
-    padding: 5px 10px;
-    border-radius: 20px;
-    font-size: 12px;
-    cursor: pointer;
+    background: #ef4444;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    cursor: pointer;
 }
 #info-badge-click {
-    text-align: center; 
-    font-weight: bold; 
-    color: #cc0000;
-    margin-top: 10px;
-    margin-bottom: 0px; 
-    padding-bottom: 5px; 
+    text-align: center; 
+    font-weight: bold; 
+    color: #cc0000;
+    margin-top: 10px;
+    margin-bottom: 0px; 
+    padding-bottom: 5px; 
 }
 
 /* --- Penekanan Nilai Akhir --- */
 .final-score-header {
-    background-color: #007bff !important; 
-    color: white !important;
+    background-color: #007bff !important; 
+    color: white !important;
 }
 .final-score-cell {
-    background-color: #fffbe6; 
-    color: #333; 
-    font-weight: bold; 
-    border-left: 2px solid #ffcc00; 
+    background-color: #fffbe6; 
+    color: #333; 
+    font-weight: bold; 
+    border-left: 2px solid #ffcc00; 
 }
 
 /* ==================================================================== */
 /* --- 6. VIDEO & LINK LIST --- */
 /* ==================================================================== */
 .video-container {
-    position: relative;
-    padding-bottom: 56.25%; 
-    height: 0;
-    overflow: hidden;
-    margin-bottom: 20px;
+    position: relative;
+    padding-bottom: 56.25%; 
+    height: 0;
+    overflow: hidden;
+    margin-bottom: 20px;
 }
 .video-container iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
 }
 .link-list {
-    list-style-type: none;
-    padding: 0;
+    list-style-type: none;
+    padding: 0;
 }
 .link-list li {
-    background: #f8f9fa;
-    margin-bottom: 5px;
-    padding: 10px;
-    border-radius: 4px;
+    background: #f8f9fa;
+    margin-bottom: 5px;
+    padding: 10px;
+    border-radius: 4px;
 }
-
-/* --- Wajib ada di style.css --- */
-.modal-overlay {
-    position: fixed; 
-    /* ... (CSS lainnya untuk positioning dan background) ... */
-    z-index: 1000;
-}
-/* ... (CSS untuk .modal-content-box, .modal-header-container, dll.) ... */

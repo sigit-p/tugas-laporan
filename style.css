@@ -254,3 +254,11 @@ footer {
     padding: 10px;
     border-radius: 4px;
 }
+
+/* --- Wajib ada di style.css --- */
+.modal-overlay {
+    position: fixed; 
+    /* ... (CSS lainnya untuk positioning dan background) ... */
+    z-index: 1000;
+}
+/* ... (CSS untuk .modal-content-box, .modal-header-container, dll.) ... */

@@ -117,104 +117,36 @@ function getBelum(row) {
     }
     return belumList;
 }
-
 // ==============================================================================
 // 3. FUNGSI TAMPILAN (POPUPS & TABLE)
 // ==============================================================================
 
 function showPopup(nama, jobBelum) {
-    // ... (Fungsi ini tidak diubah)
-    const overlay = document.createElement("div");
-    overlay.className = "overlay";
-
-    const box = document.createElement("div");
-    box.className = "popup-box";
-
-    let html = `<h3>${nama}</h3>`;
-    html += "<p>Belum mengumpulkan:</p><ul>";
-
-    jobBelum.forEach(i => {
-        html += `<li>${i}. ${jobNames[i - 1]}</li>`;
-    });
-
-    html += "</ul>";
-
-    box.innerHTML = html;
-    overlay.appendChild(box);
-
-    overlay.addEventListener("click", (e) => {
-        if (e.target === overlay) {
-            overlay.remove();
-        }
-    });
-
-    document.body.appendChild(overlay);
-}
-
-
-function loadTable(data) {
-    const tbody = document.querySelector("#nilaiTable tbody");
-    if (!tbody) {
-        console.error("Elemen #nilaiTable tbody TIDAK DITEMUKAN.");
-        return; 
+    // 🔥 FUNGSI INI DIUBAH TOTAL UNTUK MENGGUNAKAN STRUKTUR MODAL BARU 🔥
+    const modal = document.getElementById('jobDetailModal');
+    const title = document.getElementById('modalTitle');
+    const content = document.getElementById('modalContent');
+    
+    if (!modal || !content || !title) {
+        console.error("Elemen Modal (jobDetailModal, modalTitle, atau modalContent) tidak ditemukan. Periksa nilai.html Anda.");
+        return;
     }
     
-    // 🔥 KOREKSI 1: Membersihkan elemen sisa loading / sekat aneh 🔥
-    // Ini memastikan tbody benar-benar kosong sebelum data baru ditambahkan.
-    tbody.innerHTML = ""; 
-    
-    // console.log("Memulai pengisian tabel dengan data:", data.length, "baris.");
-    
-    const dataRows = Array.isArray(data) ? data : []; 
-    
-    dataRows.forEach(row => {
-        // 1. AMBIL JUMLAH BELUM DARI APPS SCRIPT (Index 8)
-        const belumCount = row[jobNames.length + 1]; // row[8]
-        
-        // 2. AMBIL DAFTAR JOB BELUM (Dibutuhkan untuk Pop-up)
-        let belumList = getBelum(row); 
-
-        const tr = document.createElement("tr");
-
-        // row.slice(1, 8) mengambil Job 1 sampai Job 7
-        const jobCells = row.slice(1, jobNames.length + 1).map(v => `<td>${v}</td>`).join("");
-        
-        // 3. AMBIL NILAI AKHIR DARI INDEKS BARU (Index 9)
-        const finalScore = row[jobNames.length + 2]; // row[9]
-
-        tr.innerHTML = `
-            <td>${row[0]}</td>
-            ${jobCells}
-            <td>
-              ${belumCount === 0 
-                ? "-" 
-                : `<span class="badge-belum" data-nama="${row[0]}" data-belum="${belumList.join(",")}">${belumCount} job</span>`
-              }
-            </td>
-            <td class="final-score-cell">${finalScore}</td>
-            `;
-
-        tbody.appendChild(tr);
+    // 1. Buat HTML daftar tugas
+    let listHtml = '<p>Belum mengumpulkan:</p><ul>';
+    jobBelum.forEach(i => {
+        // i adalah index job (1-based), jobNames[i-1] adalah nama job
+        listHtml += `<li>${i}. ${jobNames[i - 1]}</li>`; 
     });
-    
-    // console.log("✅ Tabel Selesai Diisi.");
+    listHtml += '</ul>';
 
-    // 🔥 KOREKSI 2: Memperbaiki Event Listener Popup 🔥
-    // Event listener harus dipasang SETELAH semua TR dan badge selesai dibuat
-    document.querySelectorAll(".badge-belum").forEach(b => {
-        b.addEventListener("click", (e) => {
-            
-            // PENTING: Mencegah event click menyebar ke TR/tbody yang memblokir popup
-            e.stopPropagation(); 
-            
-            const nama = b.getAttribute("data-nama");
-            const belum = b.getAttribute("data-belum")
-                                .split(",")
-                                .map(n => parseInt(n));
-            
-            showPopup(nama, belum);
-        });
-    });
+    // 2. Isi konten modal
+    title.textContent = `Tugas Belum Dikumpulkan: ${nama}`;
+    content.innerHTML = listHtml;
+
+    // 3. Tampilkan Modal
+    // PENTING: Menggunakan 'flex' agar CSS .modal-overlay bisa memposisikan di tengah.
+    modal.style.display = 'flex'; 
 }
 
 // ==============================================================================
@@ -339,6 +271,26 @@ function setupRefreshButton() {
 
 // Mulai proses saat DOM siap
 document.addEventListener('DOMContentLoaded', () => {
+    // 🔥 KOREKSI 1: Setup Listener Penutup Modal (Wajib Ditambahkan) 🔥
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const modal = document.getElementById('jobDetailModal');
+
+    if (closeModalBtn && modal) {
+        // Listener untuk tombol Tutup (X)
+        closeModalBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        // Listener untuk klik di area gelap (overlay)
+        modal.addEventListener('click', (e) => {
+            // Jika elemen yang diklik persis adalah .modal-overlay, tutup
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    }
+    // ------------------------------------------------------------------------
+
     // 1. Setup Tombol Refresh
     setupRefreshButton(); 
     

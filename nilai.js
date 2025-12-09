@@ -8,12 +8,12 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbwswDuj1YQHP4C6fXfdEa1G
 // Daftar nama job (harus sama persis dengan header di Sheets, E sampai K)
 const jobNames = [
     "Kelistrikan dasar (Seri-Paralel)", 
-    "Overhaull Motor Starter",             
+    "Overhaull Motor Starter",          
     "Merangkai Kelistrikan Sistem Starter", 
     "Pemeriksaan Sistem Pengapian",     
     "Pemeriksaan Sistem Pengisian",     
     "Merangkai Kelistrikan Sistem Pengapian dan Pengisian",
-    "Merangkai Kelistrikan Sistem Penerangan"  
+    "Merangkai Kelistrikan Sistem Penerangan" 
 ];
 
 let rawData = []; // Data setelah diubah ke format horizontal
@@ -58,44 +58,45 @@ function showContent(fitur) {
 
 // HARUS menjadi fungsi global (ditempelkan ke window)
 window.handleApiResponse = function(data) {
-  
-    // 🔥 STOP TIMER DI AWAL FUNGSI 🔥
-    if (loadingInterval) {
-        clearInterval(loadingInterval);
-    }
-    
-    // 💡 KOREKSI UTAMA: Deklarasi dan Akses Variabel Loading
-    // Ambil elemen loading (span)
-    const loadingEl = document.getElementById('loadingIndicator');
+  
+    // 🔥 STOP TIMER DI AWAL FUNGSI 🔥
+    if (loadingInterval) {
+        clearInterval(loadingInterval);
+    }
+    
+    // 💡 KOREKSI UTAMA: Deklarasi dan Akses Variabel Loading
+    // Ambil elemen loading (span)
+    const loadingEl = document.getElementById('loadingIndicator');
 
-    // Cek jika elemen loading ditemukan
-    if (loadingEl) {
-        // Cari baris (<tr>) terdekat dari span loading
-        const loadingRow = loadingEl.closest('tr');
-        
-        // Jika baris loading ditemukan, hapus
-        if (loadingRow) {
-            loadingRow.remove();
-        }
-    } 
+    // Cek jika elemen loading ditemukan
+    if (loadingEl) {
+        // Cari baris (<tr>) terdekat dari span loading
+        const loadingRow = loadingEl.closest('tr');
+        
+        // Jika baris loading ditemukan, hapus
+        if (loadingRow) {
+            loadingRow.remove();
+        }
+    } 
+    // Tidak perlu 'else' untuk clearInterval karena sudah di handle di awal fungsi.
 
-    // Menghapus tag script
-    const scriptEl = document.getElementById('jsonp_script');
-    if (scriptEl) scriptEl.remove();
+    // Menghapus tag script
+    const scriptEl = document.getElementById('jsonp_script');
+    if (scriptEl) scriptEl.remove();
 
-    if (data.error) {
-        console.error("Apps Script Error:", data.error);
-        document.getElementById("nilaiTable").innerHTML = `<p style="color:red;">ERROR DATA: ${data.error}</p>`;
-        return;
-    }
-    
-    // Data yang diterima sudah dalam bentuk horizontal, langsung gunakan.
-    rawData = data; 
-    
-    console.log("✅ Data Raw Berhasil Diterima & Sudah Horizontal:", rawData); 
-    
-    // Panggil loadTable untuk menampilkan data
-    loadTable(rawData);
+    if (data.error) {
+        console.error("Apps Script Error:", data.error);
+        document.getElementById("nilaiTable").innerHTML = `<p style="color:red;">ERROR DATA: ${data.error}</p>`;
+        return;
+    }
+    
+    // Data yang diterima sudah dalam bentuk horizontal, langsung gunakan.
+    rawData = data; 
+    
+    console.log("✅ Data Raw Berhasil Diterima & Sudah Horizontal:", rawData); 
+    
+    // Panggil loadTable untuk menampilkan data
+    loadTable(rawData);
 };
 
 /**
@@ -121,34 +122,34 @@ function getBelum(row) {
 // 3. FUNGSI TAMPILAN (POPUPS & TABLE)
 // ==============================================================================
 
-// 🔥 KOREKSI TOTAL: Fungsi ini menggunakan elemen Modal yang sudah ada di HTML 🔥
 function showPopup(nama, jobBelum) {
-    const modal = document.getElementById('jobDetailModal');
-    const title = document.getElementById('modalTitle');
-    const content = document.getElementById('modalContent');
-    
-    if (!modal || !content || !title) {
-        console.error("Elemen Modal tidak ditemukan. Periksa nilai.html.");
-        return;
-    }
-    
-    // 1. Buat HTML daftar tugas
-    let listHtml = '<p>Belum mengumpulkan:</p><ul>';
+    // ... (Fungsi ini tidak diubah)
+    const overlay = document.createElement("div");
+    overlay.className = "overlay";
+
+    const box = document.createElement("div");
+    box.className = "popup-box";
+
+    let html = `<h3>${nama}</h3>`;
+    html += "<p>Belum mengumpulkan:</p><ul>";
+
     jobBelum.forEach(i => {
-        // i adalah index job (1-based), jobNames[i-1] adalah nama job
-        listHtml += `<li>${i}. ${jobNames[i - 1]}</li>`; 
+        html += `<li>${i}. ${jobNames[i - 1]}</li>`;
     });
-    listHtml += '</ul>';
 
-    // 2. Isi konten modal
-    title.textContent = `Tugas Belum Dikumpulkan: ${nama}`;
-    content.innerHTML = listHtml;
+    html += "</ul>";
 
-    // 3. Tampilkan Modal
-    // PENTING: Menggunakan 'flex' karena CSS .modal-overlay menggunakan display: flex
-    modal.style.display = 'flex'; 
+    box.innerHTML = html;
+    overlay.appendChild(box);
+
+    overlay.addEventListener("click", (e) => {
+        if (e.target === overlay) {
+            overlay.remove();
+        }
+    });
+
+    document.body.appendChild(overlay);
 }
-// ------------------------------------------------------------------------
 
 
 function loadTable(data) {
@@ -159,7 +160,10 @@ function loadTable(data) {
     }
     
     // 🔥 KOREKSI 1: Membersihkan elemen sisa loading / sekat aneh 🔥
+    // Ini memastikan tbody benar-benar kosong sebelum data baru ditambahkan.
     tbody.innerHTML = ""; 
+    
+    // console.log("Memulai pengisian tabel dengan data:", data.length, "baris.");
     
     const dataRows = Array.isArray(data) ? data : []; 
     
@@ -193,6 +197,8 @@ function loadTable(data) {
         tbody.appendChild(tr);
     });
     
+    // console.log("✅ Tabel Selesai Diisi.");
+
     // 🔥 KOREKSI 2: Memperbaiki Event Listener Popup 🔥
     // Event listener harus dipasang SETELAH semua TR dan badge selesai dibuat
     document.querySelectorAll(".badge-belum").forEach(b => {
@@ -203,8 +209,8 @@ function loadTable(data) {
             
             const nama = b.getAttribute("data-nama");
             const belum = b.getAttribute("data-belum")
-                                 .split(",")
-                                 .map(n => parseInt(n));
+                                .split(",")
+                                .map(n => parseInt(n));
             
             showPopup(nama, belum);
         });
@@ -243,19 +249,19 @@ function loadDataJSONP() {
     const sheetName = classParam; 
 
 // **PERBAIKAN LOGIKA LOADING DI SINI**
-    const tbody = document.querySelector("#nilaiTable tbody");
-    if (tbody) {
-        // Tampilkan ulang baris loading sebelum memanggil API
-        tbody.innerHTML = `
-            <tr><td colspan="10" style="text-align:center;">
-                <span id="loadingIndicator">⏳ Memuat data nilai... Harap tunggu.</span>
+    const tbody = document.querySelector("#nilaiTable tbody");
+    if (tbody) {
+        // Tampilkan ulang baris loading sebelum memanggil API
+        tbody.innerHTML = `
+            <tr><td colspan="10" style="text-align:center;">
+                <span id="loadingIndicator">⏳ Memuat data nilai... Harap tunggu.</span>
                 
                 <span id="loadingTimer" style="margin-left: 10px; font-weight: bold;">(0 detik)</span>
 
-            </td></tr>
-        `;
-    }
-    const loadingEl = document.getElementById('loadingIndicator');
+            </td></tr>
+        `;
+    }
+    const loadingEl = document.getElementById('loadingIndicator');
 
     // Pastikan timer di-reset sebelum start
     secondsElapsed = 0;
@@ -333,26 +339,6 @@ function setupRefreshButton() {
 
 // Mulai proses saat DOM siap
 document.addEventListener('DOMContentLoaded', () => {
-    // 🔥 KOREKSI START: Setup Listener Penutup Modal 🔥
-    const closeModalBtn = document.getElementById('closeModalBtn');
-    const modal = document.getElementById('jobDetailModal');
-
-    if (closeModalBtn && modal) {
-        // Listener untuk tombol Tutup (X)
-        closeModalBtn.addEventListener('click', () => {
-            modal.style.display = 'none';
-        });
-
-        // Listener untuk klik di area gelap (overlay)
-        modal.addEventListener('click', (e) => {
-            // Jika elemen yang diklik persis adalah .modal-overlay, tutup
-            if (e.target === modal) {
-                modal.style.display = 'none';
-            }
-        });
-    }
-    // 🔥 KOREKSI END 🔥
-    
     // 1. Setup Tombol Refresh
     setupRefreshButton(); 
     

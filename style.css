@@ -303,3 +303,8 @@ section, footer {
        Angka 800px adalah contoh, Anda bisa menyesuaikannya. */
     min-width: 800px; 
 }
+
+/* Sembunyikan semua elemen yang memiliki class 'hidden-feature' */
+.hidden-feature {
+    display: none !important;
+}

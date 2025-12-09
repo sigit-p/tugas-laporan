@@ -33,7 +33,8 @@ const FINAL_SCORE_NAME = 'Nilai Akhir';
 // 🔥 VARIABEL GLOBAL BARU UNTUK KONTROL TIMER 🔥
 let loadingInterval;
 let secondsElapsed = 0;
-// ==============================================================================// FUNGSI UNTUK MEMBACA PARAMETER URL
+// ==============================================================================
+// FUNGSI UNTUK MEMBACA PARAMETER URL
 // ==============================================================================
 function getUrlParameter(name) {
     name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');

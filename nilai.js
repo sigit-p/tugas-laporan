@@ -8,12 +8,12 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbwswDuj1YQHP4C6fXfdEa1G
 // Daftar nama job (harus sama persis dengan header di Sheets, E sampai K)
 const jobNames = [
     "Kelistrikan dasar (Seri-Paralel)", 
-    "Overhaull Motor Starter",          
+    "Overhaull Motor Starter",             
     "Merangkai Kelistrikan Sistem Starter", 
     "Pemeriksaan Sistem Pengapian",     
     "Pemeriksaan Sistem Pengisian",     
     "Merangkai Kelistrikan Sistem Pengapian dan Pengisian",
-    "Merangkai Kelistrikan Sistem Penerangan" 
+    "Merangkai Kelistrikan Sistem Penerangan"  
 ];
 
 let rawData = []; // Data setelah diubah ke format horizontal
@@ -58,45 +58,44 @@ function showContent(fitur) {
 
 // HARUS menjadi fungsi global (ditempelkan ke window)
 window.handleApiResponse = function(data) {
-  
-    // 🔥 STOP TIMER DI AWAL FUNGSI 🔥
-    if (loadingInterval) {
-        clearInterval(loadingInterval);
-    }
-    
-    // 💡 KOREKSI UTAMA: Deklarasi dan Akses Variabel Loading
-    // Ambil elemen loading (span)
-    const loadingEl = document.getElementById('loadingIndicator');
+  
+    // 🔥 STOP TIMER DI AWAL FUNGSI 🔥
+    if (loadingInterval) {
+        clearInterval(loadingInterval);
+    }
+    
+    // 💡 KOREKSI UTAMA: Deklarasi dan Akses Variabel Loading
+    // Ambil elemen loading (span)
+    const loadingEl = document.getElementById('loadingIndicator');
 
-    // Cek jika elemen loading ditemukan
-    if (loadingEl) {
-        // Cari baris (<tr>) terdekat dari span loading
-        const loadingRow = loadingEl.closest('tr');
-        
-        // Jika baris loading ditemukan, hapus
-        if (loadingRow) {
-            loadingRow.remove();
-        }
-    } 
-    // Tidak perlu 'else' untuk clearInterval karena sudah di handle di awal fungsi.
+    // Cek jika elemen loading ditemukan
+    if (loadingEl) {
+        // Cari baris (<tr>) terdekat dari span loading
+        const loadingRow = loadingEl.closest('tr');
+        
+        // Jika baris loading ditemukan, hapus
+        if (loadingRow) {
+            loadingRow.remove();
+        }
+    } 
 
-    // Menghapus tag script
-    const scriptEl = document.getElementById('jsonp_script');
-    if (scriptEl) scriptEl.remove();
+    // Menghapus tag script
+    const scriptEl = document.getElementById('jsonp_script');
+    if (scriptEl) scriptEl.remove();
 
-    if (data.error) {
-        console.error("Apps Script Error:", data.error);
-        document.getElementById("nilaiTable").innerHTML = `<p style="color:red;">ERROR DATA: ${data.error}</p>`;
-        return;
-    }
-    
-    // Data yang diterima sudah dalam bentuk horizontal, langsung gunakan.
-    rawData = data; 
-    
-    console.log("✅ Data Raw Berhasil Diterima & Sudah Horizontal:", rawData); 
-    
-    // Panggil loadTable untuk menampilkan data
-    loadTable(rawData);
+    if (data.error) {
+        console.error("Apps Script Error:", data.error);
+        document.getElementById("nilaiTable").innerHTML = `<p style="color:red;">ERROR DATA: ${data.error}</p>`;
+        return;
+    }
+    
+    // Data yang diterima sudah dalam bentuk horizontal, langsung gunakan.
+    rawData = data; 
+    
+    console.log("✅ Data Raw Berhasil Diterima & Sudah Horizontal:", rawData); 
+    
+    // Panggil loadTable untuk menampilkan data
+    loadTable(rawData);
 };
 
 /**
@@ -117,18 +116,19 @@ function getBelum(row) {
     }
     return belumList;
 }
+
 // ==============================================================================
 // 3. FUNGSI TAMPILAN (POPUPS & TABLE)
 // ==============================================================================
 
+// 🔥 KOREKSI TOTAL: Fungsi ini menggunakan elemen Modal yang sudah ada di HTML 🔥
 function showPopup(nama, jobBelum) {
-    // 🔥 FUNGSI INI DIUBAH TOTAL UNTUK MENGGUNAKAN STRUKTUR MODAL BARU 🔥
     const modal = document.getElementById('jobDetailModal');
     const title = document.getElementById('modalTitle');
     const content = document.getElementById('modalContent');
     
     if (!modal || !content || !title) {
-        console.error("Elemen Modal (jobDetailModal, modalTitle, atau modalContent) tidak ditemukan. Periksa nilai.html Anda.");
+        console.error("Elemen Modal tidak ditemukan. Periksa nilai.html.");
         return;
     }
     
@@ -145,8 +145,70 @@ function showPopup(nama, jobBelum) {
     content.innerHTML = listHtml;
 
     // 3. Tampilkan Modal
-    // PENTING: Menggunakan 'flex' agar CSS .modal-overlay bisa memposisikan di tengah.
+    // PENTING: Menggunakan 'flex' karena CSS .modal-overlay menggunakan display: flex
     modal.style.display = 'flex'; 
+}
+// ------------------------------------------------------------------------
+
+
+function loadTable(data) {
+    const tbody = document.querySelector("#nilaiTable tbody");
+    if (!tbody) {
+        console.error("Elemen #nilaiTable tbody TIDAK DITEMUKAN.");
+        return; 
+    }
+    
+    // 🔥 KOREKSI 1: Membersihkan elemen sisa loading / sekat aneh 🔥
+    tbody.innerHTML = ""; 
+    
+    const dataRows = Array.isArray(data) ? data : []; 
+    
+    dataRows.forEach(row => {
+        // 1. AMBIL JUMLAH BELUM DARI APPS SCRIPT (Index 8)
+        const belumCount = row[jobNames.length + 1]; // row[8]
+        
+        // 2. AMBIL DAFTAR JOB BELUM (Dibutuhkan untuk Pop-up)
+        let belumList = getBelum(row); 
+
+        const tr = document.createElement("tr");
+
+        // row.slice(1, 8) mengambil Job 1 sampai Job 7
+        const jobCells = row.slice(1, jobNames.length + 1).map(v => `<td>${v}</td>`).join("");
+        
+        // 3. AMBIL NILAI AKHIR DARI INDEKS BARU (Index 9)
+        const finalScore = row[jobNames.length + 2]; // row[9]
+
+        tr.innerHTML = `
+            <td>${row[0]}</td>
+            ${jobCells}
+            <td>
+              ${belumCount === 0 
+                ? "-" 
+                : `<span class="badge-belum" data-nama="${row[0]}" data-belum="${belumList.join(",")}">${belumCount} job</span>`
+              }
+            </td>
+            <td class="final-score-cell">${finalScore}</td>
+            `;
+
+        tbody.appendChild(tr);
+    });
+    
+    // 🔥 KOREKSI 2: Memperbaiki Event Listener Popup 🔥
+    // Event listener harus dipasang SETELAH semua TR dan badge selesai dibuat
+    document.querySelectorAll(".badge-belum").forEach(b => {
+        b.addEventListener("click", (e) => {
+            
+            // PENTING: Mencegah event click menyebar ke TR/tbody yang memblokir popup
+            e.stopPropagation(); 
+            
+            const nama = b.getAttribute("data-nama");
+            const belum = b.getAttribute("data-belum")
+                                 .split(",")
+                                 .map(n => parseInt(n));
+            
+            showPopup(nama, belum);
+        });
+    });
 }
 
 // ==============================================================================
@@ -181,19 +243,19 @@ function loadDataJSONP() {
     const sheetName = classParam; 
 
 // **PERBAIKAN LOGIKA LOADING DI SINI**
-    const tbody = document.querySelector("#nilaiTable tbody");
-    if (tbody) {
-        // Tampilkan ulang baris loading sebelum memanggil API
-        tbody.innerHTML = `
-            <tr><td colspan="10" style="text-align:center;">
-                <span id="loadingIndicator">⏳ Memuat data nilai... Harap tunggu.</span>
+    const tbody = document.querySelector("#nilaiTable tbody");
+    if (tbody) {
+        // Tampilkan ulang baris loading sebelum memanggil API
+        tbody.innerHTML = `
+            <tr><td colspan="10" style="text-align:center;">
+                <span id="loadingIndicator">⏳ Memuat data nilai... Harap tunggu.</span>
                 
                 <span id="loadingTimer" style="margin-left: 10px; font-weight: bold;">(0 detik)</span>
 
-            </td></tr>
-        `;
-    }
-    const loadingEl = document.getElementById('loadingIndicator');
+            </td></tr>
+        `;
+    }
+    const loadingEl = document.getElementById('loadingIndicator');
 
     // Pastikan timer di-reset sebelum start
     secondsElapsed = 0;
@@ -271,7 +333,7 @@ function setupRefreshButton() {
 
 // Mulai proses saat DOM siap
 document.addEventListener('DOMContentLoaded', () => {
-    // 🔥 KOREKSI 1: Setup Listener Penutup Modal (Wajib Ditambahkan) 🔥
+    // 🔥 KOREKSI START: Setup Listener Penutup Modal 🔥
     const closeModalBtn = document.getElementById('closeModalBtn');
     const modal = document.getElementById('jobDetailModal');
 
@@ -289,8 +351,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-    // ------------------------------------------------------------------------
-
+    // 🔥 KOREKSI END 🔥
+    
     // 1. Setup Tombol Refresh
     setupRefreshButton(); 
     

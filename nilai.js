@@ -1,29 +1,39 @@
 // ==============================================================================
-// 1. KONFIGURASI DAN URL API (WAJIB GANTI)
+// 1. KONFIGURASI DAN URL API (MULTI-MAPEL)
 // ==============================================================================
 
-// PASTI GANTI URL INI!
-const API_URL = 'https://script.google.com/macros/s/AKfycbwswDuj1YQHP4C6fXfdEa1G1rqW6hvbx6ZCnnfsRJsHC1fb5byCpHtMmU0vIZBgoYqaPg/exec';
+// PASTI GANTI DUA URL INI!
+let API_URL = '';
 
-// Daftar nama job (harus sama persis dengan header di Sheets, E sampai K)
+// Ambil parameter Mapel dari URL (Variabel ini sudah Anda definisikan di bawah)
+// const mapelParam = getUrlParameter('mapel');
+
+if (mapelParam === 'PSSM') {
+    // 🔥 URL API BARU DARI APPS SCRIPT SHEET PSSM (GANTI DI SINI!)
+    API_URL = 'https://script.google.com/macros/s/AKfycbx4yH7_roOJLbv3bjwAKT4b5hfUpgokq0g4gdPujbmV9UEAIfSx1HkZc1ASzcPtpyGmSw/exec'; 
+} else {
+    // URL API LAMA UNTUK PKSM (GANTI DI SINI!)
+    API_URL = 'https://script.google.com/macros/s/AKfycbwswDuj1YQHP4C6fXfdEa1G1rqW6hvbx6ZCnnfsRJsHC1fb5byCpHtMmU0vIZBgoYqaPg/exec'; 
+}
+
+// Daftar nama job (Kita pertahankan daftar PKSM sebagai basis kolom tabel web)
 const jobNames = [
     "Kelistrikan dasar (Seri-Paralel)", 
-    "Overhaull Motor Starter",          
+    "Overhaull Motor Starter",             
     "Merangkai Kelistrikan Sistem Starter", 
-    "Pemeriksaan Sistem Pengapian",     
-    "Pemeriksaan Sistem Pengisian",     
+    "Pemeriksaan Sistem Pengapian",       
+    "Pemeriksaan Sistem Pengisian",       
     "Merangkai Kelistrikan Sistem Pengapian dan Pengisian",
     "Merangkai Kelistrikan Sistem Penerangan" 
 ];
 
-let rawData = []; // Data setelah diubah ke format horizontal
-const FINAL_SCORE_NAME = 'Nilai Akhir'; // Nama tugas untuk nilai akhir (Kolom L)
+let rawData = [];
+const FINAL_SCORE_NAME = 'Nilai Akhir'; 
 
 // 🔥 VARIABEL GLOBAL BARU UNTUK KONTROL TIMER 🔥
-let loadingInterval; 
+let loadingInterval;
 let secondsElapsed = 0;
-// ==============================================================================
-// FUNGSI UNTUK MEMBACA PARAMETER URL
+// ==============================================================================// FUNGSI UNTUK MEMBACA PARAMETER URL
 // ==============================================================================
 function getUrlParameter(name) {
     name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');

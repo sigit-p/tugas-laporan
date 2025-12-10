@@ -67,7 +67,14 @@
     const mapel = params.get('mapel'); 
     const displayEl = document.getElementById('mapel-display');
     const featureContainer = document.getElementById('feature-buttons');
-    const classOptions = ['XI SA', 'XI SB', 'XI SC']; 
+   let classOptions = ['XI SA', 'XI SB', 'XI SC']; // Variabel harus diubah menjadi 'let'
+    
+    // 🔥 LOGIKA KOREKSI BARU 🔥
+    if (mapel === 'PSSM') {
+        // Jika mapel adalah PSSM, hanya sediakan XI SA.
+        classOptions = ['XI SA'];
+    }
+    // ---------------------------
     
     const modal = document.getElementById('classModal');
     const modalTitle = document.getElementById('modal-title');

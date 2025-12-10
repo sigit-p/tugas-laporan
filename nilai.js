@@ -64,14 +64,26 @@ let secondsElapsed = 0;
 const jobNoteContainer = document.getElementById('jobNoteContainer');
 
 if (jobNoteContainer) {
+    // KONDISI 1: PKSM Kelas XI SB
     if (classParam === 'XI SB' && mapelParam === 'PKSM') {
-        // Konten catatan khusus untuk XI SB PKSM
+        // Konten catatan khusus untuk XI SB PKSM (5 Job wajib)
         const noteHtml = `
             <div style="background-color: #fff3cd; color: #856404; padding: 15px; border: 1px solid #ffeeba; border-radius: 5px; margin-bottom: 20px;">
                 <strong>💡 Catatan Penting:</strong> Untuk PKSM kelas *XI TSMB*, baru praktek 5 kali. Jadi wajib mengumpulkan laporan 5 job saja sesuai yang telah dipraktekan. Untuk Cek beres atau belum bisa dilihat pada kolom belum. Untuk kelas XI TSMB harusnya belum 2 Job.
             </div> 
         `;
         jobNoteContainer.innerHTML = noteHtml;
+        
+    // 🔥 KONDISI BARU: PSSM Kelas XI SA 🔥
+    } else if (classParam === 'XI SA' && mapelParam === 'PSSM') {
+        // Konten catatan khusus untuk XI SA PSSM (4 Job wajib)
+        const noteHtml = `
+            <div style="background-color: #fff3cd; color: #856404; padding: 15px; border: 1px solid #ffeeba; border-radius: 5px; margin-bottom: 20px;">
+                <strong>💡 Catatan Penting:</strong> Untuk PSSM kelas *XI TSM A*, saat ini baru 4 Job yang wajib dikumpulkan (sesuai yang telah dipraktekkan). Untuk Cek beres atau belum, silakan lihat pada kolom **Belum**.
+            </div> 
+        `;
+        jobNoteContainer.innerHTML = noteHtml;
+        
     } else {
         jobNoteContainer.innerHTML = '';
     }

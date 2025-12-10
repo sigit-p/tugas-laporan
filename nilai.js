@@ -8,9 +8,59 @@ function getUrlParameter(name) {
     return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
 };
 
-// 🔥🔥 LOKASI TERBAIK UNTUK KODE CATATAN KHUSUS (DI SINI) 🔥🔥
-const classParam = getUrlParameter('class'); 
-const mapelParam = getUrlParameter('mapel'); 
+// ==============================================================================
+// 1. KONFIGURASI DAN URL API (MULTI-MAPEL)
+// ==============================================================================
+
+const mapelParam = getUrlParameter('mapel');
+const classParam = getUrlParameter('class');
+
+// --- DAFTAR JOB UNTUK SEMUA MAPEL ---
+const ALL_JOB_NAMES = {
+    'PKSM': [
+        "Kelistrikan dasar (Seri-Paralel)", 
+        "Overhaull Motor Starter",             
+        "Merangkai Kelistrikan Sistem Starter", 
+        "Pemeriksaan Sistem Pengapian",         
+        "Pemeriksaan Sistem Pengisian",         
+        "Merangkai Kelistrikan Sistem Pengapian dan Pengisian",
+        "Merangkai Kelistrikan Sistem Penerangan" 
+    ],
+    'PSSM': [
+        "Rem Tromol", 
+        "Rem Cakram",             
+        "CVT Drive Pulley", 
+        "Kemudi/Komstir",         
+        "Suspensi Depan",         
+        "Tambal Ban Bakar",
+        "Tyre Changer" 
+    ]
+};
+// ------------------------------------
+
+let currentJobNames = []; // 🔥 VARIABEL GLOBAL BARU UNTUK DAFTAR JOB AKTIF 🔥
+
+// PASTI GANTI DUA URL INI!
+let API_URL = '';
+
+if (mapelParam === 'PSSM') {
+    // 🔥 URL API BARU DARI APPS SCRIPT SHEET PSSM (GANTI DI SINI!)
+    API_URL = 'https://script.google.com/macros/s/AKfycbx4yH7_roOJLbv3bjwAKT4b5hfUpgokq0g4gdPujbmV9UEAIfSx1HkZc1ASzcPtpyGmSw/exec'; 
+} else {
+    // URL API LAMA UNTUK PKSM (GANTI DI SINI!)
+    API_URL = 'https://script.google.com/macros/s/AKfycbwswDuj1YQHP4C6fXfdEa1G1rqW6hvbx6ZCnnfsRJsHC1fb5byCpHtMmU0vIZBgoYqaPg/exec'; 
+}
+
+const FINAL_SCORE_NAME = 'Nilai Akhir'; 
+let rawData = [];
+
+// 🔥 VARIABEL GLOBAL UNTUK KONTROL TIMER 🔥
+let loadingInterval;
+let secondsElapsed = 0;
+
+// ==============================================================================
+// FUNGSI CATATAN KHUSUS (TETAP)
+// ==============================================================================
 const jobNoteContainer = document.getElementById('jobNoteContainer');
 
 if (jobNoteContainer) {
@@ -27,41 +77,6 @@ if (jobNoteContainer) {
     }
 }
 
-// ==============================================================================
-// 1. KONFIGURASI DAN URL API (MULTI-MAPEL)
-// ==============================================================================
-
-// PASTI GANTI DUA URL INI!
-let API_URL = '';
-
-// Ambil parameter Mapel dari URL (Variabel ini sudah Anda definisikan di bawah)
-// const mapelParam = getUrlParameter('mapel');
-
-if (mapelParam === 'PSSM') {
-    // 🔥 URL API BARU DARI APPS SCRIPT SHEET PSSM (GANTI DI SINI!)
-    API_URL = 'https://script.google.com/macros/s/AKfycbx4yH7_roOJLbv3bjwAKT4b5hfUpgokq0g4gdPujbmV9UEAIfSx1HkZc1ASzcPtpyGmSw/exec'; 
-} else {
-    // URL API LAMA UNTUK PKSM (GANTI DI SINI!)
-    API_URL = 'https://script.google.com/macros/s/AKfycbwswDuj1YQHP4C6fXfdEa1G1rqW6hvbx6ZCnnfsRJsHC1fb5byCpHtMmU0vIZBgoYqaPg/exec'; 
-}
-
-// Daftar nama job (Kita pertahankan daftar PKSM sebagai basis kolom tabel web)
-const jobNames = [
-    "Kelistrikan dasar (Seri-Paralel)", 
-    "Overhaull Motor Starter",             
-    "Merangkai Kelistrikan Sistem Starter", 
-    "Pemeriksaan Sistem Pengapian",       
-    "Pemeriksaan Sistem Pengisian",       
-    "Merangkai Kelistrikan Sistem Pengapian dan Pengisian",
-    "Merangkai Kelistrikan Sistem Penerangan" 
-];
-
-let rawData = [];
-const FINAL_SCORE_NAME = 'Nilai Akhir'; 
-
-// 🔥 VARIABEL GLOBAL BARU UNTUK KONTROL TIMER 🔥
-let loadingInterval;
-let secondsElapsed = 0;
 // ==============================================================================
 // 1.5. FUNGSI UTILITAS TAMPILAN
 // ==============================================================================
@@ -88,56 +103,59 @@ function showContent(fitur) {
 
 // HARUS menjadi fungsi global (ditempelkan ke window)
 window.handleApiResponse = function(data) {
-  
-    // 🔥 STOP TIMER DI AWAL FUNGSI 🔥
-    if (loadingInterval) {
-        clearInterval(loadingInterval);
-    }
-    
-    // 💡 KOREKSI UTAMA: Deklarasi dan Akses Variabel Loading
-    // Ambil elemen loading (span)
-    const loadingEl = document.getElementById('loadingIndicator');
+   
+    // 🔥 STOP TIMER DI AWAL FUNGSI 🔥
+    if (loadingInterval) {
+        clearInterval(loadingInterval);
+    }
+    
+    // Ambil elemen loading (span)
+    const loadingEl = document.getElementById('loadingIndicator');
 
-    // Cek jika elemen loading ditemukan
-    if (loadingEl) {
-        // Cari baris (<tr>) terdekat dari span loading
-        const loadingRow = loadingEl.closest('tr');
-        
-        // Jika baris loading ditemukan, hapus
-        if (loadingRow) {
-            loadingRow.remove();
-        }
-    } 
-    // Tidak perlu 'else' untuk clearInterval karena sudah di handle di awal fungsi.
+    // Cek jika elemen loading ditemukan
+    if (loadingEl) {
+        // Cari baris (<tr>) terdekat dari span loading
+        const loadingRow = loadingEl.closest('tr');
+        
+        // Jika baris loading ditemukan, hapus
+        if (loadingRow) {
+            loadingRow.remove();
+        }
+    } 
+    
+    // Menghapus tag script
+    const scriptEl = document.getElementById('jsonp_script');
+    if (scriptEl) scriptEl.remove();
 
-    // Menghapus tag script
-    const scriptEl = document.getElementById('jsonp_script');
-    if (scriptEl) scriptEl.remove();
-
-    if (data.error) {
-        console.error("Apps Script Error:", data.error);
-        document.getElementById("nilaiTable").innerHTML = `<p style="color:red;">ERROR DATA: ${data.error}</p>`;
-        return;
-    }
-    
-    // Data yang diterima sudah dalam bentuk horizontal, langsung gunakan.
-    rawData = data; 
-    
-    console.log("✅ Data Raw Berhasil Diterima & Sudah Horizontal:", rawData); 
-    
-    // Panggil loadTable untuk menampilkan data
-    loadTable(rawData);
+    if (data.error) {
+        console.error("Apps Script Error:", data.error);
+        document.getElementById("nilaiTable").innerHTML = `<p style="color:red;">ERROR DATA: ${data.error}</p>`;
+        return;
+    }
+    
+    // Data yang diterima sudah dalam bentuk horizontal, langsung gunakan.
+    rawData = data; 
+    
+    console.log("✅ Data Raw Berhasil Diterima & Sudah Horizontal:", rawData); 
+    
+    // Panggil loadTable untuk menampilkan data
+    loadTable(rawData);
 };
 
 /**
  * Mengambil daftar job yang belum dikumpulkan berdasarkan baris data horizontal.
+ * Menggunakan currentJobNames global.
  */
 function getBelum(row) {
     let belumList = [];
-    // Dimulai dari indeks 1 (Job 1), hingga jobNames.length (Job 7)
-    for (let i = 1; i <= jobNames.length; i++) { 
+    
+    // 🔥 PENGGUNAAN currentJobNames 🔥
+    const jobCount = currentJobNames.length;
+    
+    // Dimulai dari indeks 1 (Job 1), hingga jobCount (Job 7)
+    for (let i = 1; i <= jobCount; i++) { 
         
-        // Cek hanya di kolom Tugas/Job, abaikan kolom Nilai Akhir.
+        // Cek hanya di kolom Tugas/Job.
         const cellValue = String(row[i]).trim();
         
         // Cek jika kolomnya kosong ("" yang berasal dari .trim())
@@ -153,7 +171,6 @@ function getBelum(row) {
 // ==============================================================================
 
 function showPopup(nama, jobBelum) {
-    // ... (Fungsi ini tidak diubah)
     const overlay = document.createElement("div");
     overlay.className = "overlay";
 
@@ -163,8 +180,9 @@ function showPopup(nama, jobBelum) {
     let html = `<h3>${nama}</h3>`;
     html += "<p>Belum mengumpulkan:</p><ul>";
 
+    // 🔥 PENGGUNAAN currentJobNames 🔥
     jobBelum.forEach(i => {
-        html += `<li>${i}. ${jobNames[i - 1]}</li>`;
+        html += `<li>${i}. ${currentJobNames[i - 1]}</li>`;
     });
 
     html += "</ul>";
@@ -190,27 +208,27 @@ function loadTable(data) {
     }
     
     // 🔥 KOREKSI 1: Membersihkan elemen sisa loading / sekat aneh 🔥
-    // Ini memastikan tbody benar-benar kosong sebelum data baru ditambahkan.
     tbody.innerHTML = ""; 
-    
-    // console.log("Memulai pengisian tabel dengan data:", data.length, "baris.");
     
     const dataRows = Array.isArray(data) ? data : []; 
     
+    // 🔥 PENGGUNAAN currentJobNames 🔥
+    const jobCount = currentJobNames.length;
+    
     dataRows.forEach(row => {
-        // 1. AMBIL JUMLAH BELUM DARI APPS SCRIPT (Index 8)
-        const belumCount = row[jobNames.length + 1]; // row[8]
+        // 1. AMBIL JUMLAH BELUM DARI APPS SCRIPT (Index Job Count + 1)
+        const belumCount = row[jobCount + 1]; // row[8] jika 7 Job
         
         // 2. AMBIL DAFTAR JOB BELUM (Dibutuhkan untuk Pop-up)
         let belumList = getBelum(row); 
 
         const tr = document.createElement("tr");
 
-        // row.slice(1, 8) mengambil Job 1 sampai Job 7
-        const jobCells = row.slice(1, jobNames.length + 1).map(v => `<td>${v}</td>`).join("");
+        // row.slice(1, Job Count + 1) mengambil Job 1 sampai Job 7
+        const jobCells = row.slice(1, jobCount + 1).map(v => `<td>${v}</td>`).join("");
         
-        // 3. AMBIL NILAI AKHIR DARI INDEKS BARU (Index 9)
-        const finalScore = row[jobNames.length + 2]; // row[9]
+        // 3. AMBIL NILAI AKHIR DARI INDEKS BARU (Index Job Count + 2)
+        const finalScore = row[jobCount + 2]; // row[9] jika 7 Job
 
         tr.innerHTML = `
             <td>${row[0]}</td>
@@ -227,10 +245,7 @@ function loadTable(data) {
         tbody.appendChild(tr);
     });
     
-    // console.log("✅ Tabel Selesai Diisi.");
-
     // 🔥 KOREKSI 2: Memperbaiki Event Listener Popup 🔥
-    // Event listener harus dipasang SETELAH semua TR dan badge selesai dibuat
     document.querySelectorAll(".badge-belum").forEach(b => {
         b.addEventListener("click", (e) => {
             
@@ -239,8 +254,8 @@ function loadTable(data) {
             
             const nama = b.getAttribute("data-nama");
             const belum = b.getAttribute("data-belum")
-                                .split(",")
-                                .map(n => parseInt(n));
+                                 .split(",")
+                                 .map(n => parseInt(n));
             
             showPopup(nama, belum);
         });
@@ -253,18 +268,23 @@ function loadTable(data) {
 
 /**
  * Fungsi utama untuk mengambil data dari Apps Script API menggunakan JSONP.
- * Kini juga mengatur header dinamis.
+ * Kini juga mengatur header dinamis dan variabel Job.
  */
 function loadDataJSONP() {
     const classParam = getUrlParameter('class'); 
-    const mapelParam = getUrlParameter('mapel'); 
     const fiturParam = getUrlParameter('fitur'); 
-
+    
     if (!classParam || !mapelParam || !fiturParam || fiturParam !== 'Nilai') {
         return; 
     }
 
-    // 🌟 PANGGILAN DI SINI 🌟
+    // 🌟 PENTING: SET VARIABEL DAFTAR JOB AKTIF DI SINI 🌟
+    currentJobNames = ALL_JOB_NAMES[mapelParam] || ALL_JOB_NAMES['PKSM'];
+    if (currentJobNames.length === 0) {
+        console.error(`ERROR: Job list for mapel ${mapelParam} not found.`);
+        return;
+    }
+    
     showContent(fiturParam);
     
     // --- Langkah 1: Atur Tampilan Header ---
@@ -278,35 +298,33 @@ function loadDataJSONP() {
     // Sheet Name HANYA MENGGUNAKAN KELAS
     const sheetName = classParam; 
 
-// **PERBAIKAN LOGIKA LOADING DI SINI**
-    const tbody = document.querySelector("#nilaiTable tbody");
-    if (tbody) {
-        // Tampilkan ulang baris loading sebelum memanggil API
-        tbody.innerHTML = `
-            <tr><td colspan="10" style="text-align:center;">
-                <span id="loadingIndicator">⏳ Memuat data nilai... Harap tunggu.</span>
+    // **LOGIKA LOADING**
+    const tbody = document.querySelector("#nilaiTable tbody");
+    if (tbody) {
+        // Tampilkan ulang baris loading sebelum memanggil API
+        tbody.innerHTML = `
+            <tr><td colspan="10" style="text-align:center;">
+                <span id="loadingIndicator">⏳ Memuat data nilai... Harap tunggu.</span>
                 
                 <span id="loadingTimer" style="margin-left: 10px; font-weight: bold;">(0 detik)</span>
 
-            </td></tr>
-        `;
-    }
-    const loadingEl = document.getElementById('loadingIndicator');
-
+            </td></tr>
+        `;
+    }
+    
     // Pastikan timer di-reset sebelum start
     secondsElapsed = 0;
     
-    // 🔥 START TIMER (Interval akan berjalan setiap 1 detik) 🔥
+    // 🔥 START TIMER 🔥
     loadingInterval = setInterval(() => {
         secondsElapsed++;
         const timerEl = document.getElementById('loadingTimer');
         if (timerEl) {
             timerEl.textContent = `(${secondsElapsed} detik)`;
         } else {
-            // Berhenti jika elemen loading sudah hilang (kasus error/terhapus)
             clearInterval(loadingInterval);
         }
-    }, 1000); // Update setiap 1000 milidetik (1 detik)
+    }, 1000); 
 
     // Buat elemen script baru
     const script = document.createElement('script');

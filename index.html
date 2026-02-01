@@ -3,38 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Portal - SigitPrabowo</title>
-    <link rel="stylesheet" href="style.css"> 
+    <title>Dashboard Portal | Sigit Prabowo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Source Sans Pro', sans-serif; background-color: #f4f6f9; }
+        .jumbotron { 
+            background: linear-gradient(135deg, #3c8dbc 0%, #007bff 100%); 
+            color: white; 
+            padding: 60px 0; 
+            border-bottom: 5px solid #367fa9;
+        }
+        .card-menu { 
+            border: none; 
+            border-radius: 10px; 
+            transition: transform 0.3s, box-shadow 0.3s; 
+            overflow: hidden;
+        }
+        .card-menu:hover { 
+            transform: translateY(-10px); 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15); 
+        }
+        .card-header-pksm { background-color: #00a65a; color: white; padding: 20px; text-align: center; }
+        .card-header-pssm { background-color: #f39c12; color: white; padding: 20px; text-align: center; }
+        .icon-large { font-size: 50px; margin-bottom: 10px; }
+        footer { background: #fff; padding: 20px 0; border-top: 1px solid #dee2e6; margin-top: 50px; }
+    </style>
 </head>
 <body>
 
-<header>
-    <h1>📘 Portal Pembelajaran SMK - By Pak Guru</h1>
-    <p>Selamat datang. Silakan pilih mata pelajaran untuk mengakses laporan, materi, video, dan kuis.</p>
-</header>
+<div class="jumbotron text-center">
+    <div class="container">
+        <h1 class="display-4 fw-bold">📘 Portal Pembelajaran SMK</h1>
+        <p class="lead">By Pak Guru Sigit Prabowo</p>
+        <p>Selamat datang. Silakan pilih mata pelajaran untuk mengakses laporan, materi, video, dan kuis.</p>
+    </div>
+</div>
 
-<section class="menu-utama">
-    <h2>Pilih Mata Pelajaran</h2>
-    <div class="card-container">
-        
-        <div class="card-menu">
-            <h3>PKSM (Kelistrikan Sepeda Motor)</h3>
-            <p>Akses semua sumber daya dan laporan untuk Praktik Kelistrikan.</p>
-            <a href="select_feature.html?mapel=PKSM" class="btn-primary">Akses PKSM</a> 
+<div class="container mt-5">
+    <h3 class="text-center mb-5 text-secondary">Pilih Mata Pelajaran</h3>
+    
+    <div class="row justify-content-center g-4">
+        <div class="col-md-5">
+            <div class="card card-menu shadow-sm">
+                <div class="card-header-pksm">
+                    <i class="fas fa-bolt icon-large"></i>
+                    <h4>PKSM</h4>
+                    <small>Kelistrikan Sepeda Motor</small>
+                </div>
+                <div class="card-body text-center">
+                    <p class="text-muted">Akses semua sumber daya dan laporan untuk Praktik Kelistrikan.</p>
+                    <a href="select_feature.html?mapel=PKSM" class="btn btn-success w-100 rounded-pill">
+                        Akses PKSM <i class="fas fa-arrow-circle-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
         </div>
 
-        <div class="card-menu" style="display: true;">
-            <h3>PSSM (Sasis & Pemindah Tenaga)</h3>
-            <p>Akses semua sumber daya dan laporan untuk Praktik Sasis/PSSM.</p>
-            <a href="select_feature.html?mapel=PSSM" class="btn-primary">Akses PSSM</a> 
+        <div class="col-md-5">
+            <div class="card card-menu shadow-sm">
+                <div class="card-header-pssm">
+                    <i class="fas fa-cogs icon-large"></i>
+                    <h4>PSSM</h4>
+                    <small>Sasis & Pemindah Tenaga</small>
+                </div>
+                <div class="card-body text-center">
+                    <p class="text-muted">Akses semua sumber daya dan laporan untuk Praktik Sasis/PSSM.</p>
+                    <a href="select_feature.html?mapel=PSSM" class="btn btn-warning w-100 text-white rounded-pill">
+                        Akses PSSM <i class="fas fa-arrow-circle-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
         </div>
-        
-        </div>
-</section>
+    </div>
+</div>
 
-<footer class="text-center mt-5">
-    <p>Portal Pembelajaran • Sigit Prabowo</p>
-    <small><a href="admin.html" class="text-muted" style="text-decoration: none;">Login Admin</a></small>
+<footer class="text-center">
+    <div class="container">
+        <p class="mb-1 text-dark">Portal Pembelajaran &bull; Sigit Prabowo</p>
+        <small>
+            <a href="admin.html" class="text-primary me-3" style="text-decoration: none;"><i class="fas fa-user-lock"></i> Login Admin</a>
+            <span class="text-muted">&bull;</span>
+            <a href="index.html" class="text-muted ms-3" style="text-decoration: none;"><i class="fas fa-home"></i> Beranda</a>
+        </small>
+    </div>
 </footer>
 
 </body>

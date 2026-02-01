@@ -11,71 +11,53 @@ const currentJobNames = ALL_JOB_NAMES[mapelParam] || ALL_JOB_NAMES['PKSM'];
 
 let loadingInterval;
 let seconds = 0;
-let masterData = []; // Simpan data asli di sini untuk fitur pencarian
+let masterData = [];
 
-// 2. FUNGSI UTAMA DIMULAI (INIT)
-function init() {
-    const API_URL = "https://script.google.com/macros/s/AKfycbwswDuj1YQHP4C6fXfdEa1G1rqW6hvbx6ZCnnfsRJsHC1fb5byCpHtMmU0vIZBgoYqaPg/exec";
-    
-    // Ambil elemen tabel
+// 2. FUNGSI PEMBUAT ANIMASI LOADING
+function showLoading() {
     const tbody = document.querySelector("#nilaiTable tbody");
-    const mainHeader = document.getElementById('main-header');
-
-    if (mainHeader) mainHeader.textContent = "Menghubungkan ke Database...";
-
-    // PAKSA MUNCULKAN LOADING
     if (tbody) {
         tbody.innerHTML = `
             <tr>
                 <td colspan="10" class="text-center py-5">
-                    <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;"></div>
-                    <h5 class="fw-bold">Sedang Mengambil Data ${classParam}...</h5>
-                    <p class="text-muted">Waktu Berjalan: <span id="timerText" class="badge bg-dark">0</span> detik</p>
-                    <p class="small text-secondary">Mohon tunggu, jangan tutup halaman ini.</p>
+                    <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <h5 class="fw-bold text-dark">Sedang Mengambil Data ${classParam}...</h5>
+                    <div class="mt-2">
+                        <span class="badge bg-danger p-2" style="font-size: 1.1rem;">
+                            <i class="fas fa-clock me-1"></i> <span id="timerText">0</span> detik
+                        </span>
+                    </div>
+                    <p class="text-muted mt-3 small">Mohon tunggu, sinkronisasi dengan Google Sheets sedang berlangsung.</p>
                 </td>
             </tr>`;
     }
 
-    // JALANKAN TIMER
+    // Jalankan Timer
     seconds = 0;
     if (loadingInterval) clearInterval(loadingInterval);
     loadingInterval = setInterval(() => {
         seconds++;
         const timerEl = document.getElementById('timerText');
-        if (timerEl) {
-            timerEl.textContent = seconds;
-        }
+        if (timerEl) timerEl.textContent = seconds;
     }, 1000);
-
-    // PANGGIL DATA DARI GOOGLE
-    const script = document.createElement('script');
-    script.src = `${API_URL}?sheet=${encodeURIComponent(classParam)}&callback=handleApiResponse&t=${Date.now()}`;
-    document.head.appendChild(script);
 }
 
-// 3. CALLBACK SAAT DATA DARI GOOGLE TIBA
+// 3. CALLBACK SAAT DATA TIBA
 window.handleApiResponse = function(data) {
-    console.log("Data mendarat!");
-    
-    // Matikan Timer
     if (loadingInterval) clearInterval(loadingInterval);
-    
-    // Pastikan container konten terlihat
-    const contentNilai = document.getElementById('content-nilai');
-    if (contentNilai) {
-        contentNilai.style.display = 'block';
-    }
     
     // Update Header
     const mainHeader = document.getElementById('main-header');
     if (mainHeader) mainHeader.textContent = `Laporan Nilai ${mapelParam} - ${classParam}`;
 
-    masterData = data; // Simpan data untuk pencarian
+    masterData = data;
     renderTable(data);
-    setupSearch(); // Aktifkan pencarian
+    setupSearch();
 };
 
-// 4. FUNGSI RENDER TABEL
+// 4. RENDER TABEL
 function renderTable(dataRows) {
     const tbody = document.querySelector("#nilaiTable tbody");
     if (!tbody) return;
@@ -118,7 +100,7 @@ function renderTable(dataRows) {
     });
 }
 
-// 5. FITUR CARI
+// 5. FITUR CARI & POPUP (Tetap Sama)
 function setupSearch() {
     const searchBox = document.getElementById('searchBox');
     if (searchBox) {
@@ -130,12 +112,21 @@ function setupSearch() {
     }
 }
 
-// 6. POPUP DETAIL
 window.showJobDetail = function(nama, indices) {
     if (indices.length === 0) { alert(nama + " sudah LUNAS!"); return; }
     let list = indices.map(i => `${i}. ${currentJobNames[i-1]}`).join("\n");
     alert("Siswa: " + nama + "\n\nBelum Mengumpulkan:\n" + list);
 };
 
-// Jalankan aplikasi
-document.addEventListener('DOMContentLoaded', init);
+// 6. JALANKAN PROSES (Berurutan)
+document.addEventListener('DOMContentLoaded', () => {
+    showLoading(); // 1. Gambar loading dulu
+    
+    // 2. Kasih jeda 100ms baru panggil Google (agar browser sempat gambar loading)
+    setTimeout(() => {
+        const API_URL = "https://script.google.com/macros/s/AKfycbwswDuj1YQHP4C6fXfdEa1G1rqW6hvbx6ZCnnfsRJsHC1fb5byCpHtMmU0vIZBgoYqaPg/exec";
+        const script = document.createElement('script');
+        script.src = `${API_URL}?sheet=${encodeURIComponent(classParam)}&callback=handleApiResponse&t=${Date.now()}`;
+        document.head.appendChild(script);
+    }, 100);
+});

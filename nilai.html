@@ -6,7 +6,7 @@
     <title id="page-title">Dashboard Pembelajaran</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
+    <style>        
         body { font-family: 'Source Sans Pro', sans-serif; background-color: #f4f6f9; }
         .navbar-custom { background: #3c8dbc; border-bottom: 3px solid #367fa9; }
         .content-header { background: #fff; padding: 20px 0; border-bottom: 1px solid #dee2e6; margin-bottom: 20px; }
@@ -23,13 +23,35 @@
         .search-area { max-width: 400px; margin-bottom: 20px; }
         
         footer { background: #fff; padding: 15px 0; border-top: 1px solid #dee2e6; margin-top: 40px; }
+
+        /* Pastikan pembungkus tabel bisa di-scroll secara horizontal */
+.table-responsive {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch; /* Biar geser di iPhone lebih halus */
+    margin-bottom: 1rem;
+}
+
+/* Memaksa lebar kolom agar tidak berdesakan */
+#nilaiTable th, #nilaiTable td {
+    white-space: nowrap; /* Teks tidak akan turun ke bawah, sehingga kolom melebar */
+    padding: 10px 15px;
+    min-width: 80px;     /* Lebar minimal kolom Job */
+}
+
+#nilaiTable th:first-child, #nilaiTable td:first-child {
+    min-width: 180px;    /* Kolom Nama Siswa dibuat lebih lebar */
+    position: sticky;    /* Opsi: Nama siswa tetap diam saat digeser (opsional) */
+    left: 0;
+    z-index: 2;
+    background-color: #fff;
+}
     </style>
 </head>
 <body>
 
 <nav class="navbar navbar-dark navbar-custom shadow-sm">
     <div class="container">
-        <a class="navbar-brand" href="index.html"><i class="fas fa-graduation-cap me-2"></i> <b>PORTAL</b> GURU</a>
+        <a class="navbar-brand" href="index.html"><i class="fas fa-graduation-cap me-2"></i> <b>PORTAL</b> SISWA</a>
         <a href="select_feature.html" id="back-link-nav" class="btn btn-sm btn-light text-primary fw-bold">
             <i class="fas fa-arrow-left"></i> Kembali
         </a>

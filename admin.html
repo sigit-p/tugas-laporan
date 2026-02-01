@@ -3,57 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Input Nilai</title>
+    <title>Admin Dashboard | Input Nilai</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { background-color: #f4f7f6; padding: 20px; }
-        .card { max-width: 500px; margin: auto; border: none; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        #formInput { display: none; }
+        body { font-family: 'Source Sans Pro', sans-serif; background-color: #f4f6f9; }
+        .sidebar { height: 100vh; width: 250px; position: fixed; background: #343a40; color: #fff; transition: 0.3s; }
+        .sidebar a { color: #c2c7d0; text-decoration: none; padding: 15px 20px; display: block; }
+        .sidebar a:hover, .sidebar a.active { background: #494e53; color: #fff; border-left: 4px solid #007bff; }
+        .content-wrapper { margin-left: 250px; padding: 20px; transition: 0.3s; }
+        .main-header { background: #fff; padding: 10px 20px; border-bottom: 1px solid #dee2e6; margin-left: 250px; }
+        .card-header { background: #fff; border-bottom: 2px solid #007bff; font-weight: bold; }
+        #cardLogin { max-width: 400px; margin: 100px auto; }
+        #adminPanel { display: none; }
+        @media (max-width: 768px) {
+            .sidebar { margin-left: -250px; }
+            .content-wrapper, .main-header { margin-left: 0; }
+            .sidebar.active { margin-left: 0; }
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div id="cardLogin" class="card p-4 mb-4">
-        <h4 class="text-center mb-4">Login Admin</h4>
-        <div class="mb-3">
+<div id="cardLogin" class="card shadow-lg">
+    <div class="card-body login-card-body">
+        <h3 class="text-center mb-4"><b>Admin</b>LTE Login</h3>
+        <div class="input-group mb-3">
             <input type="text" id="user" class="form-control" placeholder="Username">
+            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
         </div>
-        <div class="mb-3">
+        <div class="input-group mb-3">
             <input type="password" id="pass" class="form-control" placeholder="Password">
+            <span class="input-group-text"><i class="fas fa-lock"></i></span>
         </div>
-        <button class="btn btn-primary w-100" onclick="handleLogin()">Masuk</button>
+        <button onclick="handleLogin()" class="btn btn-primary w-100">Sign In</button>
+    </div>
+</div>
+
+<div id="adminPanel">
+    <div class="sidebar">
+        <div class="p-3 text-center border-bottom">
+            <h4><i class="fas fa-user-gear me-2"></i>Admin Panel</h4>
+        </div>
+        <a href="#" class="active"><i class="fas fa-edit me-2"></i> Input Nilai</a>
+        <a href="index.html"><i class="fas fa-eye me-2"></i> Lihat Web Siswa</a>
+        <a href="#" onclick="location.reload()"><i class="fas fa-sign-out-alt me-2"></i> Logout</a>
     </div>
 
-    <div id="formInput" class="card p-4">
-        <h4 class="text-center mb-4">Input Nilai Siswa</h4>
-<div class="mb-3">
-    <label class="form-label font-weight-bold">Pilih Kelas</label>
-    <select id="kelas" class="form-select form-select-lg">
-        <option value="XI SA">XI TSM A</option>
-        <option value="XI SB">XI TSM B</option>
-        <option value="XI SC">XI TSM C</option>
-    </select>
-</div>
-        <div class="mb-3">
-            <input type="text" id="nama" class="form-control" placeholder="Nama Lengkap Siswa">
+    <nav class="main-header">
+        <span class="navbar-text">Dashboard / Input Nilai</span>
+    </nav>
+
+    <div class="content-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-8 offset-md-2">
+                    <div class="card shadow">
+                        <div class="card-header"><i class="fas fa-plus-circle me-2"></i>Form Input Nilai</div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label">Pilih Kelas</label>
+                                <select id="kelas" class="form-select">
+                                    <option value="XI SA">XI SA (Teknik A)</option>
+                                    <option value="XI SB">XI SB (Teknik B)</option>
+                                    <option value="XI SC">XI SC (Teknik C)</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Nama Siswa</label>
+                                <input type="text" id="nama" class="form-control" placeholder="Masukkan nama sesuai absen">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">NISN</label>
+                                <input type="text" id="nisn" class="form-control" placeholder="Nomor Induk Siswa">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Nilai Akhir</label>
+                                <input type="number" id="nilai" class="form-control" placeholder="0 - 100">
+                            </div>
+                            <hr>
+                            <button id="btnSimpan" onclick="simpanData()" class="btn btn-success float-end">
+                                <i class="fas fa-save me-1"></i> Simpan ke Google Sheets
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="mb-3">
-            <input type="text" id="nisn" class="form-control" placeholder="NISN">
-        </div>
-        <div class="mb-3">
-            <input type="number" id="nilai" class="form-control" placeholder="Nilai (0-100)">
-        </div>
-        <button id="btnSimpan" class="btn btn-success w-100" onclick="simpanData()">Simpan Nilai</button>
     </div>
 </div>
 
 <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwswDuj1YQHP4C6fXfdEa1G1rqW6hvbx6ZCnnfsRJsHC1fb5byCpHtMmU0vIZBgoYqaPg/exec"; // Tempel URL Web App Anda
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwswDuj1YQHP4C6fXfdEa1G1rqW6hvbx6ZCnnfsRJsHC1fb5byCpHtMmU0vIZBgoYqaPg/exec"; // Ganti dengan URL Deployment Apps Script Anda
 
     function handleLogin() {
         const username = document.getElementById('user').value;
         const password = document.getElementById('pass').value;
+        const btn = event.target;
+        btn.innerText = "Checking...";
 
         fetch(SCRIPT_URL, {
             method: 'POST',
@@ -63,16 +110,19 @@
         .then(data => {
             if(data.status === 'success') {
                 document.getElementById('cardLogin').style.display = 'none';
-                document.getElementById('formInput').style.display = 'block';
+                document.getElementById('adminPanel').style.display = 'block';
+                document.body.style.backgroundColor = "#f4f6f9";
             } else {
-                alert("Login Gagal!");
+                alert("Login Gagal! Periksa kembali username & password.");
+                btn.innerText = "Sign In";
             }
         });
     }
 
     function simpanData() {
         const btn = document.getElementById('btnSimpan');
-        btn.innerText = "Mengirim...";
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
         btn.disabled = true;
 
         const payload = {
@@ -90,11 +140,15 @@
         .then(res => res.json())
         .then(data => {
             alert(data.message);
-            // Reset Form
             document.getElementById('nama').value = "";
             document.getElementById('nisn').value = "";
             document.getElementById('nilai').value = "";
-            btn.innerText = "Simpan Nilai";
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        })
+        .catch(err => {
+            alert("Terjadi kesalahan koneksi!");
+            btn.innerHTML = originalText;
             btn.disabled = false;
         });
     }

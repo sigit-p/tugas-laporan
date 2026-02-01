@@ -130,3 +130,12 @@ document.addEventListener('DOMContentLoaded', () => {
         document.head.appendChild(script);
     }, 100);
 });
+
+// Tambahkan di bagian paling bawah nilai.js
+document.addEventListener('DOMContentLoaded', () => {
+    const backLink = document.querySelector('a[href="select_feature.html"]');
+    if (backLink && mapelParam) {
+        // Gabungkan kembali link dengan parameter mapelnya
+        backLink.href = `select_feature.html?mapel=${mapelParam}`;
+    }
+});

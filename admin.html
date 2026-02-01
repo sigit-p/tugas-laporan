@@ -36,7 +36,7 @@
             <input type="password" id="pass" class="form-control" placeholder="Password">
             <span class="input-group-text"><i class="fas fa-lock"></i></span>
         </div>
-        <button onclick="handleLogin()" class="btn btn-primary w-100">Sign In</button>
+        <button onclick="handleLogin(event)" class="btn btn-primary w-100">Sign In</button>
     </div>
 </div>
 
@@ -62,29 +62,41 @@
                         <div class="card-header"><i class="fas fa-plus-circle me-2"></i>Form Input Nilai</div>
                         <div class="card-body">
                             <div class="mb-3">
-                                <label class="form-label">Pilih Kelas</label>
+                                <label class="form-label fw-bold">Pilih Kelas</label>
                                 <select id="kelas" class="form-select">
                                     <option value="XI SA">XI SA (Teknik A)</option>
                                     <option value="XI SB">XI SB (Teknik B)</option>
                                     <option value="XI SC">XI SC (Teknik C)</option>
                                 </select>
                             </div>
-<div class="mb-3">
-    <label class="form-label">Nama Siswa</label>
-    <input type="text" id="nama" class="form-control" placeholder="Ketik nama..." list="listSiswa">
-    
-    <datalist id="listSiswa"></datalist>
-</div>
+
                             <div class="mb-3">
-                                <label class="form-label">NISN</label>
-                                <input type="text" id="nisn" class="form-control" placeholder="Nomor Induk Siswa">
+                                <label class="form-label fw-bold">Nama Siswa</label>
+                                <input type="text" id="nama" class="form-control" placeholder="Ketik/Pilih Nama..." list="listSiswa" autocomplete="off">
+                                <datalist id="listSiswa"></datalist>
                             </div>
+
                             <div class="mb-3">
-                                <label class="form-label">Nilai Akhir</label>
+                                <label class="form-label fw-bold">Pilih Tugas / Job</label>
+                                <select id="job_index" class="form-select">
+                                    <option value="">-- Pilih Job --</option>
+                                    <option value="1">Job 1 - Kelistrikan Dasar</option>
+                                    <option value="2">Job 2 - Overhaul Starter</option>
+                                    <option value="3">Job 3 - Rangkai Starter</option>
+                                    <option value="4">Job 4 - Pengapian</option>
+                                    <option value="5">Job 5 - Pengisian</option>
+                                    <option value="6">Job 6 - Pengapian & Pengisian</option>
+                                    <option value="7">Job 7 - Penerangan</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Nilai</label>
                                 <input type="number" id="nilai" class="form-control" placeholder="0 - 100">
                             </div>
+
                             <hr>
-                            <button id="btnSimpan" onclick="simpanData()" class="btn btn-success float-end">
+                            <button id="btnSimpan" onclick="simpanNilai()" class="btn btn-success float-end">
                                 <i class="fas fa-save me-1"></i> Simpan ke Google Sheets
                             </button>
                         </div>
@@ -96,9 +108,10 @@
 </div>
 
 <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwswDuj1YQHP4C6fXfdEa1G1rqW6hvbx6ZCnnfsRJsHC1fb5byCpHtMmU0vIZBgoYqaPg/exec"; // Ganti dengan URL Deployment Apps Script Anda
+    // URL Deployment Apps Script Bapak
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwswDuj1YQHP4C6fXfdEa1G1rqW6hvbx6ZCnnfsRJsHC1fb5byCpHtMmU0vIZBgoYqaPg/exec"; 
 
-    function handleLogin() {
+    function handleLogin(event) {
         const username = document.getElementById('user').value;
         const password = document.getElementById('pass').value;
         const btn = event.target;
@@ -113,7 +126,6 @@
             if(data.status === 'success') {
                 document.getElementById('cardLogin').style.display = 'none';
                 document.getElementById('adminPanel').style.display = 'block';
-                document.body.style.backgroundColor = "#f4f6f9";
             } else {
                 alert("Login Gagal! Periksa kembali username & password.");
                 btn.innerText = "Sign In";
@@ -121,39 +133,66 @@
         });
     }
 
-    function simpanData() {
-        const btn = document.getElementById('btnSimpan');
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
-        btn.disabled = true;
+    function simpanNilai() {
+        const btnSimpan = document.getElementById('btnSimpan');
+        const kelas = document.getElementById('kelas').value;
+        const nama = document.getElementById('nama').value;
+        const jobIndex = document.getElementById('job_index').value;
+        const nilai = document.getElementById('nilai').value;
 
-        const payload = {
-            action: 'simpanNilai',
-            kelas: document.getElementById('kelas').value,
-            nama: document.getElementById('nama').value,
-            nisn: document.getElementById('nisn').value,
-            nilai: document.getElementById('nilai').value
-        };
+        if (!nama || !jobIndex || !nilai) {
+            alert("Harap isi Nama, Job, dan Nilai!");
+            return;
+        }
 
-        fetch(SCRIPT_URL, {
-            method: 'POST',
-            body: JSON.stringify(payload)
-        })
+        const url = `${SCRIPT_URL}?action=update&sheet=${encodeURIComponent(kelas)}&nama=${encodeURIComponent(nama)}&job_index=${jobIndex}&nilai=${nilai}`;
+
+        // Loading state
+        btnSimpan.disabled = true;
+        btnSimpan.innerText = "Menyimpan...";
+
+        fetch(url)
         .then(res => res.json())
-        .then(data => {
-            alert(data.message);
-            document.getElementById('nama').value = "";
-            document.getElementById('nisn').value = "";
-            document.getElementById('nilai').value = "";
-            btn.innerHTML = originalText;
-            btn.disabled = false;
+        .then(result => {
+            if(result.status === "success") {
+                alert("✅ " + result.message);
+                document.getElementById('nilai').value = ""; 
+            } else {
+                alert("❌ Gagal: " + result.message);
+            }
         })
-        .catch(err => {
-            alert("Terjadi kesalahan koneksi!");
-            btn.innerHTML = originalText;
-            btn.disabled = false;
+        .catch(err => alert("Error: " + err))
+        .finally(() => {
+            btnSimpan.disabled = false;
+            btnSimpan.innerText = "Simpan ke Google Sheets";
         });
     }
+
+    function loadStudentNames() {
+        const kelas = document.getElementById('kelas').value;
+        const datalist = document.getElementById('listSiswa');
+        datalist.innerHTML = '<option value="Memuat data siswa...">';
+
+        fetch(`${SCRIPT_URL}?sheet=${encodeURIComponent(kelas)}`)
+        .then(res => res.json())
+        .then(data => {
+            datalist.innerHTML = ""; 
+            data.forEach(row => {
+                if (row[0]) { 
+                    let option = document.createElement('option');
+                    option.value = row[0]; 
+                    datalist.appendChild(option);
+                }
+            });
+        })
+        .catch(err => {
+            console.error("Gagal ambil daftar nama:", err);
+            datalist.innerHTML = '<option value="Gagal memuat nama">';
+        });
+    }
+
+    document.getElementById('kelas').addEventListener('change', loadStudentNames);
+    document.addEventListener('DOMContentLoaded', loadStudentNames);
 </script>
 
 </body>

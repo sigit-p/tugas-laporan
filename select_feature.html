@@ -1,147 +1,134 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pilih Fitur</title>
-    <link rel="stylesheet" href="style.css"> 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pilih Fitur Pembelajaran</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Source Sans Pro', sans-serif; background-color: #f4f6f9; }
+        .content-header { background: #fff; padding: 20px 0; border-bottom: 1px solid #dee2e6; margin-bottom: 20px; }
+        .card-feature { border: none; border-radius: 8px; transition: 0.3s; cursor: pointer; height: 100%; }
+        .card-feature:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .icon-box { font-size: 40px; margin-bottom: 15px; color: #3c8dbc; }
+        
+        /* Modal Style ala AdminLTE */
+        .modal-header { background: #3c8dbc; color: white; }
+        .btn-class-select { 
+            display: block; width: 100%; padding: 15px; margin-bottom: 10px; 
+            border: 1px solid #ddd; border-radius: 5px; text-align: center; 
+            text-decoration: none; color: #333; font-weight: bold; transition: 0.2s;
+        }
+        .btn-class-select:hover { background: #3c8dbc; color: white; border-color: #3c8dbc; }
+    </style>
 </head>
 <body>
 
-<header>
-        <h1>Pilihan Mapel</h1>
-    <p id="mapel-display">Memuat Mata Pelajaran...</p>
-</header>
-
-<section class="selection-area">
-    <h2>Pilih Menu Pembelajaran</h2>
-    <div class="card-container" id="feature-buttons">
-        
-        <div class="card-menu">
-            <h3>Cek Nilai / Laporan</h3>
-            <p>Lihat detail nilai Job, laporan yang belum dikumpulkan, dan nilai akhir praktik.</p>
-            <a href="#" class="btn-primary" data-fitur="Nilai">Pilih Kelas</a> 
-        </div>
-
-        <div class="card-menu hidden-feature">
-            <h3>Materi Pelajaran (PDF/Doc)</h3>
-            <p>Akses dokumen teori dan praktik untuk dipelajari.</p>
-            <a href="#" class="btn-primary" data-fitur="Materi">Pilih Kelas</a>
-        </div>
-        
-        <div class="card-menu hidden-feature">
-            <h3>Video Pembelajaran</h3>
-            <p>Tonton koleksi video praktik dan teori.</p>
-            <a href="#" class="btn-primary" data-fitur="Video">Pilih Kelas</a>
-        </div>
-
-        <div class="card-menu hidden-feature">
-            <h3>Latihan Soal / Kuis</h3>
-            <p>Uji pemahaman dengan latihan dan evaluasi mandiri (Google Form/Kuis).</p>
-            <a href="#" class="btn-primary" data-fitur="Soal">Pilih Kelas</a>
-        </div>
-    </div>
-    
-    <hr>
-    <a href="index.html">← Kembali ke Pilihan Mata Pelajaran</a>
-</section>
-
-<div id="classModal" class="modal">
-  <div class="modal-content">
-    <span class="close-btn">&times;</span>
-    <h3 id="modal-title">Pilih Kelas untuk [Fitur]</h3>
-    <p>Silakan pilih kelas Anda:</p>
-    <div id="class-buttons-container" class="card-container">
-      </div>
-    <input type="hidden" id="selectedFeature">
-  </div>
+<div class="content-header shadow-sm">
+    <div class="container d-flex justify-content-between align-items-center">
+        <div>
+            <h4 class="mb-0" id="mapel-display">Memuat Mata Pelajaran...</h4>
+            <small class="text-muted">Pilih menu pembelajaran di bawah ini</small>
+        </div>
+        <a href="index.html" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left"></i> Kembali</a>
+    </div>
 </div>
-    
-<footer>
-    <p>Portal Pembelajaran • Sigit Prabowo</p> 
-</footer>
 
+<div class="container mt-4">
+    <div class="row g-4" id="feature-buttons">
+        <div class="col-md-3">
+            <div class="card card-feature shadow-sm text-center p-4" onclick="openModal('Nilai')">
+                <div class="icon-box"><i class="fas fa-file-invoice"></i></div>
+                <h5>Cek Nilai / Laporan</h5>
+                <p class="small text-muted">Detail nilai Job dan laporan praktik.</p>
+                <button class="btn btn-primary btn-sm rounded-pill mt-auto">Pilih Kelas</button>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card card-feature shadow-sm text-center p-4" onclick="openModal('Materi')">
+                <div class="icon-box"><i class="fas fa-book"></i></div>
+                <h5>Materi Pelajaran</h5>
+                <p class="small text-muted">Akses dokumen teori dan praktik (PDF).</p>
+                <button class="btn btn-primary btn-sm rounded-pill mt-auto">Pilih Kelas</button>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card card-feature shadow-sm text-center p-4" onclick="openModal('Video')">
+                <div class="icon-box"><i class="fas fa-video"></i></div>
+                <h5>Video Pembelajaran</h5>
+                <p class="small text-muted">Tonton koleksi video tutorial praktik.</p>
+                <button class="btn btn-primary btn-sm rounded-pill mt-auto">Pilih Kelas</button>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card card-feature shadow-sm text-center p-4" onclick="openModal('Soal')">
+                <div class="icon-box"><i class="fas fa-edit"></i></div>
+                <h5>Latihan / Kuis</h5>
+                <p class="small text-muted">Uji pemahaman dengan evaluasi mandiri.</p>
+                <button class="btn btn-primary btn-sm rounded-pill mt-auto">Pilih Kelas</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="classModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modal-title text-white">Pilih Kelas</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-4">
+        <div id="class-buttons-container">
+            </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // HAPUS semua teks komentar di luar tag <script> yang menyebabkan teks muncul di web
-    const params = new URLSearchParams(window.location.search);
-    const mapel = params.get('mapel'); 
-    const displayEl = document.getElementById('mapel-display');
-    const featureContainer = document.getElementById('feature-buttons');
-   let classOptions = ['XI SA', 'XI SB', 'XI SC']; // Variabel harus diubah menjadi 'let'
-    
-    // 🔥 LOGIKA KOREKSI BARU 🔥
-    if (mapel === 'PSSM') {
-        // Jika mapel adalah PSSM, hanya sediakan XI SA.
-        classOptions = ['XI SA'];
-    }
-    // ---------------------------
-    
-    const modal = document.getElementById('classModal');
-    const modalTitle = document.getElementById('modal-title');
-    const selectedFeatureInput = document.getElementById('selectedFeature');
-    const classButtonsContainer = document.getElementById('class-buttons-container');
-    const closeBtn = document.querySelector('.close-btn');
+    const params = new URLSearchParams(window.location.search);
+    const mapel = params.get('mapel'); 
+    const displayEl = document.getElementById('mapel-display');
+    let classOptions = ['XI SA', 'XI SB', 'XI SC'];
 
-    // 1. Inisialisasi Tampilan
-    if (mapel) {
-        displayEl.textContent = `Mata Pelajaran yang dipilih: ${mapel}`;
+    // Bootstrap Modal Instance
+    const classModal = new bootstrap.Modal(document.getElementById('classModal'));
+    let currentFitur = "";
 
-        // 2. Pasang Event Listener ke Tombol Fitur (Tampilkan Modal)
-        featureContainer.querySelectorAll('.btn-primary').forEach(button => {
-            button.addEventListener('click', (e) => {
-                e.preventDefault();
-                const fitur = e.target.getAttribute('data-fitur');
-                
-                modalTitle.textContent = `Pilih Kelas untuk ${fitur}`;
-                selectedFeatureInput.value = fitur; // Simpan fitur yang dipilih
-                
-                // Tampilkan Modal
-                modal.style.display = 'block';
-                
-                // Hapus tombol kelas yang lama
-                classButtonsContainer.innerHTML = ''; 
-                
-                // Buat tombol kelas baru secara dinamis di Modal
-                classOptions.forEach(cls => {
-                    const buttonEl = document.createElement('a');
-                    buttonEl.href = '#';
-                    buttonEl.className = 'btn-class-select';
-                    buttonEl.textContent = cls;
-                    
-                    // Pasang Event Listener saat tombol kelas diklik
-                    buttonEl.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        const selectedClass = e.target.textContent;
-                        const selectedFitur = selectedFeatureInput.value;
-                        
-                        // Redirect ke nilai.html dengan 3 parameter
-                        window.location.href = `nilai.html?mapel=${mapel}&fitur=${selectedFitur}&class=${selectedClass}`;
-                    });
-                    
-                    classButtonsContainer.appendChild(buttonEl);
-                });
-            });
-        });
-        
-        // 3. Logika Menutup Modal
-        closeBtn.onclick = function() {
-            modal.style.display = 'none';
-        }
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = 'none';
-            }
-        }
+    if (mapel) {
+        displayEl.innerHTML = `<i class="fas fa-book-open me-2"></i> Mata Pelajaran: <b>${mapel}</b>`;
+        if (mapel === 'PSSM') classOptions = ['XI SA'];
+    } else {
+        displayEl.innerHTML = "Mapel tidak valid. <a href='index.html'>Kembali</a>";
+        document.getElementById('feature-buttons').style.display = 'none';
+    }
 
-} else {
-        // 🔥 GANTI displayEl.textContent MENJADI displayEl.innerHTML 🔥
-        // Dan tambahkan link <a> ke index.html
-        displayEl.innerHTML = `Mata Pelajaran tidak valid. Silakan 
-                               <a href="index.html" style="color: blue; text-decoration: underline;">kembali</a>.`;
-        
-        // Sembunyikan semua tombol fitur agar hanya pesan error yang terlihat
-        featureContainer.style.display = 'none'; 
-    }
+    function openModal(fitur) {
+        currentFitur = fitur;
+        document.querySelector('.modal-title').textContent = `Pilih Kelas - ${fitur}`;
+        const container = document.getElementById('class-buttons-container');
+        container.innerHTML = '';
+
+        classOptions.forEach(cls => {
+            const btn = document.createElement('a');
+            btn.href = '#';
+            btn.className = 'btn-class-select';
+            btn.innerHTML = `<i class="fas fa-users me-2"></i> ${cls}`;
+            btn.onclick = (e) => {
+                e.preventDefault();
+                // Redirect ke nilai.html
+                window.location.href = `nilai.html?mapel=${mapel}&fitur=${currentFitur}&class=${cls}`;
+            };
+            container.appendChild(btn);
+        });
+        classModal.show();
+    }
 </script>
 
 </body>

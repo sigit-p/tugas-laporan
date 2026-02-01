@@ -211,7 +211,6 @@ function showPopup(nama, jobBelum) {
     document.body.appendChild(overlay);
 }
 
-
 function loadTable(data) {
     const tbody = document.querySelector("#nilaiTable tbody");
     if (!tbody) {
@@ -219,56 +218,66 @@ function loadTable(data) {
         return; 
     }
     
-    // 🔥 KOREKSI 1: Membersihkan elemen sisa loading / sekat aneh 🔥
     tbody.innerHTML = ""; 
     
     const dataRows = Array.isArray(data) ? data : []; 
-    
-    // 🔥 PENGGUNAAN currentJobNames 🔥
     const jobCount = currentJobNames.length;
     
     dataRows.forEach(row => {
-        // 1. AMBIL JUMLAH BELUM DARI APPS SCRIPT (Index Job Count + 1)
-        const belumCount = row[jobCount + 1]; // row[8] jika 7 Job
-        
-        // 2. AMBIL DAFTAR JOB BELUM (Dibutuhkan untuk Pop-up)
+        const belumCount = row[jobCount + 1]; 
         let belumList = getBelum(row); 
 
         const tr = document.createElement("tr");
 
-        // row.slice(1, Job Count + 1) mengambil Job 1 sampai Job 7
-        const jobCells = row.slice(1, jobCount + 1).map(v => `<td>${v}</td>`).join("");
+        // --- MODIFIKASI LOGIKA PEWARNAAN DI SINI ---
+        const jobCells = row.slice(1, jobCount + 1).map(v => {
+            let cellValue = String(v).trim();
+            let style = "";
+            
+            // Cek jika sel berisi angka
+            if (cellValue !== "" && !isNaN(cellValue)) {
+                let num = parseFloat(cellValue);
+                if (num < 75) {
+                    style = 'style="color: #dc3545; font-weight: bold; background-color: #fff5f5;"'; // Merah
+                } else {
+                    style = 'style="color: #28a745; font-weight: bold;"'; // Hijau
+                }
+            }
+            return `<td ${style} class="text-center">${cellValue}</td>`;
+        }).join("");
+        // -------------------------------------------
         
-        // 3. AMBIL NILAI AKHIR DARI INDEKS BARU (Index Job Count + 2)
-        const finalScore = row[jobCount + 2]; // row[9] jika 7 Job
+        const finalScore = row[jobCount + 2];
+        let finalStyle = "";
+        
+        // Warna untuk Nilai Akhir
+        if (finalScore !== "" && !isNaN(finalScore)) {
+            finalStyle = parseFloat(finalScore) < 75 ? 'text-danger' : 'text-success';
+        }
 
         tr.innerHTML = `
-            <td>${row[0]}</td>
+            <td class="fw-bold">${row[0]}</td>
             ${jobCells}
-            <td>
+            <td class="text-center">
               ${belumCount === 0 
-                ? "-" 
+                ? '<span class="badge bg-success">LUNAS</span>' 
                 : `<span class="badge-belum" data-nama="${row[0]}" data-belum="${belumList.join(",")}">${belumCount} job</span>`
               }
             </td>
-            <td class="final-score-cell">${finalScore}</td>
+            <td class="final-score-cell text-center fw-bold ${finalStyle}">${finalScore}</td>
             `;
 
         tbody.appendChild(tr);
     });
     
-    // 🔥 KOREKSI 2: Memperbaiki Event Listener Popup 🔥
+    // Pasang ulang Event Listener Popup
     document.querySelectorAll(".badge-belum").forEach(b => {
         b.addEventListener("click", (e) => {
-            
-            // PENTING: Mencegah event click menyebar ke TR/tbody yang memblokir popup
             e.stopPropagation(); 
-            
             const nama = b.getAttribute("data-nama");
             const belum = b.getAttribute("data-belum")
                                  .split(",")
                                  .map(n => parseInt(n));
-            
             showPopup(nama, belum);
         });
     });

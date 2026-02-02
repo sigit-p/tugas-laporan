@@ -185,41 +185,46 @@ function updateJobOptions(mapel) {
         });
     }
 
-    function simpanNilai() {
-        const btnSimpan = document.getElementById('btnSimpan');
-        const kelas = document.getElementById('kelas').value;
-        const nama = document.getElementById('nama').value;
-        const jobIndex = document.getElementById('job_index').value;
-        const nilai = document.getElementById('nilai').value;
+ function simpanNilai() {
+    const btnSimpan = document.getElementById('btnSimpan');
+    const kelas = document.getElementById('kelas').value;
+    const nama = document.getElementById('nama').value;
+    const jobIndex = document.getElementById('job_index').value;
+    const nilai = document.getElementById('nilai').value;
 
-        if (!nama || !jobIndex || !nilai) {
-            alert("Harap isi Nama, Job, dan Nilai!");
-            return;
-        }
-
-        const url = `${SCRIPT_URL}?action=update&sheet=${encodeURIComponent(kelas)}&nama=${encodeURIComponent(nama)}&job_index=${jobIndex}&nilai=${nilai}`;
-
-        // Loading state
-        btnSimpan.disabled = true;
-        btnSimpan.innerText = "Menyimpan...";
-
-        fetch(url)
-        .then(res => res.json())
-        .then(result => {
-            if(result.status === "success") {
-                alert("✅ " + result.message);
-                document.getElementById('nilai').value = ""; 
-            } else {
-                alert("❌ Gagal: " + result.message);
-            }
-        })
-        .catch(err => alert("Error: " + err))
-        .finally(() => {
-            btnSimpan.disabled = false;
-            btnSimpan.innerText = "Simpan ke Google Sheets";
-        });
+    if (!nama || !jobIndex || !nilai) {
+        alert("Harap isi Nama, Job, dan Nilai!");
+        return;
     }
 
+    // Tambahkan parameter callback agar bisa membaca respon sukses
+    const url = `${SCRIPT_URL}?action=update&sheet=${encodeURIComponent(kelas)}&nama=${encodeURIComponent(nama)}&job_index=${jobIndex}&nilai=${nilai}&callback=handleUpdateResponse`;
+
+    btnSimpan.disabled = true;
+    btnSimpan.innerText = "Menyimpan...";
+
+    // Gunakan metode JSONP (Tanam Script) agar bisa baca respon Google
+    const script = document.createElement('script');
+    script.src = url;
+    document.head.appendChild(script);
+}
+
+// Fungsi ini akan dipanggil otomatis oleh Google Script setelah update sukses
+window.handleUpdateResponse = function(result) {
+    const btnSimpan = document.getElementById('btnSimpan');
+    if(result.status === "success") {
+        alert("✅ Berhasil: " + result.message);
+        document.getElementById('nilai').value = ""; // Kosongkan form nilai saja
+    } else {
+        alert("❌ Gagal: " + result.message);
+    }
+    btnSimpan.disabled = false;
+    btnSimpan.innerText = "Simpan ke Google Sheets";
+    
+    // Hapus script sementara setelah selesai
+    const scripts = document.querySelectorAll('script[src*="action=update"]');
+    scripts.forEach(s => s.remove());
+};
     function loadStudentNames() {
         const kelas = document.getElementById('kelas').value;
         const datalist = document.getElementById('listSiswa');

@@ -45,7 +45,29 @@
         <div class="p-3 text-center border-bottom">
             <h4><i class="fas fa-user-gear me-2"></i>Admin Panel</h4>
         </div>
-        <a href="#" class="active"><i class="fas fa-edit me-2"></i> Input Nilai</a>
+        <div class="list-group list-group-flush">
+    <div class="bg-success text-white p-3 fw-bold">
+        <i class="fas fa-bolt me-2"></i> INPUT NILAI PKSM
+    </div>
+    <a href="#" onclick="pilihAkses('PKSM', 'XI SC')" class="list-group-item list-group-item-action ps-4">
+        <i class="fas fa-users me-2"></i> Kelas XI SC
+    </a>
+    <a href="#" onclick="pilihAkses('PKSM', 'XI SD')" class="list-group-item list-group-item-action ps-4">
+        <i class="fas fa-users me-2"></i> Kelas XI SD
+    </a>
+
+    <hr class="my-0">
+
+    <div class="bg-warning text-white p-3 fw-bold">
+        <i class="fas fa-cogs me-2"></i> INPUT NILAI PSSM
+    </div>
+    <a href="#" onclick="pilihAkses('PSSM', 'XI SC')" class="list-group-item list-group-item-action ps-4">
+        <i class="fas fa-users me-2"></i> Kelas XI SC
+    </a>
+    <a href="#" onclick="pilihAkses('PSSM', 'XI SD')" class="list-group-item list-group-item-action ps-4">
+        <i class="fas fa-users me-2"></i> Kelas XI SD
+    </a>
+</div>
         <a href="index.html"><i class="fas fa-eye me-2"></i> Lihat Web Siswa</a>
         <a href="#" onclick="location.reload()"><i class="fas fa-sign-out-alt me-2"></i> Logout</a>
     </div>
@@ -111,6 +133,36 @@
     // URL Deployment Apps Script Bapak
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwswDuj1YQHP4C6fXfdEa1G1rqW6hvbx6ZCnnfsRJsHC1fb5byCpHtMmU0vIZBgoYqaPg/exec"; 
 
+let currentMapel = 'PKSM';
+
+function pilihAkses(mapel, kelas) {
+    currentMapel = mapel;
+    // Otomatis ubah dropdown kelas di form agar sinkron dengan sidebar yang diklik
+    document.getElementById('kelas').value = kelas;
+    
+    // Update Judul Form agar Bapak tidak bingung
+    document.querySelector('.card-header').innerHTML = `<i class="fas fa-edit me-2"></i> Input Nilai ${mapel} - ${kelas}`;
+    
+    // Ubah Daftar Nama Siswa
+    loadStudentNames();
+    
+    // Ubah Daftar Nama Job sesuai Mapel
+    updateJobOptions(mapel);
+}
+
+function updateJobOptions(mapel) {
+    const jobSelect = document.getElementById('job_index');
+    const jobsPKSM = ["Kelistrikan Dasar", "Overhaul Starter", "Rangkai Starter", "Pengapian", "Pengisian", "Pengapian & Pengisian", "Penerangan"];
+    const jobsPSSM = ["Rem Tromol", "Rem Cakram", "CVT Drive Pulley", "Kemudi/Komstir", "Suspensi Depan", "Tambal Ban Bakar", "Tyre Changer"];
+    
+    const selectedJobs = (mapel === 'PKSM') ? jobsPKSM : jobsPSSM;
+    
+    jobSelect.innerHTML = '<option value="">-- Pilih Job --</option>';
+    selectedJobs.forEach((job, index) => {
+        jobSelect.innerHTML += `<option value="${index + 1}">Job ${index + 1} - ${job}</option>`;
+    });
+}
+    
     function handleLogin(event) {
         const username = document.getElementById('user').value;
         const password = document.getElementById('pass').value;

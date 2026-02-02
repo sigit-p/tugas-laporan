@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard | Input Nilai</title>
+    <title>Admin Dashboard | Kelola Nilai</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -15,7 +15,8 @@
         .main-header { background: #fff; padding: 10px 20px; border-bottom: 1px solid #dee2e6; margin-left: 250px; }
         #cardLogin { max-width: 400px; margin: 100px auto; }
         #adminPanel { display: none; }
-        .nav-link.active-mapel { background-color: #007bff !important; color: white !important; }
+        .active-menu { background-color: #007bff !important; color: white !important; }
+        .table-responsive { background: white; border-radius: 8px; }
         @media (max-width: 768px) {
             .sidebar { margin-left: -250px; }
             .content-wrapper, .main-header { margin-left: 0; }
@@ -41,7 +42,7 @@
 </div>
 
 <div id="adminPanel">
-    <div class="sidebar">
+    <div class="sidebar border-end">
         <div class="p-3 text-center border-bottom">
             <h4><i class="fas fa-user-gear me-2"></i>Admin Panel</h4>
         </div>
@@ -50,7 +51,6 @@
             <a class="nav-link p-3 fw-bold text-white bg-dark border-bottom" data-bs-toggle="collapse" href="#subMenuInput">
                 <i class="fas fa-edit me-2"></i> INPUT NILAI <i class="fas fa-chevron-down float-end mt-1"></i>
             </a>
-            
             <div class="collapse show" id="subMenuInput">
                 <a href="#" onclick="pilihMapel('PKSM', this)" class="list-group-item list-group-item-action ps-4 bg-secondary text-white border-0">
                     <i class="fas fa-bolt me-2 text-warning"></i> Mapel PKSM
@@ -59,19 +59,20 @@
                     <i class="fas fa-cogs me-2 text-info"></i> Mapel PSSM
                 </a>
             </div>
-<a class="nav-link p-3 fw-bold text-white bg-dark border-bottom mt-2" data-bs-toggle="collapse" href="#subMenuEdit">
-    <i class="fas fa-table me-2"></i> EDIT NILAI (TABEL) <i class="fas fa-chevron-down float-end mt-1"></i>
-</a>
 
-<div class="collapse" id="subMenuEdit">
-    <a href="#" onclick="pilihModeEdit('PKSM')" class="list-group-item list-group-item-action ps-4 bg-info text-white border-0">
-        <i class="fas fa-eye me-2"></i> Tabel PKSM
-    </a>
-    <a href="#" onclick="pilihModeEdit('PSSM')" class="list-group-item list-group-item-action ps-4 bg-info text-white border-0">
-        <i class="fas fa-eye me-2"></i> Tabel PSSM
-    </a>
-</div>
-            <a href="index.html" class="list-group-item list-group-item-action mt-3">
+            <a class="nav-link p-3 fw-bold text-white bg-dark border-bottom mt-2" data-bs-toggle="collapse" href="#subMenuEdit">
+                <i class="fas fa-table me-2"></i> EDIT NILAI (TABEL) <i class="fas fa-chevron-down float-end mt-1"></i>
+            </a>
+            <div class="collapse" id="subMenuEdit">
+                <a href="#" onclick="pilihModeEdit('PKSM', this)" class="list-group-item list-group-item-action ps-4 bg-info text-white border-0">
+                    <i class="fas fa-eye me-2"></i> Tabel PKSM
+                </a>
+                <a href="#" onclick="pilihModeEdit('PSSM', this)" class="list-group-item list-group-item-action ps-4 bg-info text-white border-0">
+                    <i class="fas fa-eye me-2"></i> Tabel PSSM
+                </a>
+            </div>
+
+            <a href="index.html" class="list-group-item list-group-item-action mt-3 border-top">
                 <i class="fas fa-eye me-2"></i> Lihat Web Siswa
             </a>
             <a href="#" onclick="location.reload()" class="list-group-item list-group-item-action text-danger">
@@ -81,78 +82,74 @@
     </div>
 
     <nav class="main-header">
-        <span class="navbar-text fw-bold" id="nav-status">Dashboard / Input Nilai</span>
+        <span class="navbar-text fw-bold text-primary" id="nav-status">Dashboard / Selamat Datang</span>
     </nav>
 
     <div class="content-wrapper">
         <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-8 offset-md-2">
-                    <div id="welcomeMsg" class="alert alert-info text-center">
-                        <i class="fas fa-arrow-left me-2"></i> Silakan pilih Mata Pelajaran di sidebar untuk memulai.
-                    </div>
+            <div id="welcomeMsg" class="alert alert-info text-center shadow-sm">
+                <h5>Selamat Datang, Pak Sigit!</h5>
+                <p class="mb-0">Silakan pilih menu <b>Input</b> atau <b>Edit (Tabel)</b> di sidebar kiri.</p>
+            </div>
 
-                    <div id="formKonten" class="card shadow" style="display:none;">
-                        <div id="tabelKonten" class="card shadow mt-4" style="display:none;">
-    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-        <span id="judulTabel">Tabel Data Nilai</span>
-        <div class="d-flex gap-2">
-            <select id="kelasTabel" class="form-select form-select-sm" onchange="refreshTabel()">
-                <option value="XI SA">XI SA</option>
-                <option value="XI SB">XI SB</option>
-                <option value="XI SC">XI SC</option>
-            </select>
-        </div>
-    </div>
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table id="adminTable" class="table table-bordered table-striped mb-0" style="font-size: 0.9rem;">
-                <thead class="table-dark text-center">
-                    <tr id="headerTable">
-                        </tr>
-                </thead>
-                <tbody id="bodyTable">
-                    </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-                        <div class="card-header bg-white fw-bold text-primary" id="judulForm">Input Nilai</div>
-                        <div class="card-body">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Pilih Kelas</label>
-                                <select id="kelas" class="form-select" onchange="loadStudentNames()">
-                                    <option value="">-- Pilih Kelas --</option>
-                                    <option value="XI SA">XI SA</option>
-                                    <option value="XI SB">XI SB</option>
-                                    <option value="XI SC">XI SC</option>
-                                </select>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Nama Siswa</label>
-                                <input type="text" id="nama" class="form-control" placeholder="Cari Nama..." list="listSiswa">
-                                <datalist id="listSiswa"></datalist>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Pilih Tugas / Job</label>
-                                <select id="job_index" class="form-select"></select>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Nilai</label>
-                                <input type="number" id="nilai" class="form-control" placeholder="0 - 100">
-                            </div>
-
-                            <hr>
-                            <button id="btnSimpan" onclick="simpanNilai()" class="btn btn-success w-100">
-                                <i class="fas fa-save me-1"></i> Simpan ke Google Sheets
-                            </button>
+            <div id="formKonten" class="card shadow" style="display:none;">
+                <div class="card-header bg-white fw-bold text-primary" id="judulForm">Input Nilai</div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Pilih Kelas</label>
+                            <select id="kelas" class="form-select" onchange="loadStudentNames()">
+                                <option value="">-- Pilih Kelas --</option>
+                                <option value="XI SA">XI SA</option>
+                                <option value="XI SB">XI SB</option>
+                                <option value="XI SC">XI SC</option>
+                            </select>
                         </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Nama Siswa</label>
+                            <input type="text" id="nama" class="form-control" placeholder="Cari Nama..." list="listSiswa">
+                            <datalist id="listSiswa"></datalist>
+                        </div>
+                        <div class="col-md-8 mb-3">
+                            <label class="form-label fw-bold">Pilih Tugas / Job</label>
+                            <select id="job_index" class="form-select"></select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label fw-bold">Nilai</label>
+                            <input type="number" id="nilai" class="form-control" placeholder="0 - 100">
+                        </div>
+                    </div>
+                    <hr>
+                    <button id="btnSimpan" onclick="simpanNilai()" class="btn btn-success w-100 py-2 fw-bold">
+                        <i class="fas fa-save me-1"></i> SIMPAN KE GOOGLE SHEETS
+                    </button>
+                </div>
+            </div>
+
+            <div id="tabelKonten" class="card shadow mt-4" style="display:none;">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center py-3">
+                    <span id="judulTabel" class="fw-bold">DATA TABEL NILAI</span>
+                    <div class="d-flex gap-2">
+                        <select id="kelasTabel" class="form-select form-select-sm w-auto" onchange="refreshTabel()">
+                            <option value="XI SA">XI SA</option>
+                            <option value="XI SB">XI SB</option>
+                            <option value="XI SC">XI SC</option>
+                        </select>
+                        <button onclick="refreshTabel()" class="btn btn-light btn-sm"><i class="fas fa-sync-alt"></i></button>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped mb-0 text-center" style="font-size: 0.85rem;">
+                            <thead class="table-dark">
+                                <tr id="headerTable"></tr>
+                            </thead>
+                            <tbody id="bodyTable"></tbody>
+                        </table>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </div>
@@ -161,134 +158,115 @@
 <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwswDuj1YQHP4C6fXfdEa1G1rqW6hvbx6ZCnnfsRJsHC1fb5byCpHtMmU0vIZBgoYqaPg/exec"; 
     let currentMapel = '';
-
+    let editModeMapel = '';
 
     function handleLogin(event) {
-        const username = document.getElementById('user').value;
-        const password = document.getElementById('pass').value;
-        if(username === "admin" && password === "sigitganteng") {
+        const user = document.getElementById('user').value;
+        const pass = document.getElementById('pass').value;
+        if(user === "admin" && pass === "sigitganteng") {
             document.getElementById('cardLogin').style.display = 'none';
             document.getElementById('adminPanel').style.display = 'block';
         } else {
-            alert("Login Gagal!");
+            alert("Username/Password Salah!");
         }
     }
 
-    
-    
+    // FUNGSI UNTUK MODE INPUT
     function pilihMapel(mapel, el) {
         currentMapel = mapel;
         document.getElementById('welcomeMsg').style.display = 'none';
+        document.getElementById('tabelKonten').style.display = 'none';
         document.getElementById('formKonten').style.display = 'block';
         document.getElementById('judulForm').innerText = "INPUT NILAI " + mapel;
-        document.getElementById('nav-status').innerText = "Dashboard / " + mapel;
+        document.getElementById('nav-status').innerText = "Dashboard / Input " + mapel;
 
-        // Update active class sidebar
-        document.querySelectorAll('.sidebar .list-group-item').forEach(item => item.classList.remove('active-mapel'));
-        el.classList.add('active-mapel');
+        document.querySelectorAll('.list-group-item').forEach(i => i.classList.remove('active-menu'));
+        el.classList.add('active-menu');
 
-        // Update Job Options
         const jobSelect = document.getElementById('job_index');
         const jobs = {
             'PKSM': ["Kelistrikan Dasar", "Overhaul Starter", "Rangkai Starter", "Pengapian", "Pengisian", "Pengapian & Pengisian", "Penerangan"],
             'PSSM': ["Rem Tromol", "Rem Cakram", "CVT Drive Pulley", "Kemudi/Komstir", "Suspensi Depan", "Tambal Ban Bakar", "Tyre Changer"]
         };
-
         jobSelect.innerHTML = '<option value="">-- Pilih Job --</option>';
-        jobs[mapel].forEach((job, index) => {
-            jobSelect.innerHTML += `<option value="${index + 1}">Job ${index + 1} - ${job}</option>`;
-        });
+        jobs[mapel].forEach((j, i) => jobSelect.innerHTML += `<option value="${i+1}">Job ${i+1} - ${j}</option>`);
     }
 
     function loadStudentNames() {
         const kelas = document.getElementById('kelas').value;
-        const datalist = document.getElementById('listSiswa');
+        const dl = document.getElementById('listSiswa');
         if(!kelas) return;
-
-        datalist.innerHTML = '<option value="Memuat data...">';
+        dl.innerHTML = '<option value="Memuat...">';
         fetch(`${SCRIPT_URL}?sheet=${encodeURIComponent(kelas)}`)
             .then(res => res.json())
             .then(data => {
-                datalist.innerHTML = "";
-                data.forEach(row => { if(row[0]) datalist.innerHTML += `<option value="${row[0]}">`; });
+                dl.innerHTML = "";
+                data.forEach(row => { if(row[0]) dl.innerHTML += `<option value="${row[0]}">`; });
             });
     }
 
     function simpanNilai() {
         const btn = document.getElementById('btnSimpan');
-        const kelas = document.getElementById('kelas').value;
-        const nama = document.getElementById('nama').value;
-        const jobIndex = document.getElementById('job_index').value;
-        const nilai = document.getElementById('nilai').value;
-
-        if(!kelas || !nama || !jobIndex || !nilai) { alert("Lengkapi data!"); return; }
+        const data = {
+            kelas: document.getElementById('kelas').value,
+            nama: document.getElementById('nama').value,
+            job: document.getElementById('job_index').value,
+            nilai: document.getElementById('nilai').value
+        };
+        if(!data.kelas || !data.nama || !data.job || !data.nilai) return alert("Lengkapi Form!");
 
         btn.disabled = true;
-        btn.innerText = "Menyimpan...";
-
-        const url = `${SCRIPT_URL}?action=update&sheet=${encodeURIComponent(kelas)}&nama=${encodeURIComponent(nama)}&job_index=${jobIndex}&nilai=${nilai}&callback=handleUpdateResponse`;
-        
-        const script = document.createElement('script');
-        script.src = url;
-        document.head.appendChild(script);
+        btn.innerText = "Proses...";
+        const url = `${SCRIPT_URL}?action=update&sheet=${encodeURIComponent(data.kelas)}&nama=${encodeURIComponent(data.nama)}&job_index=${data.job}&nilai=${data.nilai}&callback=handleUpdateResponse`;
+        const s = document.createElement('script'); s.src = url; document.head.appendChild(s);
     }
 
     window.handleUpdateResponse = function(res) {
-        const btn = document.getElementById('btnSimpan');
-        btn.disabled = false;
-        btn.innerText = "Simpan ke Google Sheets";
+        document.getElementById('btnSimpan').disabled = false;
+        document.getElementById('btnSimpan').innerText = "SIMPAN KE GOOGLE SHEETS";
         if(res.status === "success") {
-            alert("✅ Berhasil: " + res.message);
+            alert("Sip! Nilai Berhasil Masuk");
             document.getElementById('nilai').value = "";
-        } else {
-            alert("❌ Gagal: " + res.message);
-        }
+        } else { alert("Gagal: " + res.message); }
     };
 
-    let editModeMapel = '';
+    // FUNGSI UNTUK MODE TABEL (EDIT)
+    function pilihModeEdit(mapel, el) {
+        editModeMapel = mapel;
+        document.getElementById('welcomeMsg').style.display = 'none';
+        document.getElementById('formKonten').style.display = 'none';
+        document.getElementById('tabelKonten').style.display = 'block';
+        document.getElementById('nav-status').innerText = "Dashboard / Tabel " + mapel;
 
-function pilihModeEdit(mapel) {
-    editModeMapel = mapel;
-    // Sembunyikan form input, tampilkan tabel
-    document.getElementById('welcomeMsg').style.display = 'none';
-    document.getElementById('formKonten').style.display = 'none';
-    document.getElementById('tabelKonten').style.display = 'block';
-    
-    document.getElementById('judulTabel').innerText = "DATA NILAI " + mapel;
-    refreshTabel();
-}
+        document.querySelectorAll('.list-group-item').forEach(i => i.classList.remove('active-menu'));
+        el.classList.add('active-menu');
+        refreshTabel();
+    }
 
-function refreshTabel() {
-    const kelas = document.getElementById('kelasTabel').value;
-    const body = document.getElementById('bodyTable');
-    const header = document.getElementById('headerTable');
-    
-    body.innerHTML = '<tr><td colspan="10" class="text-center p-5"><div class="spinner-border text-primary"></div></td></tr>';
+    function refreshTabel() {
+        const kelas = document.getElementById('kelasTabel').value;
+        const head = document.getElementById('headerTable');
+        const body = document.getElementById('bodyTable');
+        body.innerHTML = '<tr><td colspan="10" class="py-4"><div class="spinner-border spinner-border-sm text-primary"></div> Memuat Data...</td></tr>';
 
-    // Ambil data dari Google Sheet
-    fetch(`${SCRIPT_URL}?sheet=${encodeURIComponent(kelas)}&mapel=${editModeMapel}`)
-    .then(res => res.json())
-    .then(data => {
-        // Set Header Tabel
-        const jobs = (editModeMapel === 'PKSM') ? 
-            ["Nama", "Job 1", "Job 2", "Job 3", "Job 4", "Job 5", "Job 6", "Job 7", "Belum", "NA"] :
-            ["Nama", "Rem T", "Rem C", "CVT", "Kemudi", "Susp", "Ban", "Tyre", "Belum", "NA"];
-        
-        header.innerHTML = jobs.map(j => `<th>${j}</th>`).join('');
-
-        // Set Isi Tabel
-        body.innerHTML = "";
-        data.forEach(row => {
-            let tr = document.createElement('tr');
-            tr.innerHTML = row.map((val, idx) => {
-                // Beri warna merah jika nilai < 75 (sama seperti web siswa)
-                let style = (idx > 0 && idx < 8 && val !== "" && parseFloat(val) < 75) ? 'style="color:red; font-weight:bold"' : '';
-                return `<td ${style} class="text-center">${val || '-'}</td>`;
-            }).join('');
-            body.appendChild(tr);
-        });
-    });
-}
+        fetch(`${SCRIPT_URL}?sheet=${encodeURIComponent(kelas)}&mapel=${editModeMapel}`)
+            .then(res => res.json())
+            .then(data => {
+                const h = (editModeMapel === 'PKSM') ? 
+                    ["Nama", "J1", "J2", "J3", "J4", "J5", "J6", "J7", "Belum", "NA"] :
+                    ["Nama", "RemT", "RemC", "CVT", "Kmd", "Susp", "Ban", "Tyre", "Belum", "NA"];
+                head.innerHTML = h.map(i => `<th>${i}</th>`).join('');
+                body.innerHTML = "";
+                data.forEach(row => {
+                    let tr = document.createElement('tr');
+                    tr.innerHTML = row.map((v, i) => {
+                        let color = (i > 0 && i < 8 && v !== "" && parseFloat(v) < 75) ? 'text-danger fw-bold' : '';
+                        return `<td class="${color}">${v || '-'}</td>`;
+                    }).join('');
+                    body.appendChild(tr);
+                });
+            });
+    }
 </script>
 </body>
 </html>

@@ -59,7 +59,18 @@
                     <i class="fas fa-cogs me-2 text-info"></i> Mapel PSSM
                 </a>
             </div>
+<a class="nav-link p-3 fw-bold text-white bg-dark border-bottom mt-2" data-bs-toggle="collapse" href="#subMenuEdit">
+    <i class="fas fa-table me-2"></i> EDIT NILAI (TABEL) <i class="fas fa-chevron-down float-end mt-1"></i>
+</a>
 
+<div class="collapse" id="subMenuEdit">
+    <a href="#" onclick="pilihModeEdit('PKSM')" class="list-group-item list-group-item-action ps-4 bg-info text-white border-0">
+        <i class="fas fa-eye me-2"></i> Tabel PKSM
+    </a>
+    <a href="#" onclick="pilihModeEdit('PSSM')" class="list-group-item list-group-item-action ps-4 bg-info text-white border-0">
+        <i class="fas fa-eye me-2"></i> Tabel PSSM
+    </a>
+</div>
             <a href="index.html" class="list-group-item list-group-item-action mt-3">
                 <i class="fas fa-eye me-2"></i> Lihat Web Siswa
             </a>
@@ -82,6 +93,30 @@
                     </div>
 
                     <div id="formKonten" class="card shadow" style="display:none;">
+                        <div id="tabelKonten" class="card shadow mt-4" style="display:none;">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+        <span id="judulTabel">Tabel Data Nilai</span>
+        <div class="d-flex gap-2">
+            <select id="kelasTabel" class="form-select form-select-sm" onchange="refreshTabel()">
+                <option value="XI SA">XI SA</option>
+                <option value="XI SB">XI SB</option>
+                <option value="XI SC">XI SC</option>
+            </select>
+        </div>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table id="adminTable" class="table table-bordered table-striped mb-0" style="font-size: 0.9rem;">
+                <thead class="table-dark text-center">
+                    <tr id="headerTable">
+                        </tr>
+                </thead>
+                <tbody id="bodyTable">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+</div>
                         <div class="card-header bg-white fw-bold text-primary" id="judulForm">Input Nilai</div>
                         <div class="card-body">
                             <div class="mb-3">
@@ -127,6 +162,7 @@
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwswDuj1YQHP4C6fXfdEa1G1rqW6hvbx6ZCnnfsRJsHC1fb5byCpHtMmU0vIZBgoYqaPg/exec"; 
     let currentMapel = '';
 
+
     function handleLogin(event) {
         const username = document.getElementById('user').value;
         const password = document.getElementById('pass').value;
@@ -138,6 +174,8 @@
         }
     }
 
+    
+    
     function pilihMapel(mapel, el) {
         currentMapel = mapel;
         document.getElementById('welcomeMsg').style.display = 'none';
@@ -206,6 +244,51 @@
             alert("❌ Gagal: " + res.message);
         }
     };
+
+    let editModeMapel = '';
+
+function pilihModeEdit(mapel) {
+    editModeMapel = mapel;
+    // Sembunyikan form input, tampilkan tabel
+    document.getElementById('welcomeMsg').style.display = 'none';
+    document.getElementById('formKonten').style.display = 'none';
+    document.getElementById('tabelKonten').style.display = 'block';
+    
+    document.getElementById('judulTabel').innerText = "DATA NILAI " + mapel;
+    refreshTabel();
+}
+
+function refreshTabel() {
+    const kelas = document.getElementById('kelasTabel').value;
+    const body = document.getElementById('bodyTable');
+    const header = document.getElementById('headerTable');
+    
+    body.innerHTML = '<tr><td colspan="10" class="text-center p-5"><div class="spinner-border text-primary"></div></td></tr>';
+
+    // Ambil data dari Google Sheet
+    fetch(`${SCRIPT_URL}?sheet=${encodeURIComponent(kelas)}&mapel=${editModeMapel}`)
+    .then(res => res.json())
+    .then(data => {
+        // Set Header Tabel
+        const jobs = (editModeMapel === 'PKSM') ? 
+            ["Nama", "Job 1", "Job 2", "Job 3", "Job 4", "Job 5", "Job 6", "Job 7", "Belum", "NA"] :
+            ["Nama", "Rem T", "Rem C", "CVT", "Kemudi", "Susp", "Ban", "Tyre", "Belum", "NA"];
+        
+        header.innerHTML = jobs.map(j => `<th>${j}</th>`).join('');
+
+        // Set Isi Tabel
+        body.innerHTML = "";
+        data.forEach(row => {
+            let tr = document.createElement('tr');
+            tr.innerHTML = row.map((val, idx) => {
+                // Beri warna merah jika nilai < 75 (sama seperti web siswa)
+                let style = (idx > 0 && idx < 8 && val !== "" && parseFloat(val) < 75) ? 'style="color:red; font-weight:bold"' : '';
+                return `<td ${style} class="text-center">${val || '-'}</td>`;
+            }).join('');
+            body.appendChild(tr);
+        });
+    });
+}
 </script>
 </body>
 </html>

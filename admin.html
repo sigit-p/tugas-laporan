@@ -9,93 +9,86 @@
     <style>
         body { background-color: #f4f7f6; font-family: 'Segoe UI', sans-serif; }
         #adminPanel { display: none; } 
-        #cardLogin { max-width: 400px; margin: 80px auto; }
-        .fade-in { animation: fadeInEffect 0.7s ease-in-out; }
-        @keyframes fadeInEffect { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-        
+        #cardLogin { max-width: 400px; margin: 80px auto; border-radius: 15px; overflow: hidden; }
         .sidebar { min-height: 100vh; background: #212529; color: white; width: 260px; position: fixed; z-index: 1000; }
         .main-header { margin-left: 260px; background: white; padding: 15px 25px; border-bottom: 1px solid #ddd; }
         .content-wrapper { margin-left: 260px; padding: 30px; }
         .active-menu { background-color: #0d6efd !important; border-radius: 5px; }
-        
-        .loader { border: 3px solid #f3f3f3; border-top: 3px solid #3498db; border-radius: 50%; width: 18px; height: 18px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; }
+        .loader { border: 3px solid #f3f3f3; border-top: 3px solid #3498db; border-radius: 50%; width: 18px; height: 18px; animation: spin 1s linear infinite; display: inline-block; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        @media (max-width: 768px) {
-            .sidebar { width: 100%; position: relative; min-height: auto; }
-            .main-header, .content-wrapper { margin-left: 0; }
-        }
+        @media (max-width: 768px) { .sidebar { width: 100%; position: relative; min-height: auto; } .main-header, .content-wrapper { margin-left: 0; } }
     </style>
 </head>
 <body>
 
-<div id="cardLogin" class="card shadow-lg border-0 fade-in">
+<div id="cardLogin" class="card shadow-lg border-0">
     <div class="card-body p-4">
-        <h3 class="text-center mb-4 text-primary"><b>Admin</b> Login</h3>
+        <h3 class="text-center mb-4 text-primary fw-bold">ADMIN LOGIN</h3>
         <div class="mb-3">
-            <label class="small fw-bold">Username</label>
-            <input type="text" id="user" class="form-control" placeholder="Masukkan Username">
+            <label class="form-label fw-bold small">Username</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                <input type="text" id="user" class="form-control" placeholder="Username">
+            </div>
         </div>
         <div class="mb-3">
-            <label class="small fw-bold">Password</label>
-            <input type="password" id="pass" class="form-control" placeholder="Masukkan Password">
+            <label class="form-label fw-bold small">Password</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                <input type="password" id="pass" class="form-control" placeholder="Password">
+                <button class="btn btn-outline-secondary" type="button" id="togglePass">
+                    <i class="fas fa-eye" id="eyeIcon"></i>
+                </button>
+            </div>
         </div>
-        <button id="btnLogin" onclick="handleLogin(event)" class="btn btn-primary w-100 fw-bold py-2">SIGN IN</button>
-        <div id="loginStatus" class="text-center mt-3 small" style="display:none;"></div>
+        <button id="btnLogin" onclick="handleLogin()" class="btn btn-primary w-100 fw-bold py-2 mt-2">MASUK SISTEM</button>
+        <div id="loginStatus" class="text-center mt-3 small fw-bold" style="display:none;"></div>
     </div>
 </div>
 
-<div id="adminPanel" class="fade-in">
+<div id="adminPanel">
     <div class="sidebar border-end shadow">
-        <div class="p-3 text-center border-bottom bg-dark">
-            <h4 class="mb-0 text-white">Panel Nilai SMK</h4>
-        </div>
+        <div class="p-3 text-center border-bottom bg-dark"><h4 class="mb-0 text-white text-uppercase small fw-bold">Panel Nilai SMK</h4></div>
         <div class="list-group list-group-flush p-2">
-            <a class="nav-link p-3 text-white" data-bs-toggle="collapse" href="#subMenuInput">
+            <a class="nav-link p-3 text-white" data-bs-toggle="collapse" href="#menuIn">
                 <i class="fas fa-edit me-2 text-primary"></i> INPUT NILAI <i class="fas fa-chevron-down float-end"></i>
             </a>
-            <div class="collapse show" id="subMenuInput">
+            <div class="collapse show" id="menuIn">
                 <a href="#" onclick="pilihMapel('PKSM', this)" class="list-group-item list-group-item-action ps-4 bg-dark text-white border-0">Mapel PKSM</a>
                 <a href="#" onclick="pilihMapel('PSSM', this)" class="list-group-item list-group-item-action ps-4 bg-dark text-white border-0">Mapel PSSM</a>
             </div>
-
-            <a class="nav-link p-3 text-white mt-2" data-bs-toggle="collapse" href="#subMenuEdit">
-                <i class="fas fa-table me-2 text-success"></i> LIHAT/EDIT TABEL <i class="fas fa-chevron-down float-end"></i>
+            <a class="nav-link p-3 text-white mt-2" data-bs-toggle="collapse" href="#menuTabel">
+                <i class="fas fa-table me-2 text-success"></i> REKAP NILAI <i class="fas fa-chevron-down float-end"></i>
             </a>
-            <div class="collapse" id="subMenuEdit">
-                <a href="#" onclick="pilihModeEdit('PKSM', this)" class="list-group-item list-group-item-action ps-4 bg-dark text-white border-0">Data PKSM</a>
-                <a href="#" onclick="pilihModeEdit('PSSM', this)" class="list-group-item list-group-item-action ps-4 bg-dark text-white border-0">Data PSSM</a>
+            <div class="collapse" id="menuTabel">
+                <a href="#" onclick="pilihModeEdit('PKSM', this)" class="list-group-item list-group-item-action ps-4 bg-dark text-white border-0">Tabel PKSM</a>
+                <a href="#" onclick="pilihModeEdit('PSSM', this)" class="list-group-item list-group-item-action ps-4 bg-dark text-white border-0">Tabel PSSM</a>
             </div>
-            
-            <a href="#" onclick="location.reload()" class="list-group-item list-group-item-action text-danger bg-dark border-0 mt-4">
-                <i class="fas fa-sign-out-alt me-2"></i> Logout
-            </a>
+            <a href="#" onclick="location.reload()" class="list-group-item list-group-item-action text-danger bg-dark border-0 mt-4"><i class="fas fa-sign-out-alt me-2"></i> Logout</a>
         </div>
     </div>
 
-    <nav class="main-header shadow-sm fw-bold text-primary">
-        Dashboard Admin <span id="labelMapel"></span>
-    </nav>
+    <nav class="main-header shadow-sm fw-bold text-primary">DASHBOARD ADMIN</nav>
 
     <div class="content-wrapper">
-        <div id="welcomeMsg" class="alert alert-secondary">Selamat Datang, Pak Sigit. Silakan pilih menu di samping untuk mengelola nilai.</div>
+        <div id="welcomeMsg" class="alert alert-info border-0 shadow-sm">Selamat Datang, Pak Sigit. Silakan gunakan menu di samping.</div>
 
         <div id="formKonten" class="card shadow-sm border-0" style="display:none;">
-            <div class="card-header bg-white fw-bold">Form Input Nilai</div>
+            <div class="card-header bg-white fw-bold">Input Nilai Siswa</div>
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6 mb-3"><label class="fw-bold">Kelas</label><select id="kelas" class="form-select" onchange="loadStudentNames()"><option value="">-- Pilih --</option><option value="XI SA">XI SA</option><option value="XI SB">XI SB</option><option value="XI SC">XI SC</option></select></div>
-                    <div class="col-md-6 mb-3"><label class="fw-bold">Nama Siswa</label><input type="text" id="nama" class="form-control" list="listSiswa" placeholder="Cari nama..."><datalist id="listSiswa"></datalist></div>
-                    <div class="col-md-8 mb-3"><label class="fw-bold">Job Tugas</label><select id="job_index" class="form-select"></select></div>
+                    <div class="col-md-6 mb-3"><label class="fw-bold">Nama Siswa</label><input type="text" id="nama" class="form-control" list="listSiswa" placeholder="Ketik nama..."><datalist id="listSiswa"></datalist></div>
+                    <div class="col-md-8 mb-3"><label class="fw-bold">Tugas (Job)</label><select id="job_index" class="form-select"></select></div>
                     <div class="col-md-4 mb-3"><label class="fw-bold">Nilai</label><input type="number" id="nilai" class="form-control"></div>
                 </div>
-                <button id="btnSimpan" onclick="simpanNilai()" class="btn btn-primary w-100 fw-bold py-2">SIMPAN KE GOOGLE SHEET</button>
+                <button id="btnSimpan" onclick="simpanNilai()" class="btn btn-primary w-100 fw-bold">SIMPAN KE GOOGLE SHEET</button>
             </div>
         </div>
 
         <div id="tabelKonten" class="card shadow-sm border-0 mt-4" style="display:none;">
             <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-                <span id="judulTabel" class="fw-bold">REKAP NILAI</span>
+                <span id="judulTabel" class="fw-bold">DATA NILAI</span>
                 <select id="kelasTabel" class="form-select form-select-sm w-auto" onchange="refreshTabel()">
                     <option value="XI SA">XI SA</option><option value="XI SB">XI SB</option><option value="XI SC">XI SC</option>
                 </select>
@@ -112,23 +105,16 @@
     </div>
 </div>
 
-<div class="modal fade" id="modalEditManual" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header bg-warning">
-                <h5 class="modal-title fw-bold">Edit Nilai Siswa</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <div class="mb-3"><label class="fw-bold">Nama Siswa</label><input type="text" id="editNama" class="form-control" readonly></div>
-                <div class="mb-3"><label class="fw-bold">Pilih Job</label><select id="editJob" class="form-select"></select></div>
-                <div class="mb-3"><label class="fw-bold">Nilai Baru</label><input type="number" id="editNilai" class="form-control"></div>
-            </div>
-            <div class="modal-footer">
-                <button id="btnUpdateManual" onclick="prosesUpdateManual()" class="btn btn-success w-100">UPDATE NILAI</button>
-            </div>
+<div class="modal fade" id="modalEdit" tabindex="-1">
+    <div class="modal-dialog"><div class="modal-content">
+        <div class="modal-header bg-warning fw-bold">Edit Nilai: <span id="dispNama" class="ms-1"></span></div>
+        <div class="modal-body">
+            <input type="hidden" id="editNama">
+            <div class="mb-3"><label class="fw-bold">Pilih Kolom Job</label><select id="editJob" class="form-select"></select></div>
+            <div class="mb-3"><label class="fw-bold">Nilai Baru</label><input type="number" id="editNilai" class="form-control"></div>
         </div>
-    </div>
+        <div class="modal-footer"><button id="btnUp" onclick="prosesUpdate()" class="btn btn-success w-100">SIMPAN PERUBAHAN</button></div>
+    </div></div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -138,32 +124,28 @@
     const AUTH_URL = "https://script.google.com/macros/s/AKfycbxsVNyON7D61zX2jKKZ4gnEbsicM8b_ViaO4cEY0rnS-UkIaTV2EUplyy1wahtiHE6X2w/exec"; 
 
     let currentMapel = '';
-
     function getActiveUrl() { return (currentMapel === 'PSSM') ? URL_PSSM : URL_PKSM; }
 
-    async function handleLogin(e) {
+    // Toggle View Password
+    document.getElementById('togglePass').addEventListener('click', function() {
+        const p = document.getElementById('pass'), i = document.getElementById('eyeIcon');
+        p.type = p.type === 'password' ? 'text' : 'password';
+        i.classList.toggle('fa-eye'); i.classList.toggle('fa-eye-slash');
+    });
+
+    async function handleLogin() {
         const u = document.getElementById('user').value, p = document.getElementById('pass').value;
         const btn = document.getElementById('btnLogin'), stat = document.getElementById('loginStatus');
-        if(!u || !p) return alert("User & Password harus diisi!");
-        
-        btn.disabled = true;
-        stat.style.display = 'block';
-        stat.innerHTML = `<span class="loader"></span> Sedang memverifikasi akun...`;
-
+        if(!u || !p) return alert("Isi Username & Password!");
+        btn.disabled = true; stat.style.display = 'block'; stat.innerHTML = `<span class="loader"></span> Memverifikasi...`;
         try {
             const r = await fetch(`${AUTH_URL}?user=${encodeURIComponent(u)}&pass=${encodeURIComponent(p)}`);
             const h = await r.json();
             if(h.status === "success") {
-                stat.innerHTML = `<b class="text-success">Verifikasi Berhasil! Membuka Panel...</b>`;
-                setTimeout(() => {
-                    document.getElementById('cardLogin').style.display = 'none';
-                    document.getElementById('adminPanel').style.display = 'block';
-                }, 1000);
-            } else {
-                alert("Login Gagal: " + h.message);
-                btn.disabled = false; stat.style.display = 'none';
-            }
-        } catch (e) { alert("Server tidak merespon."); btn.disabled = false; }
+                stat.innerHTML = `<span class="text-success">Akses Diterima!</span>`;
+                setTimeout(() => { document.getElementById('cardLogin').style.display='none'; document.getElementById('adminPanel').style.display='block'; }, 800);
+            } else { alert("User/Pass Salah!"); btn.disabled = false; stat.style.display = 'none'; }
+        } catch (e) { alert("Server Error"); btn.disabled = false; }
     }
 
     function pilihMapel(m, el) {
@@ -179,7 +161,7 @@
     function loadStudentNames() {
         const k = document.getElementById('kelas').value;
         const dl = document.getElementById('listSiswa');
-        dl.innerHTML = "<option value='Sedang memuat nama...'>";
+        dl.innerHTML = "<option value='Memuat...'>";
         fetch(`${getActiveUrl()}?sheet=${encodeURIComponent(k)}`)
             .then(r => r.json()).then(d => {
                 dl.innerHTML = "";
@@ -189,12 +171,11 @@
 
     async function updateJobSelect(tid) {
         const sel = document.getElementById(tid), k = document.getElementById('kelas').value || "XI SA";
-        try {
-            const r = await fetch(`${getActiveUrl()}?action=getHeaders&sheet=${encodeURIComponent(k)}`);
-            const j = await r.json();
-            sel.innerHTML = '<option value="">-- Pilih Job --</option>';
-            j.forEach((n, i) => { sel.innerHTML += `<option value="${i+1}">${n}</option>`; });
-        } catch (e) { }
+        fetch(`${getActiveUrl()}?action=getHeaders&sheet=${encodeURIComponent(k)}`)
+            .then(r => r.json()).then(j => {
+                sel.innerHTML = '<option value="">-- Pilih Job --</option>';
+                j.forEach((n, i) => { sel.innerHTML += `<option value="${i+1}">${n}</option>`; });
+            });
     }
 
     function pilihModeEdit(m, el) {
@@ -209,7 +190,7 @@
 
     function refreshTabel() {
         const b = document.getElementById('bodyTable'), k = document.getElementById('kelasTabel').value;
-        b.innerHTML = '<tr><td colspan="25" class="py-5"><span class="loader"></span><br>Memuat data tabel...</td></tr>';
+        b.innerHTML = '<tr><td colspan="20" class="py-5"><span class="loader"></span><br>Memuat Data...</td></tr>';
         fetch(`${getActiveUrl()}?action=read&sheet=${encodeURIComponent(k)}`)
         .then(r => r.json()).then(d => {
             let h = '<th>Aksi</th><th>Nama Siswa</th>'; d[0].forEach(t => h += `<th>${t}</th>`);
@@ -218,64 +199,54 @@
             d.slice(1).forEach(row => {
                 let tr = document.createElement('tr');
                 let nama = row[0];
-                let btnEdit = `<td><button class="btn btn-warning btn-sm" onclick="bukaModalEdit('${nama}')"><i class="fas fa-edit"></i></button></td>`;
-                let cells = `<td><b>${nama}</b></td>`;
+                let cells = `<td><button class="btn btn-warning btn-sm" onclick="bukaModal('${nama}')"><i class="fas fa-edit"></i></button></td><td><b>${nama}</b></td>`;
                 for(let i=1; i < row.length; i++) {
-                    let val = row[i] || "-";
-                    let cls = (val !== "-" && val < 75) ? 'text-danger fw-bold' : '';
-                    cells += `<td class="${cls}">${val}</td>`;
+                    let v = row[i] || "-";
+                    let c = (v !== "-" && v < 75) ? 'text-danger fw-bold' : '';
+                    cells += `<td class="${c}">${v}</td>`;
                 }
-                tr.innerHTML = btnEdit + cells;
-                b.appendChild(tr);
+                tr.innerHTML = cells; b.appendChild(tr);
             });
         });
     }
 
-    function bukaModalEdit(nama) {
-        document.getElementById('editNama').value = nama;
-        const selJob = document.getElementById('editJob'), k = document.getElementById('kelasTabel').value;
-        selJob.innerHTML = '<option>Memuat Job...</option>';
+    function bukaModal(n) {
+        document.getElementById('editNama').value = n;
+        document.getElementById('dispNama').innerText = n;
+        const sel = document.getElementById('editJob'), k = document.getElementById('kelasTabel').value;
+        sel.innerHTML = '<option>Loading...</option>';
         fetch(`${getActiveUrl()}?action=getHeaders&sheet=${encodeURIComponent(k)}`)
             .then(r => r.json()).then(j => {
-                selJob.innerHTML = '<option value="">-- Pilih Job --</option>';
-                j.forEach((n, i) => { selJob.innerHTML += `<option value="${i+1}">${n}</option>`; });
-                new bootstrap.Modal(document.getElementById('modalEditManual')).show();
+                sel.innerHTML = '<option value="">-- Pilih Job --</option>';
+                j.forEach((name, i) => { sel.innerHTML += `<option value="${i+1}">${name}</option>`; });
+                new bootstrap.Modal(document.getElementById('modalEdit')).show();
             });
     }
 
-    function prosesUpdateManual() {
-        const btn = document.getElementById('btnUpdateManual');
-        const k = document.getElementById('kelasTabel').value, n = document.getElementById('editNama').value, j = document.getElementById('editJob').value, ni = document.getElementById('editNilai').value;
-        if(!j || !ni) return alert("Pilih Job & Isi Nilai!");
-        
-        btn.disabled = true; btn.innerHTML = `<span class="loader"></span> Mengupdate...`;
-        const url = `${getActiveUrl()}?action=update&sheet=${encodeURIComponent(k)}&nama=${encodeURIComponent(n)}&job_index=${j}&nilai=${ni}&callback=resUpdate`;
+    function prosesUpdate() {
+        const btn = document.getElementById('btnUp'), k = document.getElementById('kelasTabel').value, n = document.getElementById('editNama').value, j = document.getElementById('editJob').value, ni = document.getElementById('editNilai').value;
+        if(!j || !ni) return alert("Lengkapi data!");
+        btn.disabled = true; btn.innerHTML = `<span class="loader"></span>`;
+        const url = `${getActiveUrl()}?action=update&sheet=${encodeURIComponent(k)}&nama=${encodeURIComponent(n)}&job_index=${j}&nilai=${ni}&callback=resUp`;
         const s = document.createElement('script'); s.src = url; document.head.appendChild(s);
     }
 
-    window.resUpdate = function(r) {
-        const btn = document.getElementById('btnUpdateManual');
-        btn.disabled = false; btn.innerText = "UPDATE NILAI";
-        if(r.status === "success") { 
-            alert("✅ Data Berhasil Diupdate!"); 
-            bootstrap.Modal.getInstance(document.getElementById('modalEditManual')).hide();
-            refreshTabel();
-        }
+    window.resUp = function(r) {
+        document.getElementById('btnUp').disabled = false; document.getElementById('btnUp').innerText = "SIMPAN PERUBAHAN";
+        if(r.status === "success") { alert("Berhasil Diupdate!"); bootstrap.Modal.getInstance(document.getElementById('modalEdit')).hide(); refreshTabel(); }
     };
 
     function simpanNilai() {
-        const btn = document.getElementById('btnSimpan');
-        const k = document.getElementById('kelas').value, n = document.getElementById('nama').value, j = document.getElementById('job_index').value, ni = document.getElementById('nilai').value;
-        if(!k || !n || !j || !ni) return alert("Data tidak lengkap!");
-        btn.disabled = true; btn.innerHTML = `<span class="loader"></span> Menyimpan ke Google Sheets...`;
-        const url = `${getActiveUrl()}?action=update&sheet=${encodeURIComponent(k)}&nama=${encodeURIComponent(n)}&job_index=${j}&nilai=${ni}&callback=resInput`;
+        const btn = document.getElementById('btnSimpan'), k = document.getElementById('kelas').value, n = document.getElementById('nama').value, j = document.getElementById('job_index').value, ni = document.getElementById('nilai').value;
+        if(!k || !n || !j || !ni) return alert("Isi semua kolom!");
+        btn.disabled = true; btn.innerHTML = `<span class="loader"></span> Menyimpan...`;
+        const url = `${getActiveUrl()}?action=update&sheet=${encodeURIComponent(k)}&nama=${encodeURIComponent(n)}&job_index=${j}&nilai=${ni}&callback=resIn`;
         const s = document.createElement('script'); s.src = url; document.head.appendChild(s);
     }
 
-    window.resInput = function(r) {
-        document.getElementById('btnSimpan').disabled = false;
-        document.getElementById('btnSimpan').innerText = "SIMPAN KE GOOGLE SHEET";
-        if(r.status === "success") { alert("✅ Data tersimpan!"); document.getElementById('nilai').value = ""; }
+    window.resIn = function(r) {
+        document.getElementById('btnSimpan').disabled = false; document.getElementById('btnSimpan').innerText = "SIMPAN KE GOOGLE SHEET";
+        if(r.status === "success") { alert("Data Tersimpan!"); document.getElementById('nilai').value = ""; }
     };
 </script>
 </body>

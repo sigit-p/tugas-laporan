@@ -294,15 +294,27 @@
         updateJobSelect('job_index', m);
     }
 
-    function updateJobSelect(id, m) {
-        const js = document.getElementById(id);
-        const j = {
-            'PKSM': ["Kelistrikan Dasar", "Overhaul Starter", "Rangkai Starter", "Pengapian", "Pengisian", "Pengapian & Pengisian", "Penerangan"],
-            'PSSM': ["Rem Tromol", "Rem Cakram", "CVT Drive Pulley", "Kemudi/Komstir", "Suspensi Depan", "Tambal Ban Bakar", "Tyre Changer"]
-        };
-        js.innerHTML = '<option value="">-- Pilih Job --</option>';
-        j[m].forEach((item, i) => js.innerHTML += `<option value="${i+1}">Job ${i+1} - ${item}</option>`);
+async function updateJobSelect(id, m) {
+    const sel = document.getElementById(id);
+    const k = document.getElementById('kelas').value || "XI SA";
+    
+    // Sementara kita kunci ke PKSM dulu untuk tes
+    const TARGET_URL = URL_PKSM;
+
+    sel.innerHTML = '<option>Loading Job...</option>';
+    try {
+        const r = await fetch(`${TARGET_URL}?action=getHeaders&sheet=${encodeURIComponent(k)}`);
+        const jobs = await r.json();
+        
+        sel.innerHTML = '<option value="">-- Pilih Job --</option>';
+        jobs.forEach((name, i) => {
+            // value = i + 1 agar sinkron dengan kolom di Sheet (Job 1, Job 2, dst)
+            sel.innerHTML += `<option value="${i+1}">${name}</option>`;
+        });
+    } catch (e) { 
+        sel.innerHTML = '<option>Gagal memuat daftar job</option>'; 
     }
+}
 
     function loadStudentNames() {
         const k = document.getElementById('kelas').value;
@@ -342,23 +354,52 @@
         refreshTabel();
     }
 
-    function refreshTabel() {
-        const k = document.getElementById('kelasTabel').value;
-        const h = document.getElementById('headerTable'), b = document.getElementById('bodyTable');
-        b.innerHTML = '<tr><td colspan="11" class="py-4"><div class="spinner-border text-primary shadow-sm"></div> Memuat Data...</td></tr>';
-        fetch(`${SCRIPT_URL}?sheet=${encodeURIComponent(k)}&mapel=${editModeMapel}`).then(r => r.json()).then(d => {
-            const cols = (editModeMapel === 'PKSM') ? ["Aksi", "Nama", "J1", "J2", "J3", "J4", "J5", "J6", "J7", "B", "NA"] : ["Aksi", "Nama", "RemT", "RemC", "CVT", "Kmd", "Susp", "Ban", "Tyre", "B", "NA"];
-            h.innerHTML = cols.map(c => `<th>${c}</th>`).join('');
-            b.innerHTML = "";
-            d.forEach(row => {
-                let tr = document.createElement('tr');
-                let btnHtml = `<td><button class="btn btn-warning btn-edit-row shadow-sm" onclick="bukaModalEdit('${row[0]}')"><i class="fas fa-edit"></i></button></td>`;
-                tr.innerHTML = btnHtml + row.map((v, i) => `<td class="${i > 0 && i < 8 && v < 75 && v !== '' ? 'text-danger fw-bold' : ''}">${v || '-'}</td>`).join('');
-                b.appendChild(tr);
-            });
-        });
-    }
+   function refreshTabel() {
+    const k = document.getElementById('kelasTabel').value;
+    const h = document.getElementById('headerTable');
+    const b = document.getElementById('bodyTable');
+    
+    b.innerHTML = '<tr><td colspan="20" class="py-4"><div class="spinner-border text-primary"></div> Memuat Data PKSM...</td></tr>';
+    
+    // Pastikan URL_PKSM sudah benar di bagian variabel atas
+    fetch(`${URL_PKSM}?action=read&sheet=${encodeURIComponent(k)}`)
+    .then(r => r.json())
+    .then(d => {
+        if(d.status === "error") throw new Error(d.message);
 
+        const headers = d[0]; // Baris 4 dari Sheet (Judul Kolom)
+        const rows = d.slice(1); // Baris 5 ke bawah (Data Siswa)
+
+        // 1. Gambar Header Dinamis
+        let headerHtml = '<th>Aksi</th>';
+        headers.forEach(title => {
+            headerHtml += `<th>${title}</th>`;
+        });
+        h.innerHTML = headerHtml;
+
+        // 2. Gambar Baris Data
+        b.innerHTML = "";
+        rows.forEach(row => {
+            let tr = document.createElement('tr');
+            
+            // Tombol edit: kita kirim Nama Siswa (row[0] adalah Nama jika di Sheet kolom C)
+            // Sesuaikan indeks jika posisi Nama di Sheet Bapak berbeda
+            let btnHtml = `<td><button class="btn btn-warning btn-sm" onclick="bukaModalEdit('${row[0]}')"><i class="fas fa-edit"></i></button></td>`;
+            
+            let dataHtml = row.map((cell, idx) => {
+                // Style merah jika nilai di bawah 75 (kecuali kolom Nama di idx 0)
+                let style = (idx > 0 && cell !== "" && !isNaN(cell) && cell < 75) ? 'class="text-danger fw-bold"' : '';
+                return `<td ${style}>${cell || '-'}</td>`;
+            }).join('');
+            
+            tr.innerHTML = btnHtml + dataHtml;
+            b.appendChild(tr);
+        });
+    })
+    .catch(err => {
+        b.innerHTML = `<tr><td colspan="20" class="text-danger text-center p-3">Gagal: ${err.message}</td></tr>`;
+    });
+}
     function bukaModalEdit(namaSiswa) {
         document.getElementById('m_nama').innerText = namaSiswa;
         document.getElementById('m_nilai').value = "";

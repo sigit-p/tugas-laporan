@@ -23,6 +23,27 @@
             .content-wrapper, .main-header { margin-left: 0; }
             .sidebar.active { margin-left: 0; }
         }
+        /* Efek transisi halus saat panel admin muncul */
+#adminPanel { 
+    display: none; 
+    animation: munculHalus 0.8s ease-out; 
+}
+
+@keyframes munculHalus {
+    from { 
+        opacity: 0; 
+        transform: translateY(-20px); /* Muncul sedikit dari atas */
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+/* Tambahan: Efek tombol login saat ditekan */
+.btn-primary:active {
+    transform: scale(0.98);
+}
     </style>
 </head>
 <body>
@@ -166,33 +187,43 @@
 
     // Fungsi Login Ambil Data dari GAS Khusus
     async function handleLogin(e) {
-        const u = document.getElementById('user').value;
-        const p = document.getElementById('pass').value;
-        const btn = document.getElementById('btnLogin');
+    const u = document.getElementById('user').value;
+    const p = document.getElementById('pass').value;
+    const btn = document.getElementById('btnLogin');
 
-        if(!u || !p) return alert("Username dan Password harus diisi!");
+    if(!u || !p) return alert("Username dan Password harus diisi!");
 
-        btn.disabled = true;
-        btn.innerText = "Verifikasi...";
+    // Simpan teks asli tombol agar bisa dikembalikan nanti
+    const originalText = btn.innerHTML;
 
-        try {
-            const resp = await fetch(`${AUTH_URL}?user=${encodeURIComponent(u)}&pass=${encodeURIComponent(p)}`);
-            const hasil = await resp.json();
+    // Tambahkan animasi spinner ke dalam tombol
+    btn.disabled = true;
+    btn.innerHTML = `
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        Memverifikasi...
+    `;
 
-            if(hasil.status === "success") {
-                document.getElementById('cardLogin').style.display = 'none';
-                document.getElementById('adminPanel').style.display = 'block';
-            } else {
-                alert("Gagal: " + hasil.message);
-            }
-        } catch (err) {
-            alert("Terjadi kesalahan koneksi ke server login.");
-        } finally {
+    try {
+        const resp = await fetch(`${AUTH_URL}?user=${encodeURIComponent(u)}&pass=${encodeURIComponent(p)}`);
+        const hasil = await resp.json();
+
+        if(hasil.status === "success") {
+            document.getElementById('cardLogin').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'block';
+        } else {
+            alert("Gagal: " + hasil.message);
+            // Kembalikan tombol ke semula jika gagal
             btn.disabled = false;
-            btn.innerText = "SIGN IN";
+            btn.innerHTML = originalText;
         }
+    } catch (err) {
+        alert("Terjadi kesalahan koneksi ke server login.");
+        btn.disabled = false;
+        btn.innerHTML = originalText;
     }
+}
 
+    
     document.getElementById('togglePassword').addEventListener('click', function () {
         const passwordField = document.getElementById('pass');
         const eyeIcon = document.getElementById('eyeIcon');

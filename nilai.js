@@ -1,6 +1,6 @@
 // 1. KONFIGURASI JOB
 const ALL_JOB_NAMES = {
-    'PKSM': ["Kelistrikan dasar", "Overhaull Starter", "Rangkai Starter", "Sistem Pengapian", "Sistem Pengisian", "Rangkai Gabungan", "Sistem Penerangan"],
+    'PKSM': ["Sistem Pengapian", "Sistem Starter", "Sistem Pengisian", "Sistem Penerangan"],
     'PSSM': ["Rem Tromol", "Rem Cakram", "CVT Drive Pulley", "Kemudi/Komstir", "Suspensi Depan", "Tambal Ban Bakar", "Tyre Changer"]
 };
 
@@ -73,7 +73,7 @@ function renderTable(dataRows) {
         let cellsHtml = `<td class="fw-bold">${row[0]}</td>`;
         
         let belumList = [];
-        for (let i = 1; i <= 7; i++) {
+        for (let i = 1; i <= 4; i++) {
             let val = String(row[i] || "").trim();
             let style = "";
             if (val !== "" && !isNaN(val)) {
@@ -84,8 +84,8 @@ function renderTable(dataRows) {
             cellsHtml += `<td class="text-center" ${style}>${val || "-"}</td>`;
         }
         
-        const jmlBelum = row[8] || 0;
-        const nAkhir = row[9] || 0;
+        const jmlBelum = row[5] || 0;
+        const nAkhir = row[6] || 0;
         
         cellsHtml += `
             <td class="text-center">

@@ -111,4 +111,373 @@
         <h5 class="fw-bold mb-0"><i class="fas fa-tools text-primary me-2"></i>Daftar Job Praktek & Jobsheet (Kelas XI)</h5>
         <span class="badge bg-secondary">Semua Kelas XI</span>
       </div>
-      <div class="row g-3" id="
+      <div class="row g-3" id="containerJobsheet"></div>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white py-3">
+        <h5 class="fw-bold mb-0"><i class="fas fa-book-open text-success me-2"></i>Materi Pembelajaran & Panduan Laporan</h5>
+      </div>
+      <div class="list-group list-group-flush" id="containerMateri"></div>
+    </div>
+
+  </div>
+
+  <!-- 2. HALAMAN REKAP DATA LAPORAN PER KELAS -->
+  <div id="viewRekapKelas" class="d-none">
+    <div class="card border-0 shadow-sm mb-3">
+      <div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-2">
+        <div>
+          <span class="badge bg-primary mb-1">Mapel PKSM</span>
+          <h4 class="fw-bold mb-0" id="judulKelasAktif">Rekap Laporan Kelas XI SA</h4>
+          <small class="text-muted">Klik pada <strong>Nama Siswa</strong> untuk melihat detail kekurangan laporan</small>
+        </div>
+        <div class="d-flex gap-2">
+          <button type="button" class="btn btn-outline-primary btn-sm" onclick="muatUlangKelas()">
+            <i class="fas fa-sync-alt me-1"></i> Refresh
+          </button>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="kembaliKeBeranda()">
+            <i class="fas fa-arrow-left me-1"></i> Kembali ke Beranda
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+      <div class="card-body">
+        <div class="row g-2 mb-3 align-items-center">
+          <div class="col-md-5">
+            <div class="input-group">
+              <span class="input-group-text bg-white"><i class="fas fa-search text-muted"></i></span>
+              <input type="search" id="inputCariNama" class="form-control border-start-0" placeholder="Ketik nama siswa..." oninput="filterSiswa(this.value)">
+            </div>
+          </div>
+          <div class="col-md-7 text-md-end">
+            <span class="small text-muted" id="infoJumlahSiswa"></span>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th width="50">No</th>
+                <th>Nama Siswa</th>
+                <th class="text-center">Status Laporan</th>
+                <th class="text-center">Nilai Akhir</th>
+                <th class="text-center" width="110">Detail</th>
+              </tr>
+            </thead>
+            <tbody id="tbodySiswa"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- MODAL DETAIL KEKURANGAN SISWA -->
+<div class="modal fade" id="modalDetailSiswa" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <div>
+          <h5 class="modal-title fw-bold mb-0" id="modalNamaSiswa">Nama Siswa</h5>
+          <small class="opacity-75" id="modalInfoKelas">Kelas XI &bull; Mapel PKSM</small>
+        </div>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="modalIsiLaporan"></div>
+      <div class="modal-footer justify-content-between bg-light">
+        <button type="button" class="btn btn-outline-primary btn-sm" onclick="bukaPanduanDariModal()">
+          <i class="fas fa-file-pdf me-1"></i> Buka Jobsheet & Materi Panduan
+        </button>
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Tutup</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="text-center">
+  <div class="container">
+    <p class="mb-1 text-dark fw-medium">Portal Praktik & Laporan PKSM &bull; Sigit Prabowo</p>
+    <small class="text-muted">
+      <a href="admin.html" class="text-decoration-none"><i class="fas fa-user-shield me-1"></i>Panel Admin Guru</a>
+    </small>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  const API_URL = "https://script.google.com/macros/s/AKfycbwswDuj1YQHP4C6fXfdEa1G1rqW6hvbx6ZCnnfsRJsHC1fb5byCpHtMmU0vIZBgoYqaPg/exec";
+
+  const DAFTAR_JOBSHEET = [
+    { nomor: 1, judul: "Sistem Pengapian", deskripsi: "Pemeriksaan koil, pulser, CDI/ECU, dan percikan bunga api.", link_pdf: "#" },
+    { nomor: 2, judul: "Sistem Starter", deskripsi: "Overhaul motor starter, brush, komutator, dan rangkaian relay.", link_pdf: "#" },
+    { nomor: 3, judul: "Sistem Pengisian", deskripsi: "Pengukuran tegangan pengisian, kebocoran arus, kiprok, dan spul.", link_pdf: "#" },
+    { nomor: 4, judul: "Sistem Penerangan", deskripsi: "Perangkaian lampu kepala, sein, rem, klakson, dan sekring.", link_pdf: "#" }
+  ];
+
+  const DAFTAR_MATERI = [
+    { judul: "Panduan Format Penulisan & Sistematika Laporan Praktik PKSM", keterangan: "Wajib dibaca sebelum menyusun laporan hasil praktik", link_pdf: "#" },
+    { judul: "Modul 1: Dasar Kelistrikan & Cara Penggunaan Multimeter", keterangan: "Teori dasar pengukuran Volt, Ohm, dan Ampere", link_pdf: "#" },
+    { judul: "Modul 2: Wiring Diagram Kelistrikan Sepeda Motor", keterangan: "Kode warna kabel dan pembacaan jalur kelistrikan", link_pdf: "#" }
+  ];
+
+  let kelasAktif = "";
+  let dataSiswaTerproses = [];
+  let loadingTimer = null;
+
+  function renderJobsheetDanMateri() {
+    const elJob = document.getElementById("containerJobsheet");
+    const elMat = document.getElementById("containerMateri");
+
+    if (elJob) {
+      elJob.innerHTML = DAFTAR_JOBSHEET.map(function(j) {
+        const attrLink = j.link_pdf !== "#"
+          ? 'href="' + j.link_pdf + '" target="_blank"'
+          : 'href="#" onclick="alert(\'Link PDF Jobsheet ' + j.nomor + ' belum diisi.\'); return false;"';
+        return (
+          '<div class="col-md-6 col-lg-3">' +
+            '<div class="card job-card h-100 border-0 shadow-sm">' +
+              '<div class="card-body d-flex flex-column">' +
+                '<span class="badge bg-primary-subtle text-primary align-self-start mb-2">Job ' + j.nomor + '</span>' +
+                '<h6 class="fw-bold text-dark">' + j.judul + '</h6>' +
+                '<p class="small text-muted mb-3">' + j.deskripsi + '</p>' +
+                '<a ' + attrLink + ' class="btn btn-sm btn-outline-primary mt-auto w-100">' +
+                  '<i class="fas fa-file-pdf me-1"></i> Buka Jobsheet ' + j.nomor +
+                '</a>' +
+              '</div>' +
+            '</div>' +
+          '</div>'
+        );
+      }).join("");
+    }
+
+    if (elMat) {
+      elMat.innerHTML = DAFTAR_MATERI.map(function(m) {
+        const attrLink = m.link_pdf !== "#"
+          ? 'href="' + m.link_pdf + '" target="_blank"'
+          : 'href="#" onclick="alert(\'Link PDF Materi belum diisi.\'); return false;"';
+        return (
+          '<a ' + attrLink + ' class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-3">' +
+            '<div>' +
+              '<div class="fw-bold text-dark"><i class="fas fa-file-alt text-success me-2"></i>' + m.judul + '</div>' +
+              '<small class="text-muted">' + m.keterangan + '</small>' +
+            '</div>' +
+            '<span class="badge bg-success rounded-pill px-3 py-2">Baca Materi</span>' +
+          '</a>'
+        );
+      }).join("");
+    }
+  }
+
+  function bukaKelas(namaKelas) {
+    kelasAktif = namaKelas;
+    document.getElementById("judulKelasAktif").textContent = "Rekap Laporan Kelas " + namaKelas;
+    document.getElementById("inputCariNama").value = "";
+    document.getElementById("infoJumlahSiswa").textContent = "";
+
+    document.getElementById("viewBeranda").classList.add("d-none");
+    document.getElementById("viewRekapKelas").classList.remove("d-none");
+    window.scrollTo(0, 0);
+
+    muatUlangKelas();
+  }
+
+  function muatUlangKelas() {
+    const tbody = document.getElementById("tbodySiswa");
+    let detik = 0;
+    tbody.innerHTML =
+      '<tr>' +
+        '<td colspan="5" class="text-center py-5">' +
+          '<div class="spinner-border text-primary mb-2" role="status"></div>' +
+          '<div class="fw-bold">Mengambil data kelas ' + kelasAktif + '... (<span id="detikLoad">0</span>s)</div>' +
+          '<small class="text-muted">Sinkronisasi dengan Google Spreadsheet</small>' +
+        '</td>' +
+      '</tr>';
+
+    if (loadingTimer) clearInterval(loadingTimer);
+    loadingTimer = setInterval(function() {
+      detik++;
+      const el = document.getElementById("detikLoad");
+      if (el) el.textContent = detik;
+    }, 1000);
+
+    const oldScript = document.getElementById("jsonpGasScript");
+    if (oldScript) oldScript.remove();
+
+    const script = document.createElement("script");
+    script.id = "jsonpGasScript";
+    script.src = API_URL + "?action=read&sheet=" + encodeURIComponent(kelasAktif) + "&callback=terimaDataKelas&t=" + Date.now();
+    document.head.appendChild(script);
+  }
+
+  window.terimaDataKelas = function(result) {
+    if (loadingTimer) clearInterval(loadingTimer);
+
+    if (!Array.isArray(result) || result.length < 2) {
+      dataSiswaTerproses = [];
+      renderTabelSiswa([]);
+      return;
+    }
+
+    const headers = result[0].map(function(h) { return String(h || "").trim(); });
+    const rows = result.slice(1);
+
+    let idxNama = headers.findIndex(function(h) { return /nama/i.test(h); });
+    if (idxNama === -1) idxNama = 0;
+
+    const idxAkhir = headers.findIndex(function(h) { return /nilai\s*akhir|akhir|\bna\b/i.test(h); });
+    const idxBelum = headers.findIndex(function(h) { return /belum|kurang/i.test(h); });
+
+    const jobCols = [];
+    headers.forEach(function(h, idx) {
+      if (idx > idxNama && idx !== idxAkhir && idx !== idxBelum && h !== "") {
+        jobCols.push({ index: idx, judul: h });
+      }
+    });
+
+    dataSiswaTerproses = rows.map(function(row) {
+      const nama = String(row[idxNama] || "").trim();
+
+      let nilaiAkhir = "-";
+      if (idxAkhir >= 0 && row[idxAkhir] !== "" && row[idxAkhir] !== null && row[idxAkhir] !== undefined) {
+        const naNum = parseFloat(row[idxAkhir]);
+        nilaiAkhir = !isNaN(naNum) ? Number(naNum.toFixed(1)) : row[idxAkhir];
+      }
+
+      const jobs = jobCols.map(function(col) {
+        const raw = String(row[col.index] !== undefined && row[col.index] !== null ? row[col.index] : "").trim();
+        const num = parseFloat(raw);
+        let status = "Belum";
+        if (raw !== "" && !isNaN(num)) {
+          status = num >= 75 ? "Tuntas" : "Perlu Perbaikan";
+        }
+        return {
+          judul: col.judul,
+          nilai: raw === "" ? "-" : raw,
+          status: status
+        };
+      });
+
+      const jumlahKurang = jobs.filter(function(j) { return j.status !== "Tuntas"; }).length;
+      return { nama: nama, nilaiAkhir: nilaiAkhir, jobs: jobs, jumlahKurang: jumlahKurang };
+    }).filter(function(s) {
+      return s.nama !== "" && isNaN(s.nama);
+    });
+
+    renderTabelSiswa(dataSiswaTerproses);
+  };
+
+  function filterSiswa(keyword) {
+    const q = keyword.toLowerCase().trim();
+    const hasil = dataSiswaTerproses.filter(function(s) {
+      return s.nama.toLowerCase().includes(q);
+    });
+    renderTabelSiswa(hasil);
+  }
+
+  function renderTabelSiswa(list) {
+    const tbody = document.getElementById("tbodySiswa");
+    document.getElementById("infoJumlahSiswa").textContent = "Menampilkan " + list.length + " siswa";
+
+    if (!list.length) {
+      tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-4">Data siswa tidak ditemukan.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = list.map(function(s, idx) {
+      const totalJob = s.jobs.length;
+      const badgeStatus = s.jumlahKurang === 0
+        ? '<span class="badge bg-success"><i class="fas fa-check-circle me-1"></i>Lengkap (' + totalJob + '/' + totalJob + ')</span>'
+        : '<span class="badge bg-danger"><i class="fas fa-exclamation-circle me-1"></i>Kurang ' + s.jumlahKurang + ' Job</span>';
+
+      const indexAsli = dataSiswaTerproses.indexOf(s);
+
+      return (
+        '<tr class="row-siswa" onclick="lihatDetailSiswa(' + indexAsli + ')">' +
+          '<td>' + (idx + 1) + '</td>' +
+          '<td class="fw-bold text-primary">' + s.nama + '</td>' +
+          '<td class="text-center">' + badgeStatus + '</td>' +
+          '<td class="text-center fw-bold">' + s.nilaiAkhir + '</td>' +
+          '<td class="text-center"><button type="button" class="btn btn-sm btn-outline-primary">Cek Detail</button></td>' +
+        '</tr>'
+      );
+    }).join("");
+  }
+
+  function lihatDetailSiswa(index) {
+    const s = dataSiswaTerproses[index];
+    if (!s) return;
+
+    document.getElementById("modalNamaSiswa").textContent = s.nama;
+    document.getElementById("modalInfoKelas").textContent = "Kelas " + kelasAktif + " • Nilai Akhir: " + s.nilaiAkhir;
+
+    let htmlItem = '<div class="list-group">';
+
+    s.jobs.forEach(function(j) {
+      let itemClass = "";
+      let badgeHtml = "";
+      let ketHtml = "";
+
+      if (j.status === "Tuntas") {
+        badgeHtml = '<span class="badge bg-success">Tuntas (Nilai: ' + j.nilai + ')</span>';
+        ketHtml = '<small class="text-muted"><i class="fas fa-check me-1 text-success"></i>Laporan sudah dikumpulkan dan tuntas.</small>';
+      } else if (j.status === "Perlu Perbaikan") {
+        itemClass = "list-group-item-warning";
+        badgeHtml = '<span class="badge bg-warning text-dark">Di Bawah KKM (Nilai: ' + j.nilai + ')</span>';
+        ketHtml = '<small class="text-dark"><i class="fas fa-exclamation-triangle me-1"></i>Nilai masih di bawah 75, silakan konfirmasi perbaikan ke guru.</small>';
+      } else {
+        itemClass = "list-group-item-danger";
+        badgeHtml = '<span class="badge bg-danger">Belum Mengumpulkan</span>';
+        ketHtml = '<small class="text-danger fw-medium"><i class="fas fa-times-circle me-1"></i>Laporan & nilai praktik belum masuk.</small>';
+      }
+
+      htmlItem +=
+        '<div class="list-group-item ' + itemClass + '">' +
+          '<div class="d-flex justify-content-between align-items-center mb-1">' +
+            '<strong>' + j.judul + '</strong>' +
+            badgeHtml +
+          '</div>' +
+          '<div>' + ketHtml + '</div>' +
+        '</div>';
+    });
+
+    htmlItem += '</div>';
+
+    if (s.jumlahKurang > 0) {
+      htmlItem +=
+        '<div class="alert alert-info mt-3 mb-0 small">' +
+          '<i class="fas fa-lightbulb me-1"></i> <strong>Tips:</strong> Klik tombol <b>"Buka Jobsheet & Materi Panduan"</b> di bawah untuk mengunduh panduan pengerjaan job yang masih kurang.' +
+        '</div>';
+    } else {
+      htmlItem +=
+        '<div class="alert alert-success mt-3 mb-0 small">' +
+          '<i class="fas fa-award me-1"></i> <strong>Selamat!</strong> Seluruh laporan praktik PKSM kamu sudah lengkap dan tuntas.' +
+        '</div>';
+    }
+
+    document.getElementById("modalIsiLaporan").innerHTML = htmlItem;
+    new bootstrap.Modal(document.getElementById("modalDetailSiswa")).show();
+  }
+
+  function kembaliKeBeranda(e) {
+    if (e) e.preventDefault();
+    document.getElementById("viewRekapKelas").classList.add("d-none");
+    document.getElementById("viewBeranda").classList.remove("d-none");
+    window.scrollTo(0, 0);
+  }
+
+  function bukaPanduanDariModal() {
+    const modalEl = document.getElementById("modalDetailSiswa");
+    const instance = bootstrap.Modal.getInstance(modalEl);
+    if (instance) instance.hide();
+    kembaliKeBeranda();
+  }
+
+  renderJobsheetDanMateri();
+</script>
+</body>
+</html>

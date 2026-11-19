@@ -236,26 +236,47 @@
     document.head.appendChild(s);
   }
 
-  window.terimaData = function(res) {
+window.terimaData = function(res) {
     clearInterval(timerLoad);
-    if (!Array.isArray(res) || res.length < 2) { dataSiswa = []; renderTabel([]); return; }
+    if (!Array.isArray(res) || res.length < 2) {
+      dataSiswa = [];
+      renderTabel([]);
+      return;
+    }
 
     const headers = res[0].map(h => String(h || "").trim());
-    let idxNama = headers.findIndex(h => /nama/i.test(h));
+    const rows = res.slice(1);
+
+    // 1. Deteksi otomatis kolom Nama dari baris data pertama yang valid (cari kolom berisi teks huruf, bukan angka nomor/NIS)
+    const sampleRow = rows.find(r => r && r.some(cell => isNaN(String(cell || "").trim()) && String(cell || "").trim().length > 2)) || rows[0];
+    let idxNama = sampleRow.findIndex(cell => {
+      const val = String(cell || "").trim();
+      return val.length > 2 && isNaN(val);
+    });
     if (idxNama === -1) idxNama = 0;
-    const idxAkhir = headers.findIndex(h => /nilai\s*akhir|akhir|\bna\b/i.test(h));
+
+    // 2. Deteksi kolom Nilai Akhir (kolom terakhir atau yang header-nya mengandung "Akhir" / "NA")
+    let idxAkhir = headers.findIndex(h => /nilai\s*akhir|akhir|\bna\b/i.test(h));
+    if (idxAkhir === -1) idxAkhir = headers.length - 1;
     const idxBelum = headers.findIndex(h => /belum|kurang/i.test(h));
 
+    // 3. Kumpulkan kolom-kolom Job (semua kolom setelah kolom Nama, kecuali Nilai Akhir & Belum)
     const jobCols = [];
-    headers.forEach((h, i) => { if (i > idxNama && i !== idxAkhir && i !== idxBelum && h !== "") jobCols.push({ i, judul: h }); });
+    headers.forEach((h, i) => {
+      if (i > idxNama && i !== idxAkhir && i !== idxBelum) {
+        jobCols.push({ i, judul: h || `Job ${jobCols.length + 1}` });
+      }
+    });
 
-    dataSiswa = res.slice(1).map(r => {
+    // 4. Olah setiap baris siswa
+    dataSiswa = rows.map(r => {
       const nama = String(r[idxNama] || "").trim();
       let na = "-";
       if (idxAkhir >= 0 && r[idxAkhir] !== "" && r[idxAkhir] != null) {
         const n = parseFloat(r[idxAkhir]);
         na = !isNaN(n) ? Number(n.toFixed(1)) : r[idxAkhir];
       }
+
       const jobs = jobCols.map(c => {
         const raw = String(r[c.i] ?? "").trim();
         const num = parseFloat(raw);
@@ -263,7 +284,13 @@
         if (raw !== "" && !isNaN(num)) status = num >= 75 ? "Tuntas" : "Perlu Perbaikan";
         return { judul: c.judul, nilai: raw === "" ? "-" : raw, status };
       });
-      return { nama, na, jobs, kurang: jobs.filter(j => j.status !== "Tuntas").length };
+
+      return {
+        nama,
+        na,
+        jobs,
+        kurang: jobs.filter(j => j.status !== "Tuntas").length
+      };
     }).filter(s => s.nama !== "" && isNaN(s.nama));
 
     renderTabel(dataSiswa);

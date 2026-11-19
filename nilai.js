@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
         const API_URL = "https://script.google.com/macros/s/AKfycbwswDuj1YQHP4C6fXfdEa1G1rqW6hvbx6ZCnnfsRJsHC1fb5byCpHtMmU0vIZBgoYqaPg/exec";
         const script = document.createElement('script');
-        script.src = `${API_URL}?sheet=${encodeURIComponent(classParam)}&callback=handleApiResponse&t=${Date.now()}`;
+      script.src = `${API_URL}?sheet=${encodeURIComponent(classParam)}&mapel=${encodeURIComponent(mapelParam)}&callback=handleApiResponse&t=${Date.now()}`;
         document.head.appendChild(script);
     }, 100);
 });

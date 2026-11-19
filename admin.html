@@ -3,155 +3,252 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard | Kelola & Edit Nilai</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Admin Dashboard | Portal PKSM & PSSM</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: 'Source Sans Pro', sans-serif; background-color: #f4f6f9; }
-        .sidebar { height: 100vh; width: 250px; position: fixed; background: #343a40; color: #fff; transition: 0.3s; z-index: 1000; }
-        .sidebar a { color: #c2c7d0; text-decoration: none; display: block; }
-        .sidebar .list-group-item:hover { background: #494e53; color: #fff; }
-        .content-wrapper { margin-left: 250px; padding: 20px; transition: 0.3s; }
-        .main-header { background: #fff; padding: 10px 20px; border-bottom: 1px solid #dee2e6; margin-left: 250px; }
-        #cardLogin { max-width: 400px; margin: 100px auto; }
-        #adminPanel { display: none; }
-        .active-menu { background-color: #007bff !important; color: white !important; }
-        .table-responsive { background: white; border-radius: 8px; }
-        .btn-edit-row { padding: 2px 8px; font-size: 0.8rem; }
+        body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background-color: #f4f6f9; }
+        .sidebar { height: 100vh; width: 250px; position: fixed; top: 0; left: 0; background: #212529; color: #fff; transition: 0.3s; z-index: 1030; overflow-y: auto; }
+        .sidebar .brand-box { background: #1a1d20; border-bottom: 1px solid #343a40; }
+        .sidebar a { color: #ced4da; text-decoration: none; display: block; }
+        .sidebar .list-group-item { background: transparent; color: #ced4da; border: none; border-radius: 0; }
+        .sidebar .list-group-item:hover { background: #343a40; color: #fff; }
+        .active-menu { background-color: #0d6efd !important; color: #fff !important; font-weight: 600; }
+        .content-wrapper { margin-left: 250px; padding: 24px; transition: 0.3s; }
+        .main-header { background: #fff; padding: 12px 24px; border-bottom: 1px solid #dee2e6; margin-left: 250px; transition: 0.3s; }
+        #cardLogin { max-width: 400px; margin: 90px auto; border-radius: 12px; }
+        #adminPanel { display: none; animation: munculHalus 0.4s ease-out; }
+        .stat-card { border-left: 4px solid #0d6efd; }
+        .stat-card.success { border-left-color: #198754; }
+        .stat-card.danger { border-left-color: #dc3545; }
+        .btn-edit-row { padding: 3px 9px; font-size: 0.8rem; }
+        @keyframes munculHalus {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
         @media (max-width: 768px) {
             .sidebar { margin-left: -250px; }
             .content-wrapper, .main-header { margin-left: 0; }
             .sidebar.active { margin-left: 0; }
         }
-        /* Efek transisi halus saat panel admin muncul */
-#adminPanel { 
-    display: none; 
-    animation: munculHalus 0.8s ease-out; 
-}
-
-@keyframes munculHalus {
-    from { 
-        opacity: 0; 
-        transform: translateY(-20px); /* Muncul sedikit dari atas */
-    }
-    to { 
-        opacity: 1; 
-        transform: translateY(0); 
-    }
-}
-
-/* Tambahan: Efek tombol login saat ditekan */
-.btn-primary:active {
-    transform: scale(0.98);
-}
     </style>
 </head>
 <body>
 
-<div id="cardLogin" class="card shadow-lg border-0">
-    <div class="card-body p-4">
-        <h3 class="text-center mb-4"><b>Admin</b> Login</h3>
-        <div class="input-group mb-3">
-            <span class="input-group-text bg-white"><i class="fas fa-user text-muted"></i></span>
-            <input type="text" id="user" class="form-control border-start-0" placeholder="Username">
+<!-- FORM LOGIN (MENGGUNAKAN AUTH_URL GAS OPERATOR ANDA) -->
+<div class="container px-3">
+    <div id="cardLogin" class="card shadow border-0">
+        <div class="card-body p-4">
+            <div class="text-center mb-4">
+                <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style="width: 54px; height: 54px;">
+                    <i class="fas fa-user-shield fs-4"></i>
+                </div>
+                <h4 class="fw-bold mb-0">Admin Login</h4>
+                <small class="text-muted">Portal Praktik & Nilai Bengkel TSM</small>
+            </div>
+            <form onsubmit="handleLogin(event)">
+                <div class="input-group mb-3">
+                    <span class="input-group-text bg-white"><i class="fas fa-user text-muted"></i></span>
+                    <input type="text" id="user" class="form-control border-start-0" placeholder="Username" required>
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text bg-white"><i class="fas fa-lock text-muted"></i></span>
+                    <input type="password" id="pass" class="form-control border-start-0 border-end-0" placeholder="Password" required>
+                    <button class="btn btn-outline-secondary border-start-0 bg-white" type="button" id="togglePassword">
+                        <i class="fas fa-eye text-muted" id="eyeIcon"></i>
+                    </button>
+                </div>
+                <button type="submit" id="btnLogin" class="btn btn-primary w-100 fw-bold py-2">SIGN IN</button>
+            </form>
+            <div class="text-center mt-3">
+                <a href="index.html" class="small text-decoration-none text-muted"><i class="fas fa-arrow-left me-1"></i> Kembali ke Portal Siswa</a>
+            </div>
         </div>
-        <div class="input-group mb-3">
-            <span class="input-group-text bg-white"><i class="fas fa-lock text-muted"></i></span>
-            <input type="password" id="pass" class="form-control border-start-0 border-end-0" placeholder="Password">
-            <button class="btn btn-outline-secondary border-start-0 bg-white" type="button" id="togglePassword">
-                <i class="fas fa-eye text-muted" id="eyeIcon"></i>
-            </button>
-        </div>
-        <button id="btnLogin" onclick="handleLogin(event)" class="btn btn-primary w-100 fw-bold">SIGN IN</button>
     </div>
 </div>
 
+<!-- DASHBOARD ADMIN -->
 <div id="adminPanel">
-    <div class="sidebar border-end">
-        <div class="p-3 text-center border-bottom">
-            <h4><i class="fas fa-user-gear me-2"></i>Admin Panel</h4>
+    <!-- SIDEBAR -->
+    <div class="sidebar shadow" id="sidebarMenu">
+        <div class="p-3 text-center brand-box">
+            <h5 class="fw-bold mb-0"><i class="fas fa-motorcycle text-warning me-2"></i>Admin Panel</h5>
+            <small class="text-secondary">Pak Sigit Prabowo</small>
         </div>
-        <div class="list-group list-group-flush">
-            <a class="nav-link p-3 fw-bold text-white bg-dark border-bottom" data-bs-toggle="collapse" href="#subMenuInput">
-                <i class="fas fa-edit me-2 text-primary"></i> INPUT NILAI <i class="fas fa-chevron-down float-end mt-1"></i>
+        <div class="list-group list-group-flush mt-2">
+            <div class="px-3 py-2 small text-uppercase text-secondary fw-bold">Input Nilai</div>
+            <a href="#" onclick="pilihMapel('PKSM', this); return false;" class="list-group-item list-group-item-action ps-4">
+                <i class="fas fa-bolt me-2 text-warning"></i> Input Mapel PKSM
             </a>
-            <div class="collapse show" id="subMenuInput">
-                <a href="#" onclick="pilihMapel('PKSM', this)" class="list-group-item list-group-item-action ps-4 bg-secondary text-white border-0">
-                    <i class="fas fa-bolt me-2 text-warning"></i> Mapel PKSM
-                </a>
-                <a href="#" onclick="pilihMapel('PSSM', this)" class="list-group-item list-group-item-action ps-4 bg-secondary text-white border-0">
-                    <i class="fas fa-cogs me-2 text-info"></i> Mapel PSSM
-                </a>
-            </div>
-            <a class="nav-link p-3 fw-bold text-white bg-dark border-bottom mt-2" data-bs-toggle="collapse" href="#subMenuEdit">
-                <i class="fas fa-table me-2 text-success"></i> LIHAT & EDIT TABEL <i class="fas fa-chevron-down float-end mt-1"></i>
+            <a href="#" onclick="pilihMapel('PSSM', this); return false;" class="list-group-item list-group-item-action ps-4">
+                <i class="fas fa-cogs me-2 text-info"></i> Input Mapel PSSM
             </a>
-            <div class="collapse" id="subMenuEdit">
-                <a href="#" onclick="pilihModeEdit('PKSM', this)" class="list-group-item list-group-item-action ps-4 bg-info text-white border-0">
-                    <i class="fas fa-eye me-2"></i> Tabel PKSM
-                </a>
-                <a href="#" onclick="pilihModeEdit('PSSM', this)" class="list-group-item list-group-item-action ps-4 bg-info text-white border-0">
-                    <i class="fas fa-eye me-2"></i> Tabel PSSM
-                </a>
-            </div>
-            <a href="#" class="list-group-item list-group-item-action text-primary mt-2" data-bs-toggle="modal" data-bs-target="#modalBantuan">
-    <i class="fas fa-question-circle me-2"></i> Bantuan & Panduan
-</a>
-            <a href="#" onclick="location.reload()" class="list-group-item list-group-item-action text-danger mt-3">
+
+            <div class="px-3 py-2 small text-uppercase text-secondary fw-bold mt-3">Rekap & Edit Tabel</div>
+            <a href="#" onclick="pilihModeEdit('PKSM', this); return false;" class="list-group-item list-group-item-action ps-4">
+                <i class="fas fa-table me-2 text-success"></i> Tabel Nilai PKSM
+            </a>
+            <a href="#" onclick="pilihModeEdit('PSSM', this); return false;" class="list-group-item list-group-item-action ps-4">
+                <i class="fas fa-table me-2 text-primary"></i> Tabel Nilai PSSM
+            </a>
+
+            <div class="px-3 py-2 small text-uppercase text-secondary fw-bold mt-3">Lainnya</div>
+            <a href="index.html" class="list-group-item list-group-item-action ps-4">
+                <i class="fas fa-external-link-alt me-2 text-light"></i> Lihat Web Siswa
+            </a>
+            <a href="#" class="list-group-item list-group-item-action ps-4" data-bs-toggle="modal" data-bs-target="#modalBantuan">
+                <i class="fas fa-question-circle me-2 text-info"></i> Bantuan & Panduan
+            </a>
+            <a href="#" onclick="handleLogout(); return false;" class="list-group-item list-group-item-action ps-4 text-danger mt-2">
                 <i class="fas fa-sign-out-alt me-2"></i> Logout
             </a>
         </div>
     </div>
 
-    <nav class="main-header shadow-sm">
-        <span class="navbar-text fw-bold text-primary" id="nav-status">Dashboard</span>
+    <!-- TOP NAVBAR -->
+    <nav class="main-header shadow-sm d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-2">
+            <button type="button" class="btn btn-outline-secondary btn-sm d-md-none" onclick="document.getElementById('sidebarMenu').classList.toggle('active')">
+                <i class="fas fa-bars"></i>
+            </button>
+            <span class="fw-bold text-primary" id="nav-status">Dashboard Admin</span>
+        </div>
+        <span class="badge bg-primary-subtle text-primary">Bengkel TSM</span>
     </nav>
 
+    <!-- KONTEN UTAMA -->
     <div class="content-wrapper">
-        <div class="container-fluid">
-            <div id="welcomeMsg" class="alert alert-info text-center shadow-sm">
-                <h5>Halo Pak Sigit!</h5>
-                <p class="mb-0">Pilih menu di samping untuk mulai mengelola nilai.</p>
+        <div class="container-fluid px-0">
+
+            <!-- KARTU SELAMAT DATANG -->
+            <div id="welcomeMsg" class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <span class="badge bg-dark mb-2">ADMINISTRATOR</span>
+                    <h4 class="fw-bold mb-1">Halo Pak Sigit!</h4>
+                    <p class="text-muted mb-3">Silakan pilih menu di samping untuk menginput nilai praktik baru atau memantau serta mengedit tabel nilai kelas.</p>
+                    <div class="d-flex flex-wrap gap-2">
+                        <button type="button" class="btn btn-primary btn-sm" onclick="pilihModeEdit('PKSM', document.querySelectorAll('.list-group-item')[2])">
+                            <i class="fas fa-table me-1"></i> Buka Rekap PKSM
+                        </button>
+                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="pilihMapel('PKSM', document.querySelectorAll('.list-group-item')[0])">
+                            <i class="fas fa-plus me-1"></i> Input Nilai PKSM
+                        </button>
+                    </div>
+                </div>
             </div>
 
-            <div id="formKonten" class="card shadow" style="display:none;">
-                <div class="card-header bg-white fw-bold text-primary" id="judulForm">Input Nilai</div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6 mb-3"><label class="fw-bold">Kelas</label><select id="kelas" class="form-select" onchange="loadStudentNames()"><option value="">-- Pilih --</option><option value="XI SA">XI SA</option><option value="XI SB">XI SB</option><option value="XI SC">XI SC</option></select></div>
-                        <div class="col-md-6 mb-3"><label class="fw-bold">Nama</label><input type="text" id="nama" class="form-control" list="listSiswa" placeholder="Cari nama siswa..."><datalist id="listSiswa"></datalist></div>
-                        <div class="col-md-8 mb-3"><label class="fw-bold">Pilih Tugas / Job</label><select id="job_index" class="form-select"></select></div>
-                        <div class="col-md-4 mb-3"><label class="fw-bold">Nilai</label><input type="number" id="nilai" class="form-control" placeholder="0-100"></div>
+            <!-- FORM INPUT NILAI -->
+            <div id="formKonten" class="card border-0 shadow-sm" style="display:none;">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                    <span class="fw-bold text-primary" id="judulForm"><i class="fas fa-edit me-2"></i>Input Nilai</span>
+                    <span class="badge bg-secondary">Simpan Langsung ke Sheet</span>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Kelas</label>
+                            <select id="kelas" class="form-select" onchange="loadStudentNames()">
+                                <option value="">-- Pilih Kelas --</option>
+                                <option value="XI SA">XI SA</option>
+                                <option value="XI SB">XI SB</option>
+                                <option value="XI SC">XI SC</option>
+                            </select>
+                        </div>
+                        <div class="col-md-8">
+                            <label class="form-label fw-bold">Nama Siswa</label>
+                            <input type="text" id="nama" class="form-control" list="listSiswa" placeholder="Pilih kelas dulu, lalu ketik nama siswa...">
+                            <datalist id="listSiswa"></datalist>
+                        </div>
+                        <div class="col-md-8">
+                            <label class="form-label fw-bold">Pilih Tugas / Job Praktik</label>
+                            <select id="job_index" class="form-select"></select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Nilai (0 - 100)</label>
+                            <input type="number" id="nilai" class="form-control" min="0" max="100" placeholder="Contoh: 80">
+                        </div>
                     </div>
-                    <button id="btnSimpan" onclick="simpanNilai()" class="btn btn-success w-100 fw-bold mt-2 py-2">SIMPAN KE SHEET</button>
+                    <button id="btnSimpan" onclick="simpanNilai()" class="btn btn-success w-100 fw-bold mt-4 py-2">
+                        <i class="fas fa-save me-1"></i> SIMPAN KE SHEET
+                    </button>
                 </div>
             </div>
 
-            <div id="tabelKonten" class="card shadow mt-4" style="display:none;">
-                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center py-3">
-                    <span id="judulTabel" class="fw-bold">DATA TABEL NILAI</span>
-                    <div class="d-flex gap-2">
-                        <select id="kelasTabel" class="form-select form-select-sm w-auto" onchange="refreshTabel()">
-                            <option value="XI SA">XI SA</option><option value="XI SB">XI SB</option><option value="XI SC">XI SC</option>
-                        </select>
-                        <button onclick="refreshTabel()" class="btn btn-light btn-sm shadow-sm"><i class="fas fa-sync-alt"></i></button>
+            <!-- TABEL REKAP & EDIT NILAI -->
+            <div id="tabelKonten" style="display:none;">
+                <!-- RINGKASAN STATISTIK KELAS -->
+                <div class="row g-3 mb-3">
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm stat-card">
+                            <div class="card-body py-3">
+                                <div class="small text-muted">Total Siswa di Kelas</div>
+                                <div class="h4 fw-bold mb-0" id="statTotal">-</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm stat-card success">
+                            <div class="card-body py-3">
+                                <div class="small text-muted">Tuntas KKM (&ge; 75) Semua Job</div>
+                                <div class="h4 fw-bold text-success mb-0" id="statTuntas">-</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm stat-card danger">
+                            <div class="card-body py-3">
+                                <div class="small text-muted">Masih Ada Kekurangan / &lt; 75</div>
+                                <div class="h4 fw-bold text-danger mb-0" id="statKurang">-</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-striped mb-0 text-center" style="font-size: 0.85rem;">
-                            <thead class="table-dark"><tr id="headerTable"></tr></thead>
-                            <tbody id="bodyTable"></tbody>
-                        </table>
+
+                <!-- CARD TABEL -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-primary text-white d-flex flex-wrap justify-content-between align-items-center gap-2 py-3">
+                        <span id="judulTabel" class="fw-bold"><i class="fas fa-table me-2"></i>DATA TABEL NILAI</span>
+                        <div class="d-flex gap-2">
+                            <select id="kelasTabel" class="form-select form-select-sm w-auto fw-bold" onchange="refreshTabel()">
+                                <option value="XI SA">XI SA</option>
+                                <option value="XI SB">XI SB</option>
+                                <option value="XI SC">XI SC</option>
+                            </select>
+                            <button onclick="refreshTabel()" class="btn btn-light btn-sm shadow-sm" title="Refresh Data">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-2 mb-3">
+                            <div class="col-md-5">
+                                <input type="search" id="cariNamaTabel" class="form-control form-control-sm" placeholder="Filter nama siswa..." oninput="filterBarisTabel()">
+                            </div>
+                            <div class="col-md-4">
+                                <select id="filterKetuntasan" class="form-select form-select-sm" onchange="filterBarisTabel()">
+                                    <option value="all">Semua Siswa</option>
+                                    <option value="kurang">Hanya yang Belum Tuntas (&lt; 75 / Kosong)</option>
+                                    <option value="tuntas">Hanya yang Sudah Tuntas Semua</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover align-middle mb-0 text-center" style="font-size: 0.85rem;">
+                                <thead class="table-dark"><tr id="headerTable"></tr></thead>
+                                <tbody id="bodyTable"></tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </div>
 
+<!-- MODAL EDIT NILAI -->
 <div class="modal fade" id="modalEdit" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header bg-warning">
                 <h5 class="modal-title fw-bold text-dark"><i class="fas fa-user-edit me-2"></i>Edit Nilai Siswa</h5>
@@ -160,12 +257,12 @@
             <div class="modal-body">
                 <p class="mb-3"><strong>Nama Siswa:</strong> <span id="m_nama" class="text-primary fw-bold"></span></p>
                 <div class="mb-3">
-                    <label class="fw-bold">Pilih Job:</label>
+                    <label class="form-label fw-bold">Pilih Job:</label>
                     <select id="m_job" class="form-select"></select>
                 </div>
                 <div class="mb-3">
-                    <label class="fw-bold">Nilai Baru:</label>
-                    <input type="number" id="m_nilai" class="form-control" placeholder="0-100">
+                    <label class="form-label fw-bold">Nilai Baru (0 - 100):</label>
+                    <input type="number" id="m_nilai" class="form-control" min="0" max="100" placeholder="0-100">
                 </div>
             </div>
             <div class="modal-footer">
@@ -175,47 +272,28 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="modalBantuan" tabindex="-1" aria-labelledby="modalBantuanLabel" aria-hidden="true">
+
+<!-- MODAL BANTUAN -->
+<div class="modal fade" id="modalBantuan" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="modalBantuanLabel fw-bold">
-                    <i class="fas fa-info-circle me-2"></i> Panduan Penggunaan Panel Admin
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title fw-bold"><i class="fas fa-info-circle me-2"></i> Panduan Penggunaan Panel Admin</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-4">
-                <div class="mb-4">
-                    <h5 class="fw-bold text-primary"><i class="fas fa-key me-2"></i> 1. Keamanan Login</h5>
-                    <p class="text-muted">Gunakan akun yang sudah didaftarkan. Gunakan tombol mata (<i class="fas fa-eye"></i>) untuk melihat password yang sedang diketik guna menghindari kesalahan input.</p>
-                </div>
-                
+                <h6 class="fw-bold text-primary"><i class="fas fa-plus-circle me-2"></i> 1. Menginput Nilai Baru</h6>
+                <ul class="text-muted">
+                    <li>Pilih menu <b>Input Mapel PKSM</b> atau <b>PSSM</b> di sidebar kiri.</li>
+                    <li>Pilih kelas, ketik/pilih nama siswa, pilih nomor Job, lalu isi nilai dan klik <b>SIMPAN KE SHEET</b>.</li>
+                </ul>
                 <hr>
-
-                <div class="mb-4">
-                    <h5 class="fw-bold text-primary"><i class="fas fa-plus-circle me-2"></i> 2. Menginput Nilai</h5>
-                    <ul class="text-muted">
-                        <li>Pilih menu <b>INPUT NILAI</b> sesuai mata pelajaran.</li>
-                        <li>Pilih kelas, lalu cari nama siswa pada kolom pencarian (Autocomplete).</li>
-                        <li>Pastikan <b>Job</b> dan <b>Nilai</b> sudah benar sebelum menekan tombol <b>Simpan</b>.</li>
-                    </ul>
-                </div>
-
-                <hr>
-
-                <div class="mb-4">
-                    <h5 class="fw-bold text-primary"><i class="fas fa-edit me-2"></i> 3. Mengedit & Memantau Nilai</h5>
-                    <p class="text-muted">Buka menu <b>LIHAT & EDIT TABEL</b> untuk melihat rekapitulasi nilai per kelas.</p>
-                    <ul class="text-muted">
-                        <li>Klik tombol <span class="badge bg-warning text-dark"><i class="fas fa-edit"></i></span> pada baris nama siswa untuk memperbaiki nilai yang salah.</li>
-                        <li>Nilai di bawah <b>75 (KKM)</b> akan otomatis ditandai dengan <b>warna merah</b>.</li>
-                        <li>Gunakan tombol <b>Refresh</b> (<i class="fas fa-sync-alt"></i>) jika data terbaru belum muncul di tabel.</li>
-                    </ul>
-                </div>
-
-                <div class="alert alert-warning border-start border-4 border-warning">
-                    <i class="fas fa-exclamation-triangle me-2"></i> <b>Penting:</b> Pastikan untuk selalu <b>Logout</b> setelah selesai bekerja untuk menjaga keamanan data nilai siswa.
-                </div>
+                <h6 class="fw-bold text-primary"><i class="fas fa-edit me-2"></i> 2. Memantau & Mengedit Nilai</h6>
+                <ul class="text-muted">
+                    <li>Buka menu <b>Tabel Nilai PKSM / PSSM</b> untuk melihat seluruh nilai kelas beserta statistik ketuntasan.</li>
+                    <li>Klik tombol <span class="badge bg-warning text-dark"><i class="fas fa-edit"></i></span> pada baris siswa untuk memperbaiki nilai.</li>
+                    <li>Nilai di bawah <b>75 (KKM)</b> atau kosong otomatis ditandai dengan <b>warna merah</b>.</li>
+                </ul>
             </div>
             <div class="modal-footer bg-light">
                 <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">Tutup Panduan</button>
@@ -223,57 +301,63 @@
         </div>
     </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     // URL UNTUK DATA NILAI (GAS LAMA)
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwswDuj1YQHP4C6fXfdEa1G1rqW6hvbx6ZCnnfsRJsHC1fb5byCpHtMmU0vIZBgoYqaPg/exec";
-    
-    // URL UNTUK LOGIN (GAS BARU DARI SHEET OPERATOR)
-    const AUTH_URL = "https://script.google.com/macros/s/AKfycbxsVNyON7D61zX2jKKZ4gnEbsicM8b_ViaO4cEY0rnS-UkIaTV2EUplyy1wahtiHE6X2w/exec"; 
+
+    // URL UNTUK LOGIN (GAS DARI SHEET OPERATOR)
+    const AUTH_URL = "https://script.google.com/macros/s/AKfycbxsVNyON7D61zX2jKKZ4gnEbsicM8b_ViaO4cEY0rnS-UkIaTV2EUplyy1wahtiHE6X2w/exec";
 
     let currentMapel = '';
     let editModeMapel = '';
+    let rawRowsTabel = [];
     const myModal = new bootstrap.Modal(document.getElementById('modalEdit'));
 
-    // Fungsi Login Ambil Data dari GAS Khusus
+    // Pertahankan sesi login selama tab browser masih terbuka
+    if (sessionStorage.getItem("admin_tsm_logged_in") === "true") {
+        document.getElementById('cardLogin').style.display = 'none';
+        document.getElementById('adminPanel').style.display = 'block';
+    }
+
     async function handleLogin(e) {
-    const u = document.getElementById('user').value;
-    const p = document.getElementById('pass').value;
-    const btn = document.getElementById('btnLogin');
+        if (e) e.preventDefault();
+        const u = document.getElementById('user').value.trim();
+        const p = document.getElementById('pass').value.trim();
+        const btn = document.getElementById('btnLogin');
 
-    if(!u || !p) return alert("Username dan Password harus diisi!");
+        if (!u || !p) return alert("Username dan Password harus diisi!");
 
-    // Simpan teks asli tombol agar bisa dikembalikan nanti
-    const originalText = btn.innerHTML;
+        const originalText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Memverifikasi...`;
 
-    // Tambahkan animasi spinner ke dalam tombol
-    btn.disabled = true;
-    btn.innerHTML = `
-        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-        Memverifikasi...
-    `;
+        try {
+            const resp = await fetch(`${AUTH_URL}?user=${encodeURIComponent(u)}&pass=${encodeURIComponent(p)}`);
+            const hasil = await resp.json();
 
-    try {
-        const resp = await fetch(`${AUTH_URL}?user=${encodeURIComponent(u)}&pass=${encodeURIComponent(p)}`);
-        const hasil = await resp.json();
-
-        if(hasil.status === "success") {
-            document.getElementById('cardLogin').style.display = 'none';
-            document.getElementById('adminPanel').style.display = 'block';
-        } else {
-            alert("Gagal: " + hasil.message);
-            // Kembalikan tombol ke semula jika gagal
+            if (hasil.status === "success") {
+                sessionStorage.setItem("admin_tsm_logged_in", "true");
+                document.getElementById('cardLogin').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+            } else {
+                alert("Gagal: " + hasil.message);
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
+        } catch (err) {
+            alert("Terjadi kesalahan koneksi ke server login.");
             btn.disabled = false;
             btn.innerHTML = originalText;
         }
-    } catch (err) {
-        alert("Terjadi kesalahan koneksi ke server login.");
-        btn.disabled = false;
-        btn.innerHTML = originalText;
     }
-}
 
-    
+    function handleLogout() {
+        sessionStorage.removeItem("admin_tsm_logged_in");
+        location.reload();
+    }
+
     document.getElementById('togglePassword').addEventListener('click', function () {
         const passwordField = document.getElementById('pass');
         const eyeIcon = document.getElementById('eyeIcon');
@@ -283,79 +367,162 @@
         eyeIcon.classList.toggle('fa-eye-slash');
     });
 
+    function tutupSidebarMobile() {
+        document.getElementById('sidebarMenu').classList.remove('active');
+    }
+
     function pilihMapel(m, el) {
         currentMapel = m;
+        tutupSidebarMobile();
         document.getElementById('welcomeMsg').style.display = 'none';
         document.getElementById('tabelKonten').style.display = 'none';
         document.getElementById('formKonten').style.display = 'block';
-        document.getElementById('judulForm').innerText = "INPUT " + m;
+        document.getElementById('judulForm').innerHTML = `<i class="fas fa-edit me-2"></i>INPUT NILAI ${m}`;
+        document.getElementById('nav-status').innerText = `Input Nilai / ${m}`;
         document.querySelectorAll('.list-group-item').forEach(i => i.classList.remove('active-menu'));
-        el.classList.add('active-menu');
+        if (el) el.classList.add('active-menu');
         updateJobSelect('job_index', m);
     }
 
     function updateJobSelect(id, m) {
         const js = document.getElementById(id);
         const j = {
-            'PKSM': ["Kelistrikan Dasar", "Overhaul Starter", "Rangkai Starter", "Pengapian", "Pengisian", "Pengapian & Pengisian", "Penerangan"],
+            'PKSM': ["Sistem Pengapian", "Sistem Starter", "Sistem Pengisian", "Sistem Penerangan"],
             'PSSM': ["Rem Tromol", "Rem Cakram", "CVT Drive Pulley", "Kemudi/Komstir", "Suspensi Depan", "Tambal Ban Bakar", "Tyre Changer"]
         };
         js.innerHTML = '<option value="">-- Pilih Job --</option>';
-        j[m].forEach((item, i) => js.innerHTML += `<option value="${i+1}">Job ${i+1} - ${item}</option>`);
+        j[m].forEach((item, i) => js.innerHTML += `<option value="${i + 1}">Job ${i + 1} - ${item}</option>`);
     }
 
     function loadStudentNames() {
         const k = document.getElementById('kelas').value;
-        if(!k) return;
+        if (!k) return;
         fetch(`${SCRIPT_URL}?sheet=${encodeURIComponent(k)}`).then(r => r.json()).then(d => {
-            const dl = document.getElementById('listSiswa'); dl.innerHTML = "";
-            d.forEach(r => { if(r[0]) dl.innerHTML += `<option value="${r[0]}">`; });
+            const dl = document.getElementById('listSiswa');
+            dl.innerHTML = "";
+            d.forEach(r => { if (r[0]) dl.innerHTML += `<option value="${r[0]}">`; });
         });
     }
 
     function simpanNilai() {
         const btn = document.getElementById('btnSimpan');
-        const k = document.getElementById('kelas').value, n = document.getElementById('nama').value, j = document.getElementById('job_index').value, ni = document.getElementById('nilai').value;
-        if(!k || !n || !j || !ni) return alert("Mohon lengkapi semua data!");
-        btn.disabled = true; btn.innerText = "Mengirim...";
+        const k = document.getElementById('kelas').value;
+        const n = document.getElementById('nama').value;
+        const j = document.getElementById('job_index').value;
+        const ni = document.getElementById('nilai').value;
+        if (!k || !n || !j || !ni) return alert("Mohon lengkapi semua data!");
+        btn.disabled = true;
+        btn.innerText = "Mengirim...";
         sendUpdate(k, n, j, ni, "handleUpdateResponse");
     }
 
     function sendUpdate(k, n, j, ni, cb) {
         const url = `${SCRIPT_URL}?action=update&sheet=${encodeURIComponent(k)}&nama=${encodeURIComponent(n)}&job_index=${j}&nilai=${ni}&callback=${cb}`;
-        const s = document.createElement('script'); s.src = url; document.head.appendChild(s);
+        const s = document.createElement('script');
+        s.src = url;
+        document.head.appendChild(s);
     }
 
-    window.handleUpdateResponse = function(r) {
+    window.handleUpdateResponse = function (r) {
         document.getElementById('btnSimpan').disabled = false;
-        document.getElementById('btnSimpan').innerText = "SIMPAN KE SHEET";
-        if(r.status === "success") { alert("✅ Nilai berhasil disimpan!"); document.getElementById('nilai').value = ""; }
+        document.getElementById('btnSimpan').innerHTML = `<i class="fas fa-save me-1"></i> SIMPAN KE SHEET`;
+        if (r.status === "success") {
+            alert("✅ Nilai berhasil disimpan!");
+            document.getElementById('nilai').value = "";
+        }
     };
 
     function pilihModeEdit(m, el) {
         editModeMapel = m;
+        tutupSidebarMobile();
         document.getElementById('welcomeMsg').style.display = 'none';
         document.getElementById('formKonten').style.display = 'none';
         document.getElementById('tabelKonten').style.display = 'block';
+        document.getElementById('judulTabel').innerHTML = `<i class="fas fa-table me-2"></i>REKAP & EDIT NILAI ${m}`;
+        document.getElementById('nav-status').innerText = `Tabel Nilai / ${m}`;
         document.querySelectorAll('.list-group-item').forEach(i => i.classList.remove('active-menu'));
-        el.classList.add('active-menu');
+        if (el) el.classList.add('active-menu');
         refreshTabel();
     }
 
     function refreshTabel() {
         const k = document.getElementById('kelasTabel').value;
-        const h = document.getElementById('headerTable'), b = document.getElementById('bodyTable');
+        const h = document.getElementById('headerTable');
+        const b = document.getElementById('bodyTable');
         b.innerHTML = '<tr><td colspan="11" class="py-4"><div class="spinner-border text-primary shadow-sm"></div> Memuat Data...</td></tr>';
+
         fetch(`${SCRIPT_URL}?sheet=${encodeURIComponent(k)}&mapel=${editModeMapel}`).then(r => r.json()).then(d => {
-            const cols = (editModeMapel === 'PKSM') ? ["Aksi", "Nama", "J1", "J2", "J3", "J4", "J5", "J6", "J7", "B", "NA"] : ["Aksi", "Nama", "RemT", "RemC", "CVT", "Kmd", "Susp", "Ban", "Tyre", "B", "NA"];
+            const cols = (editModeMapel === 'PKSM')
+                ? ["Aksi", "Nama Siswa", "Pengapian", "Starter", "Pengisian", "Penerangan", "NA"]
+                : ["Aksi", "Nama Siswa", "RemT", "RemC", "CVT", "Kmd", "Susp", "Ban", "Tyre", "B", "NA"];
             h.innerHTML = cols.map(c => `<th>${c}</th>`).join('');
-            b.innerHTML = "";
-            d.forEach(row => {
-                let tr = document.createElement('tr');
-                let btnHtml = `<td><button class="btn btn-warning btn-edit-row shadow-sm" onclick="bukaModalEdit('${row[0]}')"><i class="fas fa-edit"></i></button></td>`;
-                tr.innerHTML = btnHtml + row.map((v, i) => `<td class="${i > 0 && i < 8 && v < 75 && v !== '' ? 'text-danger fw-bold' : ''}">${v || '-'}</td>`).join('');
-                b.appendChild(tr);
-            });
+
+            rawRowsTabel = Array.isArray(d) ? d : [];
+            hitungStatistik(rawRowsTabel);
+            filterBarisTabel();
+        });
+    }
+
+    function hitungStatistik(rows) {
+        const jmlJob = (editModeMapel === 'PKSM') ? 4 : 7;
+        let tuntasSemua = 0;
+        rows.forEach(row => {
+            let ok = true;
+            for (let i = 1; i <= jmlJob; i++) {
+                const v = parseFloat(row[i]);
+                if (isNaN(v) || v < 75) { ok = false; break; }
+            }
+            if (ok) tuntasSemua++;
+        });
+        document.getElementById('statTotal').innerText = rows.length;
+        document.getElementById('statTuntas').innerText = tuntasSemua;
+        document.getElementById('statKurang').innerText = rows.length - tuntasSemua;
+    }
+
+    function filterBarisTabel() {
+        const q = document.getElementById('cariNamaTabel').value.toLowerCase().trim();
+        const st = document.getElementById('filterKetuntasan').value;
+        const b = document.getElementById('bodyTable');
+        const jmlJob = (editModeMapel === 'PKSM') ? 4 : 7;
+
+        const filtered = rawRowsTabel.filter(row => {
+            const nama = String(row[0] || "").toLowerCase();
+            if (!nama.includes(q)) return false;
+
+            let isTuntas = true;
+            for (let i = 1; i <= jmlJob; i++) {
+                const v = parseFloat(row[i]);
+                if (isNaN(v) || v < 75) { isTuntas = false; break; }
+            }
+            if (st === "tuntas") return isTuntas;
+            if (st === "kurang") return !isTuntas;
+            return true;
+        });
+
+        b.innerHTML = "";
+        if (!filtered.length) {
+            b.innerHTML = `<tr><td colspan="11" class="py-4 text-muted">Data tidak ditemukan.</td></tr>`;
+            return;
+        }
+
+        filtered.forEach(row => {
+            const tr = document.createElement('tr');
+            const namaAsli = String(row[0] || "").replace(/'/g, "\\'");
+            const btnHtml = `<td><button class="btn btn-warning btn-edit-row shadow-sm" onclick="bukaModalEdit('${namaAsli}')"><i class="fas fa-edit"></i></button></td>`;
+
+            // Ambil kolom relevan sesuai mapel
+            const colsToRender = (editModeMapel === 'PKSM')
+                ? [row[0], row[1], row[2], row[3], row[4], row[row.length - 1]]
+                : row;
+
+            tr.innerHTML = btnHtml + colsToRender.map((v, i) => {
+                if (i === 0) return `<td class="text-start fw-medium">${v || '-'}</td>`;
+                const isJobCol = i <= jmlJob;
+                const num = parseFloat(v);
+                const merah = isJobCol && (v === '' || v === null || isNaN(num) || num < 75);
+                return `<td class="${merah ? 'text-danger fw-bold' : ''}">${(v !== '' && v !== null && v !== undefined) ? v : '-'}</td>`;
+            }).join('');
+            b.appendChild(tr);
         });
     }
 
@@ -367,17 +534,23 @@
     }
 
     function simpanEditModal() {
-        const k = document.getElementById('kelasTabel').value, n = document.getElementById('m_nama').innerText, j = document.getElementById('m_job').value, ni = document.getElementById('m_nilai').value;
-        if(!j || !ni) return alert("Pilih Job dan Isi Nilai!");
+        const k = document.getElementById('kelasTabel').value;
+        const n = document.getElementById('m_nama').innerText;
+        const j = document.getElementById('m_job').value;
+        const ni = document.getElementById('m_nilai').value;
+        if (!j || !ni) return alert("Pilih Job dan Isi Nilai!");
         document.getElementById('btnUpdateModal').disabled = true;
         sendUpdate(k, n, j, ni, "handleModalResponse");
     }
 
-    window.handleModalResponse = function(r) {
+    window.handleModalResponse = function (r) {
         document.getElementById('btnUpdateModal').disabled = false;
-        if(r.status === "success") { alert("✅ Data berhasil diupdate!"); myModal.hide(); refreshTabel(); }
+        if (r.status === "success") {
+            alert("✅ Data berhasil diupdate!");
+            myModal.hide();
+            refreshTabel();
+        }
     };
 </script>
-    
 </body>
 </html>

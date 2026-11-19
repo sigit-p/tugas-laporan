@@ -195,6 +195,7 @@
   ];
 
   let kelasAktif = "", dataSiswa = [], timerLoad = null;
+  let tempNames = null, tempTable = null;
 
   document.getElementById("containerJobsheet").innerHTML = DAFTAR_JOBSHEET.map(j => {
     const link = j.pdf !== "#" ? `href="${j.pdf}" target="_blank"` : `href="#" onclick="alert('Link PDF Jobsheet ${j.no} belum diisi');return false;"`;
@@ -224,53 +225,58 @@
 
   function muatUlangKelas() {
     let detik = 0;
+    tempNames = null;
+    tempTable = null;
+
     document.getElementById("tbodySiswa").innerHTML = `<tr><td colspan="5" class="text-center py-5"><div class="spinner-border text-primary mb-2"></div><div class="fw-bold">Memuat ${kelasAktif}... (<span id="detikLoad">0</span>s)</div></td></tr>`;
     clearInterval(timerLoad);
     timerLoad = setInterval(() => { detik++; const el = document.getElementById("detikLoad"); if (el) el.textContent = detik; }, 1000);
 
-    const old = document.getElementById("jsonpGas");
-    if (old) old.remove();
-    const s = document.createElement("script");
-    s.id = "jsonpGas";
-    s.src = `${API_URL}?action=read&sheet=${encodeURIComponent(kelasAktif)}&callback=terimaData&t=${Date.now()}`;
-    document.head.appendChild(s);
+    // Panggil 2 endpoint GAS secara bersamaan: daftar nama siswa & tabel nilai
+    ["gasNames", "gasTable"].forEach(id => { const old = document.getElementById(id); if (old) old.remove(); });
+
+    const s1 = document.createElement("script");
+    s1.id = "gasNames";
+    s1.src = `${API_URL}?sheet=${encodeURIComponent(kelasAktif)}&callback=terimaNama&t=${Date.now()}`;
+    document.head.appendChild(s1);
+
+    const s2 = document.createElement("script");
+    s2.id = "gasTable";
+    s2.src = `${API_URL}?action=read&sheet=${encodeURIComponent(kelasAktif)}&callback=terimaNilai&t=${Date.now()}`;
+    document.head.appendChild(s2);
   }
 
-window.terimaData = function(res) {
+  window.terimaNama = function(names) {
+    tempNames = Array.isArray(names) ? names : [];
+    gabungkanData();
+  };
+
+  window.terimaNilai = function(table) {
+    tempTable = Array.isArray(table) ? table : [];
+    gabungkanData();
+  };
+
+  function gabungkanData() {
+    // Tunggu sampai kedua panggilan selesai
+    if (tempNames === null || tempTable === null) return;
     clearInterval(timerLoad);
-    if (!Array.isArray(res) || res.length < 2) {
-      dataSiswa = [];
-      renderTabel([]);
-      return;
-    }
 
-    const headers = res[0].map(h => String(h || "").trim());
-    const rows = res.slice(1);
+    if (tempTable.length < 2) { dataSiswa = []; renderTabel([]); return; }
 
-    // 1. Deteksi otomatis kolom Nama dari baris data pertama yang valid (cari kolom berisi teks huruf, bukan angka nomor/NIS)
-    const sampleRow = rows.find(r => r && r.some(cell => isNaN(String(cell || "").trim()) && String(cell || "").trim().length > 2)) || rows[0];
-    let idxNama = sampleRow.findIndex(cell => {
-      const val = String(cell || "").trim();
-      return val.length > 2 && isNaN(val);
-    });
-    if (idxNama === -1) idxNama = 0;
+    // Header dari tesRead: ["XI TSM A", "Sistem Pengapian", "Sistem Starter", "Sistem Pengisian", "Sistem Penerangan", "Nilai Akhir"]
+    const headers = tempTable[0].map(h => String(h || "").trim());
+    const rows = tempTable.slice(1);
 
-    // 2. Deteksi kolom Nilai Akhir (kolom terakhir atau yang header-nya mengandung "Akhir" / "NA")
-    let idxAkhir = headers.findIndex(h => /nilai\s*akhir|akhir|\bna\b/i.test(h));
-    if (idxAkhir === -1) idxAkhir = headers.length - 1;
-    const idxBelum = headers.findIndex(h => /belum|kurang/i.test(h));
-
-    // 3. Kumpulkan kolom-kolom Job (semua kolom setelah kolom Nama, kecuali Nilai Akhir & Belum)
+    const idxAkhir = headers.findIndex(h => /nilai\s*akhir|akhir|\bna\b/i.test(h));
     const jobCols = [];
     headers.forEach((h, i) => {
-      if (i > idxNama && i !== idxAkhir && i !== idxBelum) {
-        jobCols.push({ i, judul: h || `Job ${jobCols.length + 1}` });
-      }
+      if (i > 0 && i !== idxAkhir && h !== "") jobCols.push({ i, judul: h });
     });
 
-    // 4. Olah setiap baris siswa
-    dataSiswa = rows.map(r => {
-      const nama = String(r[idxNama] || "").trim();
+    dataSiswa = tempNames.map((namaRaw, idx) => {
+      const nama = String(namaRaw || "").trim();
+      const r = rows[idx] || [];
+
       let na = "-";
       if (idxAkhir >= 0 && r[idxAkhir] !== "" && r[idxAkhir] != null) {
         const n = parseFloat(r[idxAkhir]);
@@ -281,8 +287,10 @@ window.terimaData = function(res) {
         const raw = String(r[c.i] ?? "").trim();
         const num = parseFloat(raw);
         let status = "Belum";
-        if (raw !== "" && !isNaN(num)) status = num >= 75 ? "Tuntas" : "Perlu Perbaikan";
-        return { judul: c.judul, nilai: raw === "" ? "-" : raw, status };
+        if (raw !== "" && !isNaN(num) && num > 0) {
+          status = num >= 75 ? "Tuntas" : "Perlu Perbaikan";
+        }
+        return { judul: c.judul, nilai: raw === "" ? "0" : raw, status };
       });
 
       return {
@@ -291,10 +299,10 @@ window.terimaData = function(res) {
         jobs,
         kurang: jobs.filter(j => j.status !== "Tuntas").length
       };
-    }).filter(s => s.nama !== "" && isNaN(s.nama));
+    }).filter(s => s.nama !== "");
 
     renderTabel(dataSiswa);
-  };
+  }
 
   function filterSiswa(q) {
     const key = q.toLowerCase().trim();

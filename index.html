@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Praktik & Nilai PKSM | TSM SMK Muhammadiyah Pakem</title>
+    <title>Portal Praktik, Materi & Jobsheet PKSM | TSM SMK Muhammadiyah Pakem</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -27,7 +27,7 @@
 
         /* NAVBAR GLASSMORPHISM */
         .top-navbar {
-            background: rgba(255, 255, 255, 0.88);
+            background: rgba(255, 255, 255, 0.92);
             backdrop-filter: blur(12px);
             border-bottom: 1px solid #e2e8f0;
             position: sticky;
@@ -44,6 +44,25 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 6px 14px -4px rgba(37, 99, 235, 0.45);
+        }
+
+        /* NAV MENU PILLS */
+        .nav-portal-pills .nav-link {
+            color: #475569;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-radius: 10px;
+            padding: 8px 16px;
+            transition: all 0.2s ease;
+        }
+        .nav-portal-pills .nav-link:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+        .nav-portal-pills .nav-link.active {
+            background: #2563eb;
+            color: #fff;
+            box-shadow: 0 4px 12px -3px rgba(37, 99, 235, 0.45);
         }
 
         /* HERO SECTION */
@@ -73,6 +92,31 @@
             border: 1px solid #e2e8f0;
             border-radius: var(--card-radius);
             box-shadow: 0 4px 20px -6px rgba(15, 23, 42, 0.05);
+        }
+        .resource-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 20px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+        .resource-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px -10px rgba(15, 23, 42, 0.12);
+            border-color: #cbd5e1;
+        }
+        .resource-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin-bottom: 14px;
         }
 
         /* STATISTIC BOX */
@@ -178,7 +222,7 @@
 
 <!-- TOP NAVBAR -->
 <header class="top-navbar py-3">
-    <div class="container d-flex flex-wrap justify-content-between align-items-center gap-2">
+    <div class="container d-flex flex-wrap justify-content-between align-items-center gap-3">
         <a href="index.html" class="d-flex align-items-center gap-3 text-decoration-none">
             <div class="brand-badge">
                 <i class="fas fa-motorcycle fs-5"></i>
@@ -189,10 +233,26 @@
             </div>
         </a>
 
+        <!-- MENU UTAMA: REKAP NILAI, MATERI, JOBSHEET -->
+        <ul class="nav nav-pills nav-portal-pills gap-1" id="portalMainNav">
+            <li class="nav-item">
+                <button class="nav-link active" type="button" onclick="bukaTabPortal('nilai', this)">
+                    <i class="fas fa-chart-bar me-1"></i> Rekap Nilai
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" type="button" onclick="bukaTabPortal('materi', this)">
+                    <i class="fas fa-book-open me-1"></i> Materi
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" type="button" onclick="bukaTabPortal('jobsheet', this)">
+                    <i class="fas fa-file-alt me-1"></i> Jobsheet
+                </button>
+            </li>
+        </ul>
+
         <div class="d-flex align-items-center gap-2">
-            <span class="badge rounded-pill bg-primary-subtle text-primary px-3 py-2 fw-semibold d-none d-sm-inline-flex align-items-center">
-                <i class="fas fa-bolt me-1"></i> Kelas XI TSM
-            </span>
             <a href="admin.html" class="btn btn-outline-dark btn-sm rounded-3 fw-semibold px-3 py-2">
                 <i class="fas fa-user-shield me-1"></i> Login Guru / Admin
             </a>
@@ -208,12 +268,23 @@
         <div class="row align-items-center g-4">
             <div class="col-lg-8">
                 <span class="badge bg-primary rounded-pill px-3 py-1 mb-2 fw-semibold">
-                    PEMELIHARAAN KELISTRIKAN SEPEDA MOTOR
+                    PEMELIHARAAN KELISTRIKAN SEPEDA MOTOR &bull; TP 2026/2027
                 </span>
-                <h2 class="fw-bold mb-2">Cek Capaian Praktik & Nilai PKSM</h2>
-                <p class="text-white-50 mb-0" style="max-width: 600px;">
-                    Pilih kelas dan cari nama Anda untuk melihat rincian nilai setiap job praktik (Pengapian, Starter, Pengisian, Penerangan) serta status ketuntasan KKM (75).
+                <h2 class="fw-bold mb-2">Portal Pembelajaran & Praktik PKSM</h2>
+                <p class="text-white-50 mb-3" style="max-width: 600px;">
+                    Akses modul pembelajaran, unduh lembar kerja (Jobsheet) praktik bengkel, serta pantau capaian nilai dan ketuntasan KKM Anda secara langsung.
                 </p>
+                <div class="d-flex flex-wrap gap-2">
+                    <button type="button" class="btn btn-primary btn-sm rounded-3 px-3 py-2 fw-semibold" onclick="bukaTabPortal('nilai', document.querySelectorAll('#portalMainNav .nav-link')[0])">
+                        <i class="fas fa-search me-1"></i> Cek Nilai Saya
+                    </button>
+                    <button type="button" class="btn btn-outline-light btn-sm rounded-3 px-3 py-2 fw-semibold" onclick="bukaTabPortal('materi', document.querySelectorAll('#portalMainNav .nav-link')[1])">
+                        <i class="fas fa-book me-1"></i> Buka Materi
+                    </button>
+                    <button type="button" class="btn btn-outline-light btn-sm rounded-3 px-3 py-2 fw-semibold" onclick="bukaTabPortal('jobsheet', document.querySelectorAll('#portalMainNav .nav-link')[2])">
+                        <i class="fas fa-clipboard-list me-1"></i> Lihat Jobsheet
+                    </button>
+                </div>
             </div>
             <div class="col-lg-4 text-lg-end">
                 <div class="d-inline-block text-start bg-white bg-opacity-10 border border-white border-opacity-10 rounded-4 p-3">
@@ -225,110 +296,154 @@
         </div>
     </section>
 
-    <!-- FILTER KELAS & PENCARIAN CEPAT -->
-    <section class="modern-card p-4 mb-4">
-        <div class="row g-3 align-items-end">
-            <div class="col-lg-5">
-                <label class="form-label small fw-bold text-secondary mb-2">1. Pilih Rombel / Kelas</label>
-                <div class="d-flex flex-wrap gap-2 class-pill-group" id="btnGroupKelas">
-                    <button type="button" class="btn btn-primary" data-kelas="XI SA" onclick="gantiKelas('XI SA', this)">XI SA</button>
-                    <button type="button" class="btn btn-outline-secondary" data-kelas="XI SB" onclick="gantiKelas('XI SB', this)">XI SB</button>
-                    <button type="button" class="btn btn-outline-secondary" data-kelas="XI SC" onclick="gantiKelas('XI SC', this)">XI SC</button>
+    <!-- =========================================================
+         SECTION 1: REKAP NILAI PRAKTIK
+    ========================================================== -->
+    <div id="sectionNilai">
+        <!-- FILTER KELAS & PENCARIAN CEPAT -->
+        <section class="modern-card p-4 mb-4">
+            <div class="row g-3 align-items-end">
+                <div class="col-lg-5">
+                    <label class="form-label small fw-bold text-secondary mb-2">1. Pilih Rombel / Kelas</label>
+                    <div class="d-flex flex-wrap gap-2 class-pill-group" id="btnGroupKelas">
+                        <button type="button" class="btn btn-primary" data-kelas="XI SA" onclick="gantiKelas('XI SA', this)">XI SA</button>
+                        <button type="button" class="btn btn-outline-secondary" data-kelas="XI SB" onclick="gantiKelas('XI SB', this)">XI SB</button>
+                        <button type="button" class="btn btn-outline-secondary" data-kelas="XI SC" onclick="gantiKelas('XI SC', this)">XI SC</button>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <label for="inputCariSiswa" class="form-label small fw-bold text-secondary mb-2">2. Cari Nama Anda</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0 text-muted"><i class="fas fa-search"></i></span>
+                        <input type="search" id="inputCariSiswa" class="form-control border-start-0 bg-light" placeholder="Ketik nama siswa..." oninput="terapkanFilter()">
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <label for="filterStatusSiswa" class="form-label small fw-bold text-secondary mb-2">3. Filter Status</label>
+                    <div class="d-flex gap-2">
+                        <select id="filterStatusSiswa" class="form-select bg-light" onchange="terapkanFilter()">
+                            <option value="all">Semua Siswa</option>
+                            <option value="tuntas">Sudah Tuntas Semua</option>
+                            <option value="kurang">Ada Kekurangan (&lt; 75)</option>
+                        </select>
+                        <button type="button" onclick="muatDataKelas()" class="btn btn-outline-primary px-3" title="Refresh Data Terbaru">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
+        </section>
 
-            <div class="col-lg-4">
-                <label for="inputCariSiswa" class="form-label small fw-bold text-secondary mb-2">2. Cari Nama Anda</label>
-                <div class="input-group">
-                    <span class="input-group-text bg-light border-end-0 text-muted"><i class="fas fa-search"></i></span>
-                    <input type="search" id="inputCariSiswa" class="form-control border-start-0 bg-light" placeholder="Ketik nama siswa..." oninput="terapkanFilter()">
+        <!-- KARTU STATISTIK RINGKAS -->
+        <section class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="stat-box">
+                    <div class="stat-icon blue"><i class="fas fa-users"></i></div>
+                    <div>
+                        <div class="small text-muted fw-medium">Jumlah Siswa (<span id="labelKelasStat">XI SA</span>)</div>
+                        <div class="h4 fw-bold mb-0 text-dark" id="statTotal">-</div>
+                    </div>
                 </div>
             </div>
-
-            <div class="col-lg-3">
-                <label for="filterStatusSiswa" class="form-label small fw-bold text-secondary mb-2">3. Filter Status</label>
-                <div class="d-flex gap-2">
-                    <select id="filterStatusSiswa" class="form-select bg-light" onchange="terapkanFilter()">
-                        <option value="all">Semua Siswa</option>
-                        <option value="tuntas">Sudah Tuntas Semua</option>
-                        <option value="kurang">Ada Kekurangan (&lt; 75)</option>
-                    </select>
-                    <button type="button" onclick="muatDataKelas()" class="btn btn-outline-primary px-3" title="Refresh Data Terbaru">
-                        <i class="fas fa-sync-alt"></i>
-                    </button>
+            <div class="col-md-4">
+                <div class="stat-box">
+                    <div class="stat-icon green"><i class="fas fa-award"></i></div>
+                    <div>
+                        <div class="small text-muted fw-medium">Tuntas KKM (&ge; 75) Semua Job</div>
+                        <div class="h4 fw-bold mb-0 text-success" id="statTuntas">-</div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+            <div class="col-md-4">
+                <div class="stat-box">
+                    <div class="stat-icon amber"><i class="fas fa-clock"></i></div>
+                    <div>
+                        <div class="small text-muted fw-medium">Perlu Perbaikan / Susulan</div>
+                        <div class="h4 fw-bold mb-0 text-danger" id="statKurang">-</div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-    <!-- KARTU STATISTIK RINGKAS -->
-    <section class="row g-3 mb-4">
-        <div class="col-md-4">
-            <div class="stat-box">
-                <div class="stat-icon blue"><i class="fas fa-users"></i></div>
+        <!-- TABEL REKAP NILAI KELAS -->
+        <section class="modern-card overflow-hidden mb-4">
+            <div class="p-4 border-bottom bg-white d-flex flex-wrap justify-content-between align-items-center gap-2">
                 <div>
-                    <div class="small text-muted fw-medium">Jumlah Siswa (<span id="labelKelasStat">XI SA</span>)</div>
-                    <div class="h4 fw-bold mb-0 text-dark" id="statTotal">-</div>
+                    <h5 class="fw-bold text-dark mb-0">
+                        <i class="fas fa-list-check text-primary me-2"></i>Rekapitulasi Nilai Praktik &mdash; <span id="judulKelasTabel" class="text-primary">XI SA</span>
+                    </h5>
+                    <small class="text-muted">Klik tombol <b>Detail</b> pada baris nama Anda untuk melihat rincian per job.</small>
                 </div>
+                <span class="badge bg-light text-secondary border px-3 py-2" id="infoJumlahTampil">Memuat...</span>
             </div>
-        </div>
-        <div class="col-md-4">
-            <div class="stat-box">
-                <div class="stat-icon green"><i class="fas fa-award"></i></div>
-                <div>
-                    <div class="small text-muted fw-medium">Tuntas KKM (&ge; 75) Semua Job</div>
-                    <div class="h4 fw-bold mb-0 text-success" id="statTuntas">-</div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="stat-box">
-                <div class="stat-icon amber"><i class="fas fa-clock"></i></div>
-                <div>
-                    <div class="small text-muted fw-medium">Perlu Perbaikan / Susulan</div>
-                    <div class="h4 fw-bold mb-0 text-danger" id="statKurang">-</div>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <!-- TABEL REKAP NILAI KELAS -->
-    <section class="modern-card overflow-hidden mb-4">
-        <div class="p-4 border-bottom bg-white d-flex flex-wrap justify-content-between align-items-center gap-2">
-            <div>
-                <h5 class="fw-bold text-dark mb-0">
-                    <i class="fas fa-list-check text-primary me-2"></i>Rekapitulasi Nilai Praktik &mdash; <span id="judulKelasTabel" class="text-primary">XI SA</span>
-                </h5>
-                <small class="text-muted">Klik tombol <b>Detail</b> pada baris nama Anda untuk melihat rincian per job.</small>
+            <div class="table-responsive">
+                <table class="table table-hover table-modern align-middle mb-0 text-center" style="font-size: 0.88rem;">
+                    <thead>
+                        <tr id="theadRekap">
+                            <th width="50">No</th>
+                            <th class="text-start">Nama Siswa</th>
+                            <th>Pengapian</th>
+                            <th>Starter</th>
+                            <th>Pengisian</th>
+                            <th>Penerangan</th>
+                            <th>Nilai Akhir</th>
+                            <th>Status</th>
+                            <th width="95">Rincian</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyRekap">
+                        <tr>
+                            <td colspan="9" class="py-5 text-muted">
+                                <div class="spinner-border spinner-border-sm text-primary me-2"></div> Mengambil data nilai dari server...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-            <span class="badge bg-light text-secondary border px-3 py-2" id="infoJumlahTampil">Memuat...</span>
-        </div>
+        </section>
+    </div>
 
-        <div class="table-responsive">
-            <table class="table table-hover table-modern align-middle mb-0 text-center" style="font-size: 0.88rem;">
-                <thead>
-                    <tr id="theadRekap">
-                        <th width="50">No</th>
-                        <th class="text-start">Nama Siswa</th>
-                        <th>Pengapian</th>
-                        <th>Starter</th>
-                        <th>Pengisian</th>
-                        <th>Penerangan</th>
-                        <th>Nilai Akhir</th>
-                        <th>Status</th>
-                        <th width="95">Rincian</th>
-                    </tr>
-                </thead>
-                <tbody id="tbodyRekap">
-                    <tr>
-                        <td colspan="9" class="py-5 text-muted">
-                            <div class="spinner-border spinner-border-sm text-primary me-2"></div> Mengambil data nilai dari server...
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </section>
+    <!-- =========================================================
+         SECTION 2: MATERI PEMBELAJARAN PKSM
+    ========================================================== -->
+    <div id="sectionMateri" style="display: none;">
+        <section class="modern-card p-4 mb-4">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+                <div>
+                    <h5 class="fw-bold text-dark mb-1"><i class="fas fa-book-open text-primary me-2"></i>Materi Pembelajaran PKSM (Kelas XI TSM)</h5>
+                    <p class="text-muted small mb-0">Pelajari modul teori, wiring diagram kelistrikan sepeda motor, dan SOP pengukuran sebelum praktik di bengkel.</p>
+                </div>
+                <div class="input-group" style="max-width: 280px;">
+                    <span class="input-group-text bg-light border-end-0"><i class="fas fa-search text-muted"></i></span>
+                    <input type="search" id="cariMateriInput" class="form-control border-start-0 bg-light" placeholder="Cari topik materi..." oninput="renderDaftarMateri(this.value)">
+                </div>
+            </div>
+
+            <div class="row g-3" id="gridMateriContainer"></div>
+        </section>
+    </div>
+
+    <!-- =========================================================
+         SECTION 3: JOBSHEET PRAKTIK PKSM
+    ========================================================== -->
+    <div id="sectionJobsheet" style="display: none;">
+        <section class="modern-card p-4 mb-4">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+                <div>
+                    <h5 class="fw-bold text-dark mb-1"><i class="fas fa-clipboard-list text-primary me-2"></i>Jobsheet & Lembar Kerja Praktik PKSM</h5>
+                    <p class="text-muted small mb-0">Gunakan lembar kerja di bawah ini saat pelaksanaan praktik. Penilaian meliputi K3 (15%), Prosedur (35%), Hasil Ukur (35%), dan Sikap (15%).</p>
+                </div>
+                <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill fw-semibold">
+                    4 Job Utama Semester Ini
+                </span>
+            </div>
+
+            <div class="row g-3" id="gridJobsheetContainer"></div>
+        </section>
+    </div>
 
 </main>
 
@@ -364,6 +479,25 @@
     </div>
 </div>
 
+<!-- MODAL PRATINJAU JOBSHEET / RUBRIK -->
+<div class="modal fade" id="modalInfoJob" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 18px;">
+            <div class="modal-header border-bottom px-4 py-3">
+                <div>
+                    <span class="badge bg-warning-subtle text-warning-emphasis mb-1" id="jobModalKode">JOB 1</span>
+                    <h5 class="modal-title fw-bold text-dark mb-0" id="jobModalJudul">Judul Jobsheet</h5>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+            </div>
+            <div class="modal-body p-4" id="jobModalBody"></div>
+            <div class="modal-footer border-top px-4">
+                <button type="button" class="btn btn-secondary rounded-3 px-4" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- FOOTER -->
 <footer class="app-footer py-3 small text-muted">
     <div class="container d-flex flex-wrap justify-content-between align-items-center gap-2">
@@ -389,11 +523,213 @@
     let tempTable = null;
 
     const modalDetail = new bootstrap.Modal(document.getElementById('modalDetailSiswa'));
+    const modalInfoJob = new bootstrap.Modal(document.getElementById('modalInfoJob'));
+
+    // DATA MATERI PEMBELAJARAN PKSM (Folder 01_Materi)
+    const DATA_MATERI_PKSM = [
+        {
+            kode: "MTR-01",
+            judul: "Sistem Pengapian Sepeda Motor (AC, DC & Full Transistor/FI)",
+            topik: "Job 1 • Kelistrikan Mesin",
+            ringkasan: "Prinsip kerja koil pengapian, CDI, pulser (CKP), pemeriksaan tahanan primer/sekunder koil, serta diagnosa percikan bunga api busi.",
+            warna: "primary",
+            ikon: "fa-bolt",
+            alatUkur: "Multimeter Digital, Timing Light, Spark Plug Tester"
+        },
+        {
+            kode: "MTR-02",
+            judul: "Sistem Starter Elektrik & Rangkaian Pengaman",
+            topik: "Job 2 • Kelistrikan Mesin",
+            ringkasan: "Komponen motor starter, relay starter (bendik), pemeriksaan panjang sikat (brush), komutator, serta pemeriksaan tegangan jatuh (voltage drop).",
+            warna: "warning",
+            ikon: "fa-power-off",
+            alatUkur: "Multimeter, Vernier Caliper, Hydrometer"
+        },
+        {
+            kode: "MTR-03",
+            judul: "Sistem Pengisian (Charging System) & Regulator Rectifier",
+            topik: "Job 3 • Kelistrikan Mesin",
+            ringkasan: "Cara kerja alternator (spul pengisian 1 fasa & 3 fasa), kiprok (regulator/rectifier), pengujian kebocoran arus baterai, dan tegangan pengisian.",
+            warna: "success",
+            ikon: "fa-car-battery",
+            alatUkur: "Multimeter Digital, Tachometer, Battery Load Tester"
+        },
+        {
+            kode: "MTR-04",
+            judul: "Sistem Penerangan & Sinyal (Lampu Kepala, Sein, Klakson, Rem)",
+            topik: "Job 4 • Kelistrikan Bodi",
+            ringkasan: "Membaca wiring diagram kelistrikan bodi Honda/Yamaha, jalur arus AC & DC, pemeriksaan saklar dimmer, flasher sein, serta penyetelan arah sinar lampu.",
+            warna: "info",
+            ikon: "fa-lightbulb",
+            alatUkur: "Multimeter, Test Lamp, Kunci Pas/Ring Set"
+        }
+    ];
+
+    // DATA JOBSHEET PRAKTIK PKSM (Folder 02_Jobsheet)
+    const DATA_JOBSHEET_PKSM = [
+        {
+            no: "Job 1",
+            judul: "Perawatan & Pemeriksaan Sistem Pengapian",
+            durasi: "4 x 45 Menit",
+            unit: "Unit Sepeda Motor Bebek / Matic Karburator & FI",
+            langkah: [
+                "Menyiapkan APD, tool box, SST, multimeter, dan buku pedoman reparasi (BPR).",
+                "Memeriksa kondisi fisik, celah elektroda (0,7–0,8 mm), dan percikan api busi.",
+                "Mengukur tahanan kumparan primer dan sekunder Ignition Coil.",
+                "Mengukur tahanan kumparan pembangkit pulsa (CKP / Pulser) dan tegangan puncak.",
+                "Menganalisis hasil pengukuran dibandingkan spesifikasi standar BPR."
+            ]
+        },
+        {
+            no: "Job 2",
+            judul: "Perawatan & Overhaul Sistem Starter Elektrik",
+            durasi: "4 x 45 Menit",
+            unit: "Unit Motor Starter & Rangkaian Kelistrikan Starter",
+            langkah: [
+                "Memeriksa tegangan baterai tanpa beban dan saat beban starter bekerja.",
+                "Menguji kerja relay starter (bendik) dan rangkaian saklar pengaman rem/standar samping.",
+                "Membongkar motor starter, mengukur panjang sikat (brush) dan diameter komutator.",
+                "Memeriksa kontinuitas segmen komutator dan kebocoran massa armatur.",
+                "Merakit kembali motor starter dan menguji putaran tanpa beban serta pada unit motor."
+            ]
+        },
+        {
+            no: "Job 3",
+            judul: "Pemeriksaan & Pengujian Sistem Pengisian",
+            durasi: "4 x 45 Menit",
+            unit: "Sepeda Motor Sistem Pengisian Half-Wave & Full-Wave",
+            langkah: [
+                "Memeriksa kondisi fisik, terminal, dan tegangan open-circuit baterai (min. 12,4 V).",
+                "Mengukur kebocoran arus (current leakage) pada kunci kontak OFF.",
+                "Mengukur tahanan kumparan pengisian (spul) dan tahanan massa.",
+                "Mengukur tegangan pengisian pada putaran 5.000 rpm (standar 13,5 – 15,0 Volt).",
+                "Menyimpulkan kelayakan komponen alternator dan regulator rectifier."
+            ]
+        },
+        {
+            no: "Job 4",
+            judul: "Pemeriksaan & Perbaikan Sistem Penerangan dan Sinyal",
+            durasi: "4 x 45 Menit",
+            unit: "Trainer Kelistrikan Bodi / Sepeda Motor",
+            langkah: [
+                "Memeriksa sekring utama (main fuse) dan sekring sub-rangkaian.",
+                "Menguji kontinuitas saklar lampu kepala, saklar dim (hi/lo), dan saklar sein.",
+                "Memeriksa frekuensi kedipan flasher sein (60 – 120 kedipan/menit).",
+                "Memeriksa rangkaian lampu rem depan/belakang dan penyetelan frekuensi klakson.",
+                "Merapikan jalur kabel (wiring harness) dan membersihkan area kerja bengkel."
+            ]
+        }
+    ];
 
     document.addEventListener("DOMContentLoaded", () => {
         muatDataKelas();
+        renderDaftarMateri("");
+        renderDaftarJobsheet();
     });
 
+    // NAVIGASI TAB PORTAL (NILAI / MATERI / JOBSHEET)
+    function bukaTabPortal(tab, btnEl) {
+        document.querySelectorAll('#portalMainNav .nav-link').forEach(el => el.classList.remove('active'));
+        if (btnEl) btnEl.classList.add('active');
+
+        document.getElementById('sectionNilai').style.display = (tab === 'nilai') ? 'block' : 'none';
+        document.getElementById('sectionMateri').style.display = (tab === 'materi') ? 'block' : 'none';
+        document.getElementById('sectionJobsheet').style.display = (tab === 'jobsheet') ? 'block' : 'none';
+    }
+
+    // RENDER KARTU MATERI PEMBELAJARAN
+    function renderDaftarMateri(keyword) {
+        const q = String(keyword || "").toLowerCase().trim();
+        const container = document.getElementById('gridMateriContainer');
+        const filtered = DATA_MATERI_PKSM.filter(m =>
+            m.judul.toLowerCase().includes(q) ||
+            m.topik.toLowerCase().includes(q) ||
+            m.ringkasan.toLowerCase().includes(q)
+        );
+
+        if (!filtered.length) {
+            container.innerHTML = `<div class="col-12 text-center py-4 text-muted">Materi tidak ditemukan.</div>`;
+            return;
+        }
+
+        container.innerHTML = filtered.map(m => `
+            <div class="col-md-6">
+                <div class="resource-card">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div class="resource-icon bg-${m.warna}-subtle text-${m.warna}">
+                            <i class="fas ${m.ikon}"></i>
+                        </div>
+                        <span class="badge bg-light text-secondary border">${m.kode}</span>
+                    </div>
+                    <div class="small fw-semibold text-primary mb-1">${m.topik}</div>
+                    <h6 class="fw-bold text-dark mb-2">${m.judul}</h6>
+                    <p class="text-muted small mb-3 flex-grow-1">${m.ringkasan}</p>
+                    <div class="pt-3 border-top d-flex flex-wrap justify-content-between align-items-center gap-2">
+                        <small class="text-muted"><i class="fas fa-tools me-1"></i> ${m.alatUkur}</small>
+                        <button type="button" class="btn btn-sm btn-primary rounded-3 px-3" onclick="bukaTabPortal('jobsheet', document.querySelectorAll('#portalMainNav .nav-link')[2])">
+                            Lihat Jobsheet <i class="fas fa-arrow-right ms-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // RENDER KARTU JOBSHEET PRAKTIK
+    function renderDaftarJobsheet() {
+        const container = document.getElementById('gridJobsheetContainer');
+        container.innerHTML = DATA_JOBSHEET_PKSM.map((j, idx) => `
+            <div class="col-md-6">
+                <div class="resource-card">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge bg-primary rounded-pill px-3 py-1">${j.no} PKSM</span>
+                        <small class="text-muted fw-medium"><i class="far fa-clock me-1"></i> ${j.durasi}</small>
+                    </div>
+                    <h6 class="fw-bold text-dark mb-1">${j.judul}</h6>
+                    <div class="small text-muted mb-3"><i class="fas fa-motorcycle me-1"></i> ${j.unit}</div>
+                    <ul class="small text-secondary ps-3 mb-3 flex-grow-1">
+                        ${j.langkah.slice(0, 3).map(l => `<li class="mb-1">${l}</li>`).join('')}
+                    </ul>
+                    <div class="pt-3 border-top d-flex justify-content-between align-items-center">
+                        <span class="small fw-semibold text-success"><i class="fas fa-check-circle me-1"></i> KKM: 75</span>
+                        <button type="button" class="btn btn-sm btn-outline-primary rounded-3 px-3 fw-semibold" onclick="bukaDetailJobsheet(${idx})">
+                            <i class="fas fa-file-alt me-1"></i> Detail Langkah & Rubrik
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function bukaDetailJobsheet(index) {
+        const j = DATA_JOBSHEET_PKSM[index];
+        if (!j) return;
+
+        document.getElementById('jobModalKode').innerText = `${j.no.toUpperCase()} • PRAKTIK PKSM`;
+        document.getElementById('jobModalJudul').innerText = j.judul;
+        document.getElementById('jobModalBody').innerHTML = `
+            <div class="p-3 rounded-3 bg-light border mb-3">
+                <div class="row g-2 small">
+                    <div class="col-sm-6"><strong>Unit Praktik:</strong> ${j.unit}</div>
+                    <div class="col-sm-6"><strong>Alokasi Waktu:</strong> ${j.durasi}</div>
+                </div>
+            </div>
+            <h6 class="fw-bold text-dark mb-2">Urutan Langkah Kerja Praktik:</h6>
+            <ol class="small text-secondary mb-4">
+                ${j.langkah.map(l => `<li class="mb-2">${l}</li>`).join('')}
+            </ol>
+            <h6 class="fw-bold text-dark mb-2">Komponen Penilaian Praktik (Total 100):</h6>
+            <div class="row g-2 text-center small">
+                <div class="col-6 col-sm-3"><div class="p-2 rounded-3 bg-primary-subtle text-primary fw-bold">K3 & Persiapan<br>Max 15</div></div>
+                <div class="col-6 col-sm-3"><div class="p-2 rounded-3 bg-info-subtle text-info-emphasis fw-bold">Prosedur Kerja<br>Max 35</div></div>
+                <div class="col-6 col-sm-3"><div class="p-2 rounded-3 bg-success-subtle text-success fw-bold">Hasil Ukur<br>Max 35</div></div>
+                <div class="col-6 col-sm-3"><div class="p-2 rounded-3 bg-warning-subtle text-warning-emphasis fw-bold">Sikap & Bersih<br>Max 15</div></div>
+            </div>
+        `;
+        modalInfoJob.show();
+    }
+
+    // GANTI KELAS & MUAT DATA NILAI
     function gantiKelas(kelas, btnEl) {
         kelasAktif = kelas;
         document.querySelectorAll('#btnGroupKelas button').forEach(btn => {
@@ -409,7 +745,6 @@
         muatDataKelas();
     }
 
-    // Mengambil 2 endpoint JSONP secara paralel (Daftar Nama & Tabel Nilai)
     function muatDataKelas() {
         const tbody = document.getElementById('tbodyRekap');
         tempNames = null;
@@ -581,7 +916,6 @@
         const siswa = semuaSiswaKelas.find(s => s.nama === namaSiswa);
         if (!siswa) return;
 
-        document.getElementById('detailKelasBadge').innerText = `Kelas ${kelasAktif} &bull; PKSM`;
         document.getElementById('detailKelasBadge').innerHTML = `Kelas ${kelasAktif} &bull; PKSM`;
         document.getElementById('detailNamaSiswa').innerText = siswa.nama;
         document.getElementById('detailNilaiAkhir').innerText = siswa.na;

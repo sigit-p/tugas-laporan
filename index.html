@@ -8,25 +8,10 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background-color: #f4f6f9; }
-    .hero-banner {
-      background: linear-gradient(135deg, #1e5799 0%, #007bff 100%);
-      color: white;
-      padding: 40px 0 55px;
-      border-bottom: 4px solid #0056b3;
-    }
+    .hero-banner { background: linear-gradient(135deg, #1e5799 0%, #007bff 100%); color: #fff; padding: 40px 0 55px; border-bottom: 4px solid #0056b3; }
     .main-card-overlap { margin-top: -35px; }
-    .btn-kelas {
-      border: 2px solid #dee2e6;
-      background: #fff;
-      transition: all 0.2s ease;
-    }
-    .btn-kelas:hover {
-      border-color: #007bff;
-      background: #f0f7ff;
-      transform: translateY(-3px);
-    }
-    .job-card { transition: transform 0.2s; }
-    .job-card:hover { transform: translateY(-4px); }
+    .btn-kelas { border: 2px solid #dee2e6; background: #fff; transition: 0.2s; }
+    .btn-kelas:hover { border-color: #007bff; background: #f0f7ff; transform: translateY(-3px); }
     .row-siswa { cursor: pointer; }
     .row-siswa:hover { background-color: #eef5ff !important; }
     footer { background: #fff; padding: 20px 0; border-top: 1px solid #dee2e6; margin-top: 50px; }
@@ -39,9 +24,7 @@
     <a class="navbar-brand fw-bold" href="#" onclick="kembaliKeBeranda(event)">
       <i class="fas fa-motorcycle text-warning me-2"></i>Portal PKSM Kelas XI
     </a>
-    <a href="admin.html" class="btn btn-outline-light btn-sm">
-      <i class="fas fa-user-lock me-1"></i> Admin
-    </a>
+    <a href="admin.html" class="btn btn-outline-light btn-sm"><i class="fas fa-user-lock me-1"></i> Admin</a>
   </div>
 </nav>
 
@@ -55,16 +38,12 @@
 
 <main class="container main-card-overlap">
 
-  <!-- 1. HALAMAN DEPAN (PILIH KELAS + JOBSHEET + MATERI) -->
+  <!-- 1. HALAMAN DEPAN -->
   <div id="viewBeranda">
-
     <div class="card border-0 shadow-sm mb-4">
       <div class="card-body p-4">
-        <div class="mb-3">
-          <h5 class="fw-bold mb-0"><i class="fas fa-clipboard-check text-primary me-2"></i>Cek Status Laporan & Nilai Per Kelas</h5>
-          <small class="text-muted">Pilih kelas Anda untuk melihat daftar nama dan rincian tugas yang belum selesai</small>
-        </div>
-
+        <h5 class="fw-bold mb-1"><i class="fas fa-clipboard-check text-primary me-2"></i>Cek Status Laporan & Nilai Per Kelas</h5>
+        <p class="small text-muted mb-3">Pilih kelas Anda untuk melihat daftar nama dan rincian tugas yang belum selesai</p>
         <div class="row g-3">
           <div class="col-md-4">
             <button type="button" onclick="bukaKelas('XI SA')" class="btn btn-kelas w-100 p-3 rounded-3 text-start shadow-sm">
@@ -106,6 +85,7 @@
       </div>
     </div>
 
+    <!-- DAFTAR JOB PRAKTEK & JOBSHEET -->
     <div class="mb-4">
       <div class="d-flex justify-content-between align-items-center mb-3">
         <h5 class="fw-bold mb-0"><i class="fas fa-tools text-primary me-2"></i>Daftar Job Praktek & Jobsheet (Kelas XI)</h5>
@@ -114,31 +94,27 @@
       <div class="row g-3" id="containerJobsheet"></div>
     </div>
 
+    <!-- DAFTAR MATERI -->
     <div class="card border-0 shadow-sm">
       <div class="card-header bg-white py-3">
         <h5 class="fw-bold mb-0"><i class="fas fa-book-open text-success me-2"></i>Materi Pembelajaran & Panduan Laporan</h5>
       </div>
       <div class="list-group list-group-flush" id="containerMateri"></div>
     </div>
-
   </div>
 
-  <!-- 2. HALAMAN REKAP DATA LAPORAN PER KELAS -->
+  <!-- 2. HALAMAN REKAP KELAS -->
   <div id="viewRekapKelas" class="d-none">
     <div class="card border-0 shadow-sm mb-3">
       <div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-2">
         <div>
           <span class="badge bg-primary mb-1">Mapel PKSM</span>
-          <h4 class="fw-bold mb-0" id="judulKelasAktif">Rekap Laporan Kelas XI SA</h4>
+          <h4 class="fw-bold mb-0" id="judulKelasAktif">Rekap Laporan Kelas</h4>
           <small class="text-muted">Klik pada <strong>Nama Siswa</strong> untuk melihat detail kekurangan laporan</small>
         </div>
         <div class="d-flex gap-2">
-          <button type="button" class="btn btn-outline-primary btn-sm" onclick="muatUlangKelas()">
-            <i class="fas fa-sync-alt me-1"></i> Refresh
-          </button>
-          <button type="button" class="btn btn-secondary btn-sm" onclick="kembaliKeBeranda()">
-            <i class="fas fa-arrow-left me-1"></i> Kembali ke Beranda
-          </button>
+          <button type="button" class="btn btn-outline-primary btn-sm" onclick="muatUlangKelas()"><i class="fas fa-sync-alt me-1"></i> Refresh</button>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="kembaliKeBeranda()"><i class="fas fa-arrow-left me-1"></i> Kembali ke Beranda</button>
         </div>
       </div>
     </div>
@@ -147,16 +123,12 @@
       <div class="card-body">
         <div class="row g-2 mb-3 align-items-center">
           <div class="col-md-5">
-            <div class="input-group">
-              <span class="input-group-text bg-white"><i class="fas fa-search text-muted"></i></span>
-              <input type="search" id="inputCariNama" class="form-control border-start-0" placeholder="Ketik nama siswa..." oninput="filterSiswa(this.value)">
-            </div>
+            <input type="search" id="inputCariNama" class="form-control" placeholder="Ketik nama siswa..." oninput="filterSiswa(this.value)">
           </div>
           <div class="col-md-7 text-md-end">
             <span class="small text-muted" id="infoJumlahSiswa"></span>
           </div>
         </div>
-
         <div class="table-responsive">
           <table class="table table-hover align-middle mb-0">
             <thead class="table-light">
@@ -177,22 +149,20 @@
 
 </main>
 
-<!-- MODAL DETAIL KEKURANGAN SISWA -->
+<!-- MODAL DETAIL SISWA -->
 <div class="modal fade" id="modalDetailSiswa" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header bg-primary text-white">
         <div>
           <h5 class="modal-title fw-bold mb-0" id="modalNamaSiswa">Nama Siswa</h5>
-          <small class="opacity-75" id="modalInfoKelas">Kelas XI &bull; Mapel PKSM</small>
+          <small class="opacity-75" id="modalInfoKelas">Kelas XI</small>
         </div>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body" id="modalIsiLaporan"></div>
       <div class="modal-footer justify-content-between bg-light">
-        <button type="button" class="btn btn-outline-primary btn-sm" onclick="bukaPanduanDariModal()">
-          <i class="fas fa-file-pdf me-1"></i> Buka Jobsheet & Materi Panduan
-        </button>
+        <button type="button" class="btn btn-outline-primary btn-sm" onclick="bukaPanduanDariModal()"><i class="fas fa-file-pdf me-1"></i> Buka Jobsheet & Materi</button>
         <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Tutup</button>
       </div>
     </div>
@@ -202,9 +172,7 @@
 <footer class="text-center">
   <div class="container">
     <p class="mb-1 text-dark fw-medium">Portal Praktik & Laporan PKSM &bull; Sigit Prabowo</p>
-    <small class="text-muted">
-      <a href="admin.html" class="text-decoration-none"><i class="fas fa-user-shield me-1"></i>Panel Admin Guru</a>
-    </small>
+    <small><a href="admin.html" class="text-decoration-none"><i class="fas fa-user-shield me-1"></i>Panel Admin Guru</a></small>
   </div>
 </footer>
 
@@ -212,254 +180,128 @@
 <script>
   const API_URL = "https://script.google.com/macros/s/AKfycbwswDuj1YQHP4C6fXfdEa1G1rqW6hvbx6ZCnnfsRJsHC1fb5byCpHtMmU0vIZBgoYqaPg/exec";
 
+  // Ganti tanda "#" dengan link PDF Google Drive Anda
   const DAFTAR_JOBSHEET = [
-    { nomor: 1, judul: "Sistem Pengapian", deskripsi: "Pemeriksaan koil, pulser, CDI/ECU, dan percikan bunga api.", link_pdf: "#" },
-    { nomor: 2, judul: "Sistem Starter", deskripsi: "Overhaul motor starter, brush, komutator, dan rangkaian relay.", link_pdf: "#" },
-    { nomor: 3, judul: "Sistem Pengisian", deskripsi: "Pengukuran tegangan pengisian, kebocoran arus, kiprok, dan spul.", link_pdf: "#" },
-    { nomor: 4, judul: "Sistem Penerangan", deskripsi: "Perangkaian lampu kepala, sein, rem, klakson, dan sekring.", link_pdf: "#" }
+    { no: 1, judul: "Sistem Pengapian", ket: "Pemeriksaan koil, pulser, CDI/ECU, dan percikan bunga api.", pdf: "#" },
+    { no: 2, judul: "Sistem Starter", ket: "Overhaul motor starter, brush, komutator, dan rangkaian relay.", pdf: "#" },
+    { no: 3, judul: "Sistem Pengisian", ket: "Pengukuran tegangan pengisian, kebocoran arus, kiprok, dan spul.", pdf: "#" },
+    { no: 4, judul: "Sistem Penerangan", ket: "Perangkaian lampu kepala, sein, rem, klakson, dan sekring.", pdf: "#" }
   ];
 
   const DAFTAR_MATERI = [
-    { judul: "Panduan Format Penulisan & Sistematika Laporan Praktik PKSM", keterangan: "Wajib dibaca sebelum menyusun laporan hasil praktik", link_pdf: "#" },
-    { judul: "Modul 1: Dasar Kelistrikan & Cara Penggunaan Multimeter", keterangan: "Teori dasar pengukuran Volt, Ohm, dan Ampere", link_pdf: "#" },
-    { judul: "Modul 2: Wiring Diagram Kelistrikan Sepeda Motor", keterangan: "Kode warna kabel dan pembacaan jalur kelistrikan", link_pdf: "#" }
+    { judul: "Panduan Format Penulisan & Sistematika Laporan Praktik PKSM", ket: "Wajib dibaca sebelum menyusun laporan hasil praktik", pdf: "#" },
+    { judul: "Modul 1: Dasar Kelistrikan & Cara Penggunaan Multimeter", ket: "Teori dasar pengukuran Volt, Ohm, dan Ampere", pdf: "#" },
+    { judul: "Modul 2: Wiring Diagram Kelistrikan Sepeda Motor", ket: "Kode warna kabel dan pembacaan jalur kelistrikan", pdf: "#" }
   ];
 
-  let kelasAktif = "";
-  let dataSiswaTerproses = [];
-  let loadingTimer = null;
+  let kelasAktif = "", dataSiswa = [], timerLoad = null;
 
-  function renderJobsheetDanMateri() {
-    const elJob = document.getElementById("containerJobsheet");
-    const elMat = document.getElementById("containerMateri");
+  document.getElementById("containerJobsheet").innerHTML = DAFTAR_JOBSHEET.map(j => {
+    const link = j.pdf !== "#" ? `href="${j.pdf}" target="_blank"` : `href="#" onclick="alert('Link PDF Jobsheet ${j.no} belum diisi');return false;"`;
+    return `<div class="col-md-6 col-lg-3"><div class="card h-100 border-0 shadow-sm"><div class="card-body d-flex flex-column">
+      <span class="badge bg-primary-subtle text-primary align-self-start mb-2">Job ${j.no}</span>
+      <h6 class="fw-bold">${j.judul}</h6><p class="small text-muted mb-3">${j.ket}</p>
+      <a ${link} class="btn btn-sm btn-outline-primary mt-auto w-100"><i class="fas fa-file-pdf me-1"></i> Buka Jobsheet ${j.no}</a>
+    </div></div></div>`;
+  }).join("");
 
-    if (elJob) {
-      elJob.innerHTML = DAFTAR_JOBSHEET.map(function(j) {
-        const attrLink = j.link_pdf !== "#"
-          ? 'href="' + j.link_pdf + '" target="_blank"'
-          : 'href="#" onclick="alert(\'Link PDF Jobsheet ' + j.nomor + ' belum diisi.\'); return false;"';
-        return (
-          '<div class="col-md-6 col-lg-3">' +
-            '<div class="card job-card h-100 border-0 shadow-sm">' +
-              '<div class="card-body d-flex flex-column">' +
-                '<span class="badge bg-primary-subtle text-primary align-self-start mb-2">Job ' + j.nomor + '</span>' +
-                '<h6 class="fw-bold text-dark">' + j.judul + '</h6>' +
-                '<p class="small text-muted mb-3">' + j.deskripsi + '</p>' +
-                '<a ' + attrLink + ' class="btn btn-sm btn-outline-primary mt-auto w-100">' +
-                  '<i class="fas fa-file-pdf me-1"></i> Buka Jobsheet ' + j.nomor +
-                '</a>' +
-              '</div>' +
-            '</div>' +
-          '</div>'
-        );
-      }).join("");
-    }
+  document.getElementById("containerMateri").innerHTML = DAFTAR_MATERI.map(m => {
+    const link = m.pdf !== "#" ? `href="${m.pdf}" target="_blank"` : `href="#" onclick="alert('Link PDF Materi belum diisi');return false;"`;
+    return `<a ${link} class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-3">
+      <div><div class="fw-bold"><i class="fas fa-file-alt text-success me-2"></i>${m.judul}</div><small class="text-muted">${m.ket}</small></div>
+      <span class="badge bg-success rounded-pill px-3 py-2">Baca Materi</span></a>`;
+  }).join("");
 
-    if (elMat) {
-      elMat.innerHTML = DAFTAR_MATERI.map(function(m) {
-        const attrLink = m.link_pdf !== "#"
-          ? 'href="' + m.link_pdf + '" target="_blank"'
-          : 'href="#" onclick="alert(\'Link PDF Materi belum diisi.\'); return false;"';
-        return (
-          '<a ' + attrLink + ' class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-3">' +
-            '<div>' +
-              '<div class="fw-bold text-dark"><i class="fas fa-file-alt text-success me-2"></i>' + m.judul + '</div>' +
-              '<small class="text-muted">' + m.keterangan + '</small>' +
-            '</div>' +
-            '<span class="badge bg-success rounded-pill px-3 py-2">Baca Materi</span>' +
-          '</a>'
-        );
-      }).join("");
-    }
-  }
-
-  function bukaKelas(namaKelas) {
-    kelasAktif = namaKelas;
-    document.getElementById("judulKelasAktif").textContent = "Rekap Laporan Kelas " + namaKelas;
+  function bukaKelas(kelas) {
+    kelasAktif = kelas;
+    document.getElementById("judulKelasAktif").textContent = "Rekap Laporan Kelas " + kelas;
     document.getElementById("inputCariNama").value = "";
-    document.getElementById("infoJumlahSiswa").textContent = "";
-
     document.getElementById("viewBeranda").classList.add("d-none");
     document.getElementById("viewRekapKelas").classList.remove("d-none");
     window.scrollTo(0, 0);
-
     muatUlangKelas();
   }
 
   function muatUlangKelas() {
-    const tbody = document.getElementById("tbodySiswa");
     let detik = 0;
-    tbody.innerHTML =
-      '<tr>' +
-        '<td colspan="5" class="text-center py-5">' +
-          '<div class="spinner-border text-primary mb-2" role="status"></div>' +
-          '<div class="fw-bold">Mengambil data kelas ' + kelasAktif + '... (<span id="detikLoad">0</span>s)</div>' +
-          '<small class="text-muted">Sinkronisasi dengan Google Spreadsheet</small>' +
-        '</td>' +
-      '</tr>';
+    document.getElementById("tbodySiswa").innerHTML = `<tr><td colspan="5" class="text-center py-5"><div class="spinner-border text-primary mb-2"></div><div class="fw-bold">Memuat ${kelasAktif}... (<span id="detikLoad">0</span>s)</div></td></tr>`;
+    clearInterval(timerLoad);
+    timerLoad = setInterval(() => { detik++; const el = document.getElementById("detikLoad"); if (el) el.textContent = detik; }, 1000);
 
-    if (loadingTimer) clearInterval(loadingTimer);
-    loadingTimer = setInterval(function() {
-      detik++;
-      const el = document.getElementById("detikLoad");
-      if (el) el.textContent = detik;
-    }, 1000);
-
-    const oldScript = document.getElementById("jsonpGasScript");
-    if (oldScript) oldScript.remove();
-
-    const script = document.createElement("script");
-    script.id = "jsonpGasScript";
-    script.src = API_URL + "?action=read&sheet=" + encodeURIComponent(kelasAktif) + "&callback=terimaDataKelas&t=" + Date.now();
-    document.head.appendChild(script);
+    const old = document.getElementById("jsonpGas");
+    if (old) old.remove();
+    const s = document.createElement("script");
+    s.id = "jsonpGas";
+    s.src = `${API_URL}?action=read&sheet=${encodeURIComponent(kelasAktif)}&callback=terimaData&t=${Date.now()}`;
+    document.head.appendChild(s);
   }
 
-  window.terimaDataKelas = function(result) {
-    if (loadingTimer) clearInterval(loadingTimer);
+  window.terimaData = function(res) {
+    clearInterval(timerLoad);
+    if (!Array.isArray(res) || res.length < 2) { dataSiswa = []; renderTabel([]); return; }
 
-    if (!Array.isArray(result) || result.length < 2) {
-      dataSiswaTerproses = [];
-      renderTabelSiswa([]);
-      return;
-    }
-
-    const headers = result[0].map(function(h) { return String(h || "").trim(); });
-    const rows = result.slice(1);
-
-    let idxNama = headers.findIndex(function(h) { return /nama/i.test(h); });
+    const headers = res[0].map(h => String(h || "").trim());
+    let idxNama = headers.findIndex(h => /nama/i.test(h));
     if (idxNama === -1) idxNama = 0;
-
-    const idxAkhir = headers.findIndex(function(h) { return /nilai\s*akhir|akhir|\bna\b/i.test(h); });
-    const idxBelum = headers.findIndex(function(h) { return /belum|kurang/i.test(h); });
+    const idxAkhir = headers.findIndex(h => /nilai\s*akhir|akhir|\bna\b/i.test(h));
+    const idxBelum = headers.findIndex(h => /belum|kurang/i.test(h));
 
     const jobCols = [];
-    headers.forEach(function(h, idx) {
-      if (idx > idxNama && idx !== idxAkhir && idx !== idxBelum && h !== "") {
-        jobCols.push({ index: idx, judul: h });
+    headers.forEach((h, i) => { if (i > idxNama && i !== idxAkhir && i !== idxBelum && h !== "") jobCols.push({ i, judul: h }); });
+
+    dataSiswa = res.slice(1).map(r => {
+      const nama = String(r[idxNama] || "").trim();
+      let na = "-";
+      if (idxAkhir >= 0 && r[idxAkhir] !== "" && r[idxAkhir] != null) {
+        const n = parseFloat(r[idxAkhir]);
+        na = !isNaN(n) ? Number(n.toFixed(1)) : r[idxAkhir];
       }
-    });
-
-    dataSiswaTerproses = rows.map(function(row) {
-      const nama = String(row[idxNama] || "").trim();
-
-      let nilaiAkhir = "-";
-      if (idxAkhir >= 0 && row[idxAkhir] !== "" && row[idxAkhir] !== null && row[idxAkhir] !== undefined) {
-        const naNum = parseFloat(row[idxAkhir]);
-        nilaiAkhir = !isNaN(naNum) ? Number(naNum.toFixed(1)) : row[idxAkhir];
-      }
-
-      const jobs = jobCols.map(function(col) {
-        const raw = String(row[col.index] !== undefined && row[col.index] !== null ? row[col.index] : "").trim();
+      const jobs = jobCols.map(c => {
+        const raw = String(r[c.i] ?? "").trim();
         const num = parseFloat(raw);
         let status = "Belum";
-        if (raw !== "" && !isNaN(num)) {
-          status = num >= 75 ? "Tuntas" : "Perlu Perbaikan";
-        }
-        return {
-          judul: col.judul,
-          nilai: raw === "" ? "-" : raw,
-          status: status
-        };
+        if (raw !== "" && !isNaN(num)) status = num >= 75 ? "Tuntas" : "Perlu Perbaikan";
+        return { judul: c.judul, nilai: raw === "" ? "-" : raw, status };
       });
+      return { nama, na, jobs, kurang: jobs.filter(j => j.status !== "Tuntas").length };
+    }).filter(s => s.nama !== "" && isNaN(s.nama));
 
-      const jumlahKurang = jobs.filter(function(j) { return j.status !== "Tuntas"; }).length;
-      return { nama: nama, nilaiAkhir: nilaiAkhir, jobs: jobs, jumlahKurang: jumlahKurang };
-    }).filter(function(s) {
-      return s.nama !== "" && isNaN(s.nama);
-    });
-
-    renderTabelSiswa(dataSiswaTerproses);
+    renderTabel(dataSiswa);
   };
 
-  function filterSiswa(keyword) {
-    const q = keyword.toLowerCase().trim();
-    const hasil = dataSiswaTerproses.filter(function(s) {
-      return s.nama.toLowerCase().includes(q);
-    });
-    renderTabelSiswa(hasil);
+  function filterSiswa(q) {
+    const key = q.toLowerCase().trim();
+    renderTabel(dataSiswa.filter(s => s.nama.toLowerCase().includes(key)));
   }
 
-  function renderTabelSiswa(list) {
-    const tbody = document.getElementById("tbodySiswa");
-    document.getElementById("infoJumlahSiswa").textContent = "Menampilkan " + list.length + " siswa";
-
+  function renderTabel(list) {
+    document.getElementById("infoJumlahSiswa").textContent = `Menampilkan ${list.length} siswa`;
     if (!list.length) {
-      tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-4">Data siswa tidak ditemukan.</td></tr>';
+      document.getElementById("tbodySiswa").innerHTML = `<tr><td colspan="5" class="text-center text-muted py-4">Data siswa tidak ditemukan.</td></tr>`;
       return;
     }
-
-    tbody.innerHTML = list.map(function(s, idx) {
-      const totalJob = s.jobs.length;
-      const badgeStatus = s.jumlahKurang === 0
-        ? '<span class="badge bg-success"><i class="fas fa-check-circle me-1"></i>Lengkap (' + totalJob + '/' + totalJob + ')</span>'
-        : '<span class="badge bg-danger"><i class="fas fa-exclamation-circle me-1"></i>Kurang ' + s.jumlahKurang + ' Job</span>';
-
-      const indexAsli = dataSiswaTerproses.indexOf(s);
-
-      return (
-        '<tr class="row-siswa" onclick="lihatDetailSiswa(' + indexAsli + ')">' +
-          '<td>' + (idx + 1) + '</td>' +
-          '<td class="fw-bold text-primary">' + s.nama + '</td>' +
-          '<td class="text-center">' + badgeStatus + '</td>' +
-          '<td class="text-center fw-bold">' + s.nilaiAkhir + '</td>' +
-          '<td class="text-center"><button type="button" class="btn btn-sm btn-outline-primary">Cek Detail</button></td>' +
-        '</tr>'
-      );
+    document.getElementById("tbodySiswa").innerHTML = list.map((s, idx) => {
+      const badge = s.kurang === 0
+        ? `<span class="badge bg-success">Lengkap (${s.jobs.length}/${s.jobs.length})</span>`
+        : `<span class="badge bg-danger">Kurang ${s.kurang} Job</span>`;
+      const asli = dataSiswa.indexOf(s);
+      return `<tr class="row-siswa" onclick="detailSiswa(${asli})">
+        <td>${idx + 1}</td><td class="fw-bold text-primary">${s.nama}</td>
+        <td class="text-center">${badge}</td><td class="text-center fw-bold">${s.na}</td>
+        <td class="text-center"><button type="button" class="btn btn-sm btn-outline-primary">Detail</button></td></tr>`;
     }).join("");
   }
 
-  function lihatDetailSiswa(index) {
-    const s = dataSiswaTerproses[index];
+  function detailSiswa(idx) {
+    const s = dataSiswa[idx];
     if (!s) return;
-
     document.getElementById("modalNamaSiswa").textContent = s.nama;
-    document.getElementById("modalInfoKelas").textContent = "Kelas " + kelasAktif + " • Nilai Akhir: " + s.nilaiAkhir;
-
-    let htmlItem = '<div class="list-group">';
-
-    s.jobs.forEach(function(j) {
-      let itemClass = "";
-      let badgeHtml = "";
-      let ketHtml = "";
-
-      if (j.status === "Tuntas") {
-        badgeHtml = '<span class="badge bg-success">Tuntas (Nilai: ' + j.nilai + ')</span>';
-        ketHtml = '<small class="text-muted"><i class="fas fa-check me-1 text-success"></i>Laporan sudah dikumpulkan dan tuntas.</small>';
-      } else if (j.status === "Perlu Perbaikan") {
-        itemClass = "list-group-item-warning";
-        badgeHtml = '<span class="badge bg-warning text-dark">Di Bawah KKM (Nilai: ' + j.nilai + ')</span>';
-        ketHtml = '<small class="text-dark"><i class="fas fa-exclamation-triangle me-1"></i>Nilai masih di bawah 75, silakan konfirmasi perbaikan ke guru.</small>';
-      } else {
-        itemClass = "list-group-item-danger";
-        badgeHtml = '<span class="badge bg-danger">Belum Mengumpulkan</span>';
-        ketHtml = '<small class="text-danger fw-medium"><i class="fas fa-times-circle me-1"></i>Laporan & nilai praktik belum masuk.</small>';
-      }
-
-      htmlItem +=
-        '<div class="list-group-item ' + itemClass + '">' +
-          '<div class="d-flex justify-content-between align-items-center mb-1">' +
-            '<strong>' + j.judul + '</strong>' +
-            badgeHtml +
-          '</div>' +
-          '<div>' + ketHtml + '</div>' +
-        '</div>';
-    });
-
-    htmlItem += '</div>';
-
-    if (s.jumlahKurang > 0) {
-      htmlItem +=
-        '<div class="alert alert-info mt-3 mb-0 small">' +
-          '<i class="fas fa-lightbulb me-1"></i> <strong>Tips:</strong> Klik tombol <b>"Buka Jobsheet & Materi Panduan"</b> di bawah untuk mengunduh panduan pengerjaan job yang masih kurang.' +
-        '</div>';
-    } else {
-      htmlItem +=
-        '<div class="alert alert-success mt-3 mb-0 small">' +
-          '<i class="fas fa-award me-1"></i> <strong>Selamat!</strong> Seluruh laporan praktik PKSM kamu sudah lengkap dan tuntas.' +
-        '</div>';
-    }
-
-    document.getElementById("modalIsiLaporan").innerHTML = htmlItem;
+    document.getElementById("modalInfoKelas").textContent = `Kelas ${kelasAktif} • Nilai Akhir: ${s.na}`;
+    document.getElementById("modalIsiLaporan").innerHTML = `<div class="list-group">` + s.jobs.map(j => {
+      if (j.status === "Tuntas") return `<div class="list-group-item"><div class="d-flex justify-content-between"><strong>${j.judul}</strong><span class="badge bg-success">Tuntas (${j.nilai})</span></div><small class="text-muted">Laporan sudah dikumpulkan dan tuntas.</small></div>`;
+      if (j.status === "Perlu Perbaikan") return `<div class="list-group-item list-group-item-warning"><div class="d-flex justify-content-between"><strong>${j.judul}</strong><span class="badge bg-warning text-dark">Di Bawah KKM (${j.nilai})</span></div><small>Nilai di bawah 75, silakan konfirmasi perbaikan.</small></div>`;
+      return `<div class="list-group-item list-group-item-danger"><div class="d-flex justify-content-between"><strong>${j.judul}</strong><span class="badge bg-danger">Belum Mengumpulkan</span></div><small class="text-danger">Laporan & nilai praktik belum masuk.</small></div>`;
+    }).join("") + `</div>`;
     new bootstrap.Modal(document.getElementById("modalDetailSiswa")).show();
   }
 
@@ -471,13 +313,10 @@
   }
 
   function bukaPanduanDariModal() {
-    const modalEl = document.getElementById("modalDetailSiswa");
-    const instance = bootstrap.Modal.getInstance(modalEl);
-    if (instance) instance.hide();
+    const m = bootstrap.Modal.getInstance(document.getElementById("modalDetailSiswa"));
+    if (m) m.hide();
     kembaliKeBeranda();
   }
-
-  renderJobsheetDanMateri();
 </script>
 </body>
 </html>

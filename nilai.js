@@ -47,13 +47,13 @@ function showLoading() {
 // 3. CALLBACK SAAT DATA TIBA
 window.handleApiResponse = function(data) {
     if (loadingInterval) clearInterval(loadingInterval);
-    
-    // Update Header
+
     const mainHeader = document.getElementById('main-header');
     if (mainHeader) mainHeader.textContent = `Laporan Nilai ${mapelParam} - ${classParam}`;
 
-    masterData = data;
-    renderTable(data);
+    // Buang baris pertama (header) dari hasil action=read
+    masterData = Array.isArray(data) ? data.slice(1) : [];
+    renderTable(masterData);
     setupSearch();
 };
 

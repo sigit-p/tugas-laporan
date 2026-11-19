@@ -323,7 +323,7 @@
     document.head.appendChild(script);
   }
 
-  // Parsing otomatis berdasarkan Header baris pertama dari action=read
+// Parsing otomatis berdasarkan Header baris pertama dari action=read
   window.terimaDataKelas = function(result) {
     if (loadingTimer) clearInterval(loadingTimer);
 
@@ -332,6 +332,56 @@
       renderTabelSiswa([]);
       return;
     }
+
+    const headers = result[0].map(h => String(h || "").trim());
+    const rows = result.slice(1);
+
+    // Cari kolom Nama (jika header tidak mengandung kata "nama", otomatis ambil kolom pertama indeks 0)
+    let idxNama = headers.findIndex(h => /nama/i.test(h));
+    if (idxNama === -1) idxNama = 0;
+
+    // Cari kolom Nilai Akhir & Kolom Belum
+    const idxAkhir = headers.findIndex(h => /nilai\s*akhir|akhir|\bna\b/i.test(h));
+    const idxBelum = headers.findIndex(h => /belum|kurang/i.test(h));
+
+    // Kumpulkan kolom-kolom Job (selain Nama, Akhir, Belum, dan kolom nomor/NIS di kiri Nama)
+    const jobCols = [];
+    headers.forEach((h, idx) => {
+      if (idx > idxNama && idx !== idxAkhir && idx !== idxBelum && h !== "") {
+        jobCols.push({ index: idx, judul: h });
+      }
+    });
+
+    dataSiswaTerproses = rows.map(row => {
+      const nama = String(row[idxNama] || "").trim();
+
+      // Rapikan Nilai Akhir (bulatkan maksimal 1 angka di belakang koma jika desimal panjang)
+      let nilaiAkhir = "-";
+      if (idxAkhir >= 0 && row[idxAkhir] !== "" && row[idxAkhir] !== null && row[idxAkhir] !== undefined) {
+        const naNum = parseFloat(row[idxAkhir]);
+        nilaiAkhir = !isNaN(naNum) ? Number(naNum.toFixed(1)) : row[idxAkhir];
+      }
+
+      const jobs = jobCols.map(col => {
+        const raw = String(row[col.index] ?? "").trim();
+        const num = parseFloat(raw);
+        let status = "Belum";
+        if (raw !== "" && !isNaN(num)) {
+          status = num >= 75 ? "Tuntas" : "Perlu Perbaikan";
+        }
+        return {
+          judul: col.judul,
+          nilai: raw === "" ? "-" : raw,
+          status: status
+        };
+      });
+
+      const jumlahKurang = jobs.filter(j => j.status !== "Tuntas").length;
+      return { nama, nilaiAkhir, jobs, jumlahKurang };
+    }).filter(s => s.nama !== "" && isNaN(s.nama)); // Pastikan baris bukan angka/header nyasar
+
+    renderTabelSiswa(dataSiswaTerproses);
+  };
 
     const headers = result[0].map(h => String(h || "").trim());
     const rows = result.slice(1);

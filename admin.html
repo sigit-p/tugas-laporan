@@ -429,27 +429,31 @@
         <main class="content-wrapper">
             <div class="container-fluid px-0">
 
-                <!-- HERO WELCOME -->
-                <div id="welcomeMsg" class="hero-welcome p-4 p-md-5 mb-4 shadow-sm">
-                    <span class="badge bg-primary mb-2 px-3 py-1 rounded-pill">ADMINISTRATOR</span>
-                    <h3 class="fw-bold mb-2">Selamat Datang, Pak Sigit!</h3>
-                    <p class="text-white-50 mb-4" style="max-width: 580px;">
-                        Kelola input nilai praktik kelistrikan (PKSM) maupun nilai praktek bengkel tambahan (khusus admin) langsung ke Google Sheet.
-                    </p>
-                    <div class="d-flex flex-wrap gap-2 position-relative" style="z-index: 2;">
-                        <button type="button" class="btn btn-primary fw-semibold px-4 py-2 rounded-3" onclick="pilihModeEdit('PKSM', document.getElementById('menuTabelPKSM'))">
-                            <i class="fas fa-table me-2"></i> Rekap Nilai Laporan
-                        </button>
-                                                <button type="button" class="btn btn-primary fw-semibold px-4 py-2 rounded-3" onclick="pilihModeEdit('PRAKTEK', document.getElementById('menuTabelPKSM'))">
-                            <i class="fas fa-table me-2"></i> Rekap Nilai Praktek
-                        </button>
-                        <button type="button" class="btn btn-outline-light fw-semibold px-4 py-2 rounded-3" onclick="pilihMapel('PRAKTEK', document.getElementById('menuInputPKSM'))">
-                            <i class="fas fa-plus me-2"></i> Input Nilai Laporan
-                        </button>
-                        <button type="button" class="btn btn-outline-light fw-semibold px-4 py-2 rounded-3" onclick="pilihMapel('PKSM', document.getElementById('menuInputPKSM'))">
-                            <i class="fas fa-plus me-2"></i> Input Nilai Laporan
-                        </button>
-                    </div>
+              <!-- HERO WELCOME -->
+<div id="welcomeMsg" class="hero-welcome p-4 p-md-5 mb-4 shadow-sm">
+    <span class="badge bg-primary mb-2 px-3 py-1 rounded-pill">ADMINISTRATOR</span>
+    <h3 class="fw-bold mb-2">Selamat Datang, Pak Sigit!</h3>
+    <p class="text-white-50 mb-4" style="max-width: 580px;">
+        Kelola input nilai praktik kelistrikan (PKSM) maupun nilai praktek bengkel tambahan (khusus admin) langsung ke Google Sheet.
+    </p>
+    <div class="d-flex flex-wrap gap-2 position-relative" style="z-index: 2;">
+        <!-- Tombol Rekap (Solid) -->
+        <button type="button" class="btn btn-primary fw-semibold px-4 py-2 rounded-3" onclick="pilihModeEdit('PKSM', document.getElementById('menuTabelPKSM'))">
+            <i class="fas fa-table me-2"></i> Rekap Nilai Laporan
+        </button>
+        <button type="button" class="btn btn-success fw-semibold px-4 py-2 rounded-3" onclick="pilihModeEdit('PRAKTEK', document.getElementById('menuTabelPKSM'))">
+            <i class="fas fa-table me-2"></i> Rekap Nilai Praktek
+        </button>
+
+        <!-- Tombol Input (Outline) -->
+        <button type="button" class="btn btn-outline-light fw-semibold px-4 py-2 rounded-3" onclick="pilihMapel('PKSM', document.getElementById('menuInputPKSM'))">
+            <i class="fas fa-plus me-2"></i> Input Nilai Laporan
+        </button>
+        <button type="button" class="btn btn-outline-warning fw-semibold px-4 py-2 rounded-3" onclick="pilihMapel('PRAKTEK', document.getElementById('menuInputPKSM'))">
+            <i class="fas fa-plus me-2"></i> Input Nilai Praktek
+        </button>
+    </div>
+</div>
                 </div>
 
                 <!-- FORM INPUT NILAI -->

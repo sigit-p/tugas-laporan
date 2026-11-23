@@ -242,36 +242,45 @@
             white-space: nowrap;
         }
         .table-modern tbody td {
-            padding: 9px 8px;
+            padding: 10px 8px;
             border-color: #f1f5f9;
         }
+        .score-pill {
+            display: inline-block;
+            min-width: 40px;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.84rem;
+        }
+        .score-pass { background: #ecfdf5; color: #059669; }
+        .score-fail { background: #fef2f2; color: #dc2626; }
 
-        /* INLINE INPUT NILAI DI TABEL */
+        /* INLINE INPUT SAAT MODE EDIT AKTIF */
         .inline-score-input {
             width: 68px;
             text-align: center;
             font-weight: 700;
             font-size: 0.88rem;
             border-radius: 8px;
-            padding: 5px 6px;
-            border: 1.5px solid #cbd5e1;
+            padding: 4px 6px;
+            border: 1.5px solid #2563eb;
             margin: 0 auto;
+            background-color: #fff;
             transition: all 0.15s ease;
         }
         .inline-score-input:focus {
             outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.16);
-            background-color: #fff !important;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
         }
         .inline-score-input.score-pass {
             background-color: #ecfdf5;
-            border-color: #6ee7b7;
+            border-color: #059669;
             color: #059669;
         }
         .inline-score-input.score-fail {
             background-color: #fef2f2;
-            border-color: #fca5a5;
+            border-color: #dc2626;
             color: #dc2626;
         }
         .inline-score-input::-webkit-outer-spin-button,
@@ -282,7 +291,7 @@
         .inline-score-input[type=number] {
             -moz-appearance: textfield;
         }
-        tr.row-dirty {
+        tr.row-editing {
             background-color: #fffbeb !important;
         }
 
@@ -419,15 +428,15 @@
                     </p>
                     <div class="d-flex flex-wrap gap-2 position-relative" style="z-index: 2;">
                         <button type="button" class="btn btn-primary fw-semibold px-4 py-2 rounded-3" onclick="pilihModeEdit('PKSM', document.querySelectorAll('.list-group-item')[2])">
-                            <i class="fas fa-table me-2"></i> Buka Rekap & Inline Edit PKSM
+                            <i class="fas fa-table me-2"></i> Buka Rekap Nilai PKSM
                         </button>
                         <button type="button" class="btn btn-outline-light fw-semibold px-4 py-2 rounded-3" onclick="pilihMapel('PKSM', document.querySelectorAll('.list-group-item')[0])">
-                            <i class="fas fa-plus me-2"></i> Input Nilai Satuan
+                            <i class="fas fa-plus me-2"></i> Input Nilai Baru
                         </button>
                     </div>
                 </div>
 
-                <!-- FORM INPUT NILAI SATUAN -->
+                <!-- FORM INPUT NILAI (TETAP SAMA SEPERTI ASLINYA) -->
                 <div id="formKonten" class="modern-card overflow-hidden" style="display:none;">
                     <div class="p-4 border-bottom bg-white d-flex flex-wrap justify-content-between align-items-center gap-2">
                         <div>
@@ -471,7 +480,7 @@
                     </div>
                 </div>
 
-                <!-- TABEL REKAP & INLINE EDIT NILAI -->
+                <!-- TABEL REKAP & EDIT NILAI -->
                 <div id="tabelKonten" style="display:none;">
                     <!-- STAT CARDS -->
                     <div class="row g-3 mb-4">
@@ -509,12 +518,9 @@
                         <div class="p-4 border-bottom bg-white d-flex flex-wrap justify-content-between align-items-center gap-3">
                             <div>
                                 <h5 id="judulTabel" class="fw-bold text-dark mb-0"><i class="fas fa-table text-primary me-2"></i>DATA TABEL NILAI</h5>
-                                <small class="text-muted">Ketik nilai langsung pada kolom Job (tekan <kbd>Tab</kbd> untuk pindah), lalu klik <b>Simpan</b>.</small>
+                                <small class="text-muted">Klik tombol <b>Edit</b> pada baris siswa untuk mengubah nilai langsung di tabel, lalu klik <b>Simpan</b>.</small>
                             </div>
-                            <div class="d-flex flex-wrap align-items-center gap-2">
-                                <button type="button" id="btnSimpanSemua" onclick="simpanSemuaInline()" class="btn btn-success btn-sm fw-bold rounded-3 px-3 d-none shadow-sm">
-                                    <i class="fas fa-save me-1"></i> Simpan Semua (<span id="jumlahDirty">0</span>)
-                                </button>
+                            <div class="d-flex align-items-center gap-2">
                                 <select id="kelasTabel" class="form-select form-select-sm w-auto fw-bold bg-light" onchange="refreshTabel()">
                                     <option value="XI SA">XI SA</option>
                                     <option value="XI SB">XI SB</option>
@@ -527,7 +533,7 @@
                         </div>
 
                         <div class="p-4">
-                            <div class="row g-2 mb-3 align-items-center">
+                            <div class="row g-2 mb-3">
                                 <div class="col-md-5">
                                     <div class="input-group input-group-sm">
                                         <span class="input-group-text bg-light border-end-0"><i class="fas fa-search text-muted"></i></span>
@@ -540,9 +546,6 @@
                                         <option value="kurang">Belum Tuntas (&lt; 75 / Kosong)</option>
                                         <option value="tuntas">Sudah Tuntas Semua Job</option>
                                     </select>
-                                </div>
-                                <div class="col-md-3 text-md-end">
-                                    <small class="text-muted"><span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle">Kuning</span> = Belum disimpan</small>
                                 </div>
                             </div>
 
@@ -580,17 +583,18 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-4">
-                <h6 class="fw-bold text-primary mb-2">1. Edit Nilai Langsung (Inline Edit) di Tabel</h6>
+                <h6 class="fw-bold text-primary mb-2">1. Menginput Nilai Baru</h6>
                 <ul class="text-muted small">
-                    <li>Buka menu <b>Tabel Nilai PKSM</b> pada sidebar sebelah kiri.</li>
-                    <li>Klik langsung pada kotak angka di kolom Job 1–4, ketik nilai baru (gunakan tombol <kbd>Tab</kbd> untuk berpindah kolom dengan cepat).</li>
-                    <li>Baris yang berubah akan berwarna kuning lembut; klik <b>Simpan</b> di ujung baris atau <b>Simpan Semua</b> di atas tabel.</li>
+                    <li>Pilih menu <b>Input Mapel PKSM</b> pada sidebar sebelah kiri.</li>
+                    <li>Pilih kelas, ketik nama siswa, pilih nomor Job praktik, lalu isi nilai dan klik <b>Simpan Nilai ke Google Sheet</b>.</li>
                 </ul>
                 <hr>
-                <h6 class="fw-bold text-primary mb-2">2. Input Nilai Satuan</h6>
+                <h6 class="fw-bold text-primary mb-2">2. Memantau & Mengedit Nilai (Inline Edit)</h6>
                 <ul class="text-muted small mb-0">
-                    <li>Pilih menu <b>Input Mapel PKSM</b> jika ingin mengisi satu job untuk satu siswa secara cepat.</li>
-                    <li>Skor di bawah <b>75 (KKM)</b> ditandai warna merah lembut, sedangkan <b>&ge; 75</b> ditandai hijau lembut.</li>
+                    <li>Buka menu <b>Tabel Nilai PKSM</b> untuk melihat rekap seluruh siswa dan statistik ketuntasan.</li>
+                    <li>Klik tombol <b>Edit</b> pada baris siswa untuk membuka kolom input nilai secara langsung di tabel.</li>
+                    <li>Setelah nilai diubah, tombol <b>Edit</b> berubah menjadi <b>Simpan</b>. Klik <b>Simpan</b> untuk mengirim perubahan ke Google Sheet.</li>
+                    <li>Skor di bawah <b>75 (KKM)</b> ditandai dengan badge merah lembut, sedangkan <b>&ge; 75</b> ditandai hijau lembut.</li>
                 </ul>
             </div>
             <div class="modal-footer border-top">
@@ -674,6 +678,9 @@
         eyeIcon.classList.toggle('fa-eye-slash');
     });
 
+    /* ======================================================
+       BAGIAN INPUT NILAI (TETAP SAMA SEPERTI ASLINYA)
+    ====================================================== */
     function pilihMapel(m, el) {
         currentMapel = m;
         tutupSidebarMobile();
@@ -722,7 +729,25 @@
         sendUpdate(k, n, j, ni, "handleUpdateResponse");
     }
 
-    // Mengirim update nilai satu sel ke Apps Script via JSONP Promise
+    function sendUpdate(k, n, j, ni, cb) {
+        const url = `${SCRIPT_URL}?action=update&sheet=${encodeURIComponent(k)}&nama=${encodeURIComponent(n)}&job_index=${j}&nilai=${ni}&callback=${cb}`;
+        const s = document.createElement('script');
+        s.src = url;
+        document.head.appendChild(s);
+    }
+
+    window.handleUpdateResponse = function (r) {
+        document.getElementById('btnSimpan').disabled = false;
+        document.getElementById('btnSimpan').innerHTML = `<i class="fas fa-save me-2"></i> Simpan Nilai ke Google Sheet`;
+        if (r.status === "success") {
+            alert("✅ Nilai berhasil disimpan!");
+            document.getElementById('nilai').value = "";
+        }
+    };
+
+    /* ======================================================
+       BAGIAN TABEL REKAP & INLINE EDIT DENGAN TOMBOL EDIT -> SIMPAN
+    ====================================================== */
     function sendUpdatePromise(k, n, j, ni) {
         return new Promise((resolve, reject) => {
             const cbName = "cbUpd_" + Date.now() + "_" + Math.floor(Math.random() * 10000);
@@ -755,29 +780,13 @@
         });
     }
 
-    function sendUpdate(k, n, j, ni, cb) {
-        const url = `${SCRIPT_URL}?action=update&sheet=${encodeURIComponent(k)}&nama=${encodeURIComponent(n)}&job_index=${j}&nilai=${ni}&callback=${cb}`;
-        const s = document.createElement('script');
-        s.src = url;
-        document.head.appendChild(s);
-    }
-
-    window.handleUpdateResponse = function (r) {
-        document.getElementById('btnSimpan').disabled = false;
-        document.getElementById('btnSimpan').innerHTML = `<i class="fas fa-save me-2"></i> Simpan Nilai ke Google Sheet`;
-        if (r.status === "success") {
-            alert("✅ Nilai berhasil disimpan!");
-            document.getElementById('nilai').value = "";
-        }
-    };
-
     function pilihModeEdit(m, el) {
         editModeMapel = m;
         tutupSidebarMobile();
         document.getElementById('welcomeMsg').style.display = 'none';
         document.getElementById('formKonten').style.display = 'none';
         document.getElementById('tabelKonten').style.display = 'block';
-        document.getElementById('judulTabel').innerHTML = `<i class="fas fa-table text-primary me-2"></i>Rekap & Inline Edit Nilai ${m}`;
+        document.getElementById('judulTabel').innerHTML = `<i class="fas fa-table text-primary me-2"></i>Rekap & Edit Nilai ${m}`;
         document.getElementById('nav-status').innerText = `Tabel Nilai / ${m}`;
         document.querySelectorAll('.list-group-item').forEach(i => i.classList.remove('active-menu'));
         if (el) el.classList.add('active-menu');
@@ -839,7 +848,7 @@
             <th class="text-start">Nama Siswa</th>
             ${daftarHeaderJob.map(j => `<th>${j}</th>`).join('')}
             <th>NA</th>
-            <th width="115">Aksi</th>
+            <th width="145">Aksi</th>
         `;
 
         dataGabungan = tempNames.map((namaRaw, idx) => {
@@ -864,7 +873,7 @@
                 scores,
                 originalScores: [...scores],
                 na,
-                dirty: false,
+                editing: false,
                 saving: false
             };
         }).filter(s => s.nama !== "");
@@ -884,15 +893,6 @@
         const tuntasCount = dataGabungan.filter(s => s.scores.length > 0 && s.scores.every(v => v >= 75)).length;
         document.getElementById('statTuntas').innerText = tuntasCount;
         document.getElementById('statKurang').innerText = dataGabungan.length - tuntasCount;
-
-        const dirtyCount = dataGabungan.filter(s => s.dirty).length;
-        const btnAll = document.getElementById('btnSimpanSemua');
-        document.getElementById('jumlahDirty').innerText = dirtyCount;
-        if (dirtyCount > 0) {
-            btnAll.classList.remove('d-none');
-        } else {
-            btnAll.classList.add('d-none');
-        }
     }
 
     function filterBarisTabel() {
@@ -921,42 +921,82 @@
         list.forEach((s, noUrut) => {
             const tr = document.createElement('tr');
             tr.id = `rowSiswa_${s.id}`;
-            if (s.dirty) tr.classList.add('row-dirty');
+            if (s.editing) tr.classList.add('row-editing');
 
             const noHtml = `<td class="text-muted fw-medium">${noUrut + 1}</td>`;
             const namaHtml = `<td class="text-start fw-semibold text-dark">${s.nama}</td>`;
 
+            // Jika mode edit aktif -> tampilkan input angka; jika tidak -> tampilkan badge biasa
             const jobsHtml = s.scores.map((val, jobIdx) => {
                 const cls = val >= 75 ? 'score-pass' : 'score-fail';
-                return `
-                    <td>
-                        <input
-                            type="number"
-                            min="0"
-                            max="100"
-                            class="form-control inline-score-input ${cls}"
-                            value="${val}"
-                            onfocus="this.select()"
-                            oninput="ubahNilaiInline(${s.id}, ${jobIdx}, this)"
-                        >
-                    </td>
-                `;
+                if (s.editing) {
+                    return `
+                        <td>
+                            <input
+                                type="number"
+                                min="0"
+                                max="100"
+                                class="form-control inline-score-input ${cls}"
+                                id="inp_${s.id}_${jobIdx}"
+                                value="${val}"
+                                onfocus="this.select()"
+                                oninput="ubahNilaiInline(${s.id}, ${jobIdx}, this)"
+                            >
+                        </td>
+                    `;
+                } else {
+                    return `<td><span class="score-pill ${cls}">${val}</span></td>`;
+                }
             }).join('');
 
             const naCls = s.na >= 75 ? 'text-success' : 'text-danger';
             const naHtml = `<td class="fw-bold ${naCls}" id="naSiswa_${s.id}">${s.na}</td>`;
 
-            const aksiHtml = `<td id="aksiSiswa_${s.id}">` + (
-                s.saving
-                    ? `<button class="btn btn-sm btn-secondary rounded-3 px-2" disabled><span class="spinner-border spinner-border-sm"></span></button>`
-                    : s.dirty
-                        ? `<button type="button" class="btn btn-sm btn-warning text-dark fw-bold rounded-3 px-2 shadow-sm" onclick="simpanBarisInline(${s.id})"><i class="fas fa-save me-1"></i>Simpan</button>`
-                        : `<span class="badge bg-light text-muted border py-1"><i class="fas fa-check text-success me-1"></i>OK</span>`
-            ) + `</td>`;
+            // Tombol Aksi: Default "Edit" -> diklik berubah jadi "Simpan" & "Batal"
+            let aksiHtml = `<td>`;
+            if (s.saving) {
+                aksiHtml += `<button class="btn btn-sm btn-secondary rounded-3 px-2" disabled><span class="spinner-border spinner-border-sm me-1"></span>Menyimpan</button>`;
+            } else if (s.editing) {
+                aksiHtml += `
+                    <div class="d-inline-flex gap-1">
+                        <button type="button" class="btn btn-sm btn-success fw-semibold rounded-3 px-2" onclick="simpanBarisInline(${s.id})" title="Simpan Perubahan">
+                            <i class="fas fa-save me-1"></i>Simpan
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary rounded-3 px-2" onclick="batalEditBaris(${s.id})" title="Batal">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+            } else {
+                aksiHtml += `
+                    <button type="button" class="btn btn-sm btn-outline-warning text-dark fw-semibold rounded-3 px-2" onclick="mulaiEditBaris(${s.id})" title="Edit Nilai">
+                        <i class="fas fa-pen me-1"></i>Edit
+                    </button>
+                `;
+            }
+            aksiHtml += `</td>`;
 
             tr.innerHTML = noHtml + namaHtml + jobsHtml + naHtml + aksiHtml;
             b.appendChild(tr);
         });
+    }
+
+    function mulaiEditBaris(siswaId) {
+        const s = dataGabungan.find(item => item.id === siswaId);
+        if (!s) return;
+        s.editing = true;
+        filterBarisTabel();
+        const firstInput = document.getElementById(`inp_${siswaId}_0`);
+        if (firstInput) firstInput.focus();
+    }
+
+    function batalEditBaris(siswaId) {
+        const s = dataGabungan.find(item => item.id === siswaId);
+        if (!s) return;
+        s.scores = [...s.originalScores];
+        s.na = hitungNA(s.scores);
+        s.editing = false;
+        filterBarisTabel();
     }
 
     function ubahNilaiInline(siswaId, jobIdx, inputEl) {
@@ -970,9 +1010,7 @@
 
         s.scores[jobIdx] = val;
         s.na = hitungNA(s.scores);
-        s.dirty = s.scores.some((v, idx) => v !== s.originalScores[idx]);
 
-        // Update tampilan sel saat itu juga tanpa menghilangkan fokus ketik
         inputEl.classList.remove('score-pass', 'score-fail');
         inputEl.classList.add(val >= 75 ? 'score-pass' : 'score-fail');
 
@@ -981,17 +1019,6 @@
             naEl.innerText = s.na;
             naEl.className = `fw-bold ${s.na >= 75 ? 'text-success' : 'text-danger'}`;
         }
-
-        const rowEl = document.getElementById(`rowSiswa_${siswaId}`);
-        const aksiEl = document.getElementById(`aksiSiswa_${siswaId}`);
-        if (rowEl) rowEl.classList.toggle('row-dirty', s.dirty);
-        if (aksiEl) {
-            aksiEl.innerHTML = s.dirty
-                ? `<button type="button" class="btn btn-sm btn-warning text-dark fw-bold rounded-3 px-2 shadow-sm" onclick="simpanBarisInline(${siswaId})"><i class="fas fa-save me-1"></i>Simpan</button>`
-                : `<span class="badge bg-light text-muted border py-1"><i class="fas fa-check text-success me-1"></i>OK</span>`;
-        }
-
-        perbaruiStatistikAdmin();
     }
 
     async function simpanBarisInline(siswaId) {
@@ -1003,7 +1030,6 @@
         filterBarisTabel();
 
         try {
-            // Kirim hanya kolom job yang nilainya berubah ke endpoint action=update milik Apps Script Anda
             for (let idx = 0; idx < s.scores.length; idx++) {
                 if (s.scores[idx] !== s.originalScores[idx]) {
                     const res = await sendUpdatePromise(k, s.nama, idx + 1, s.scores[idx]);
@@ -1013,7 +1039,7 @@
                     s.originalScores[idx] = s.scores[idx];
                 }
             }
-            s.dirty = false;
+            s.editing = false;
         } catch (err) {
             alert("❌ " + (err.message || "Gagal menyimpan perubahan."));
         } finally {
@@ -1021,24 +1047,6 @@
             perbaruiStatistikAdmin();
             filterBarisTabel();
         }
-    }
-
-    async function simpanSemuaInline() {
-        const dirtyList = dataGabungan.filter(s => s.dirty);
-        if (!dirtyList.length) return;
-
-        const btnAll = document.getElementById('btnSimpanSemua');
-        btnAll.disabled = true;
-        btnAll.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Menyimpan...`;
-
-        for (const s of dirtyList) {
-            await simpanBarisInline(s.id);
-        }
-
-        btnAll.disabled = false;
-        btnAll.innerHTML = `<i class="fas fa-save me-1"></i> Simpan Semua (<span id="jumlahDirty">0</span>)`;
-        perbaruiStatistikAdmin();
-        alert(`✅ Semua perubahan nilai (${dirtyList.length} siswa) berhasil disimpan!`);
     }
 </script>
 </body>

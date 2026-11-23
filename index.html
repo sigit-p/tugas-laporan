@@ -143,7 +143,7 @@
       flex-shrink: 0;
     }
 
-    /* TABLE & BADGES */
+    /* TABLE & COLOR-CODED STATUS BADGES */
     .table-modern thead th {
       background: #f8fafc;
       color: #475569;
@@ -165,25 +165,56 @@
     .row-siswa:hover {
       background-color: #eff6ff !important;
     }
+
     .pill-status {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
-      padding: 4px 11px;
+      gap: 6px;
+      padding: 5px 12px;
       border-radius: 999px;
       font-size: 0.76rem;
-      font-weight: 600;
+      font-weight: 700;
+      border: 1px solid transparent;
+      white-space: nowrap;
     }
-    .pill-ok { background: #ecfdf5; color: #059669; }
-    .pill-warn { background: #fef2f2; color: #dc2626; }
+    /* 0 Kurang (Lengkap / Tuntas Semua) -> Hijau */
+    .pill-ok {
+      background: #ecfdf5;
+      color: #059669;
+      border-color: #a7f3d0;
+    }
+    /* Kurang 1 Job -> Biru Muda (Hampir Tuntas) */
+    .pill-kurang-1 {
+      background: #eff6ff;
+      color: #1d4ed8;
+      border-color: #bfdbfe;
+    }
+    /* Kurang 2 Job -> Kuning / Amber */
+    .pill-kurang-2 {
+      background: #fffbeb;
+      color: #b45309;
+      border-color: #fde68a;
+    }
+    /* Kurang 3 Job -> Oranye */
+    .pill-kurang-3 {
+      background: #fff7ed;
+      color: #c2410c;
+      border-color: #fed7aa;
+    }
+    /* Kurang 4 Job (Semua Belum) -> Merah Tegas */
+    .pill-kurang-4 {
+      background: #fef2f2;
+      color: #dc2626;
+      border-color: #fecaca;
+    }
 
     /* FORM INPUT */
-    .form-control {
+    .form-control, .form-select {
       border-radius: 10px;
       border-color: #cbd5e1;
       padding: 0.55rem 0.9rem;
     }
-    .form-control:focus {
+    .form-control:focus, .form-select:focus {
       border-color: #2563eb;
       box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
     }
@@ -348,14 +379,35 @@
           <div class="col-md-5">
             <div class="input-group">
               <span class="input-group-text bg-light border-end-0 text-muted"><i class="fas fa-search"></i></span>
-              <input type="search" id="inputCariNama" class="form-control border-start-0 bg-light" placeholder="Ketik nama siswa..." oninput="filterSiswa(this.value)">
+              <input type="search" id="inputCariNama" class="form-control border-start-0 bg-light" placeholder="Ketik nama siswa..." oninput="terapkanFilterSiswa()">
             </div>
           </div>
-          <div class="col-md-7 text-md-end">
+          <div class="col-md-4">
+            <select id="filterStatusSiswa" class="form-select bg-light" onchange="terapkanFilterSiswa()">
+              <option value="all">Semua Status Laporan</option>
+              <option value="0">Lengkap / Tuntas Semua (Hijau)</option>
+              <option value="1">Kurang 1 Job (Biru)</option>
+              <option value="2">Kurang 2 Job (Kuning)</option>
+              <option value="3">Kurang 3 Job (Oranye)</option>
+              <option value="4">Kurang 4 Job / Belum Semua (Merah)</option>
+            </select>
+          </div>
+          <div class="col-md-3 text-md-end">
             <span class="badge bg-light text-secondary border px-3 py-2" id="infoJumlahSiswa"></span>
           </div>
         </div>
+
+        <!-- LEGENDA WARNA STATUS -->
+        <div class="d-flex flex-wrap align-items-center gap-2 mt-3 pt-2 border-top small">
+          <span class="text-muted fw-semibold me-1">Keterangan Warna:</span>
+          <span class="pill-status pill-ok"><i class="fas fa-check-circle"></i> Lengkap</span>
+          <span class="pill-status pill-kurang-1"><i class="fas fa-clock"></i> Kurang 1</span>
+          <span class="pill-status pill-kurang-2"><i class="fas fa-exclamation-circle"></i> Kurang 2</span>
+          <span class="pill-status pill-kurang-3"><i class="fas fa-exclamation-triangle"></i> Kurang 3</span>
+          <span class="pill-status pill-kurang-4"><i class="fas fa-times-circle"></i> Kurang 4</span>
+        </div>
       </div>
+
       <div class="table-responsive">
         <table class="table table-hover table-modern align-middle mb-0">
           <thead>
@@ -450,7 +502,7 @@
     {
       no: 4,
       judul: "Sistem Penerangan",
-      ket: "Pemeriksaan kunci kontak, sakelar, dan merangkai lampu dekat, jauh, belakang, serta klakson.",
+      ket: "Pemeriksaan kunci kontak, sakelar, dan merangkai lampu dekat, jauh, lampu belakang, serta klakson.",
       pdf: "https://drive.google.com/file/d/14NyyTuIUJH57kkJyR5ximhm9AZKROKRN/view?usp=drive_link"
     }
   ];
@@ -544,6 +596,7 @@
     kelasAktif = kelas;
     document.getElementById("judulKelasAktif").textContent = "Rekap Laporan Kelas " + kelas;
     document.getElementById("inputCariNama").value = "";
+    document.getElementById("filterStatusSiswa").value = "all";
     document.getElementById("viewBeranda").classList.add("d-none");
     document.getElementById("viewRekapKelas").classList.remove("d-none");
     window.scrollTo(0, 0);
@@ -625,12 +678,38 @@
       };
     }).filter(s => s.nama !== "");
 
-    renderTabel(dataSiswa);
+    terapkanFilterSiswa();
   }
 
-  function filterSiswa(q) {
-    const key = q.toLowerCase().trim();
-    renderTabel(dataSiswa.filter(s => s.nama.toLowerCase().includes(key)));
+  function terapkanFilterSiswa() {
+    const q = document.getElementById("inputCariNama").value.toLowerCase().trim();
+    const st = document.getElementById("filterStatusSiswa").value;
+
+    const filtered = dataSiswa.filter(s => {
+      if (!s.nama.toLowerCase().includes(q)) return false;
+      if (st === "all") return true;
+      if (st === "4") return s.kurang >= 4;
+      return String(s.kurang) === st;
+    });
+
+    renderTabel(filtered);
+  }
+
+  function getBadgeStatusSiswa(s) {
+    const totalJob = s.jobs.length;
+    if (s.kurang === 0) {
+      return `<span class="pill-status pill-ok"><i class="fas fa-check-circle"></i> Lengkap (${totalJob}/${totalJob})</span>`;
+    }
+    if (s.kurang === 1) {
+      return `<span class="pill-status pill-kurang-1"><i class="fas fa-clock"></i> Kurang 1 Job</span>`;
+    }
+    if (s.kurang === 2) {
+      return `<span class="pill-status pill-kurang-2"><i class="fas fa-exclamation-circle"></i> Kurang 2 Job</span>`;
+    }
+    if (s.kurang === 3) {
+      return `<span class="pill-status pill-kurang-3"><i class="fas fa-exclamation-triangle"></i> Kurang 3 Job</span>`;
+    }
+    return `<span class="pill-status pill-kurang-4"><i class="fas fa-times-circle"></i> Kurang ${s.kurang} Job</span>`;
   }
 
   function renderTabel(list) {
@@ -640,15 +719,15 @@
       return;
     }
     document.getElementById("tbodySiswa").innerHTML = list.map((s, idx) => {
-      const badge = s.kurang === 0
-        ? `<span class="pill-status pill-ok"><i class="fas fa-check-circle"></i> Lengkap (${s.jobs.length}/${s.jobs.length})</span>`
-        : `<span class="pill-status pill-warn"><i class="fas fa-exclamation-circle"></i> Kurang ${s.kurang} Job</span>`;
+      const badge = getBadgeStatusSiswa(s);
       const asli = dataSiswa.indexOf(s);
+      const naNum = parseFloat(s.na);
+      const naClass = isNaN(naNum) ? 'text-dark' : (naNum >= 75 ? 'text-success' : 'text-danger');
       return `<tr class="row-siswa" onclick="detailSiswa(${asli})">
         <td class="text-center text-muted fw-medium">${idx + 1}</td>
         <td class="fw-semibold text-dark">${s.nama}</td>
         <td class="text-center">${badge}</td>
-        <td class="text-center fw-bold text-dark">${s.na}</td>
+        <td class="text-center fw-bold ${naClass}">${s.na}</td>
         <td class="text-center"><button type="button" class="btn btn-sm btn-outline-primary rounded-3 px-2.5 fw-semibold">Detail</button></td></tr>`;
     }).join("");
   }

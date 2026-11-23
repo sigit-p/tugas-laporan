@@ -381,20 +381,18 @@
         <div class="list-group list-group-flush">
             <div class="nav-section-label">Input Nilai</div>
             <a href="#" onclick="pilihMapel('PKSM', this); return false;" class="list-group-item list-group-item-action" id="menuInputPKSM">
-                <i class="fas fa-bolt text-warning me-2"></i> Input Mapel PKSM
+                <i class="fas fa-bolt text-warning me-2"></i> Input Nilai Laporan
             </a>
             <a href="#" onclick="pilihMapel('PRAKTEK', this); return false;" class="list-group-item list-group-item-action" id="menuInputPraktek">
                 <i class="fas fa-tools text-success me-2"></i> Input Nilai Praktek
-                <span class="badge bg-secondary ms-auto" style="font-size: 0.62rem;">Admin</span>
             </a>
 
             <div class="nav-section-label mt-2">Rekap & Edit Tabel</div>
             <a href="#" onclick="pilihModeEdit('PKSM', this); return false;" class="list-group-item list-group-item-action" id="menuTabelPKSM">
-                <i class="fas fa-table text-info me-2"></i> Tabel Nilai PKSM
+                <i class="fas fa-table text-info me-2"></i> Tabel Nilai Laporan
             </a>
             <a href="#" onclick="pilihModeEdit('PRAKTEK', this); return false;" class="list-group-item list-group-item-action" id="menuTabelPraktek">
                 <i class="fas fa-clipboard-list text-success me-2"></i> Tabel Nilai Praktek
-                <span class="badge bg-secondary ms-auto" style="font-size: 0.62rem;">Admin</span>
             </a>
 
             <div class="nav-section-label mt-2">Sistem</div>
@@ -440,13 +438,16 @@
                     </p>
                     <div class="d-flex flex-wrap gap-2 position-relative" style="z-index: 2;">
                         <button type="button" class="btn btn-primary fw-semibold px-4 py-2 rounded-3" onclick="pilihModeEdit('PKSM', document.getElementById('menuTabelPKSM'))">
-                            <i class="fas fa-table me-2"></i> Rekap Nilai PKSM
+                            <i class="fas fa-table me-2"></i> Rekap Nilai Laporan
+                        </button>
+                                                <button type="button" class="btn btn-primary fw-semibold px-4 py-2 rounded-3" onclick="pilihModeEdit('PRAKTEK', document.getElementById('menuTabelPKSM'))">
+                            <i class="fas fa-table me-2"></i> Rekap Nilai Praktek
                         </button>
                         <button type="button" class="btn btn-success fw-semibold px-4 py-2 rounded-3" onclick="pilihMapel('PRAKTEK', document.getElementById('menuInputPraktek'))">
                             <i class="fas fa-tools me-2"></i> Input Nilai Praktek
                         </button>
                         <button type="button" class="btn btn-outline-light fw-semibold px-4 py-2 rounded-3" onclick="pilihMapel('PKSM', document.getElementById('menuInputPKSM'))">
-                            <i class="fas fa-plus me-2"></i> Input Nilai PKSM
+                            <i class="fas fa-plus me-2"></i> Input Nilai Laporan
                         </button>
                     </div>
                 </div>
@@ -736,12 +737,10 @@
                 "Sistem Penerangan"
             ],
             'PRAKTEK': [
-                "Praktek 1 (Servis Berkala / Tune Up)",
-                "Praktek 2 (Sistem Rem & Roda)",
-                "Praktek 3 (CVT / Transmisi)",
-                "Praktek 4 (Suspensi & Kemudi)",
-                "Praktek 5 (Sistem Bahan Bakar / Injeksi)",
-                "Praktek 6 (Uji Kompetensi Praktek)"
+                "Praktek 1 (Sistem Pengapian)",
+                "Praktek 2 (Sistem Starter)",
+                "Praktek 3 (Sistem Pengisian)",
+                "Praktek 4 (Sistem Penerangan)",
             ]
         };
         js.innerHTML = '<option value="">-- Pilih Job / Materi Praktek --</option>';

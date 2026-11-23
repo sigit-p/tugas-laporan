@@ -299,15 +299,43 @@
             color: #dc2626;
         }
         .inline-score-input::-webkit-outer-spin-button,
-        .inline-score-input::-webkit-inner-spin-button {
+        .inline-score-input::-webkit-inner-spin-button,
+        .modal-score-input::-webkit-outer-spin-button,
+        .modal-score-input::-webkit-inner-spin-button {
             -webkit-appearance: none;
             margin: 0;
         }
-        .inline-score-input[type=number] {
+        .inline-score-input[type=number],
+        .modal-score-input[type=number] {
             -moz-appearance: textfield;
         }
         tr.row-editing {
             background-color: #fffbeb !important;
+        }
+
+        /* INPUT DI DALAM MODAL EDIT NILAI (MOBILE FRIENDLY) */
+        .modal-job-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 12px 14px;
+            background: #f8fafc;
+            transition: all 0.15s ease;
+        }
+        .modal-job-card.pass-card {
+            border-color: #a7f3d0;
+            background: #ecfdf5;
+        }
+        .modal-job-card.fail-card {
+            border-color: #fecaca;
+            background: #fef2f2;
+        }
+        .modal-score-input {
+            width: 90px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.05rem;
+            border-radius: 10px;
+            padding: 8px 10px;
         }
 
         #adminPanel { display: none; animation: fadeIn 0.35s ease; }
@@ -619,7 +647,7 @@
                     </div>
                 </div>
 
-                <!-- 3. TABEL REKAP & INLINE EDIT NILAI -->
+                <!-- 3. TABEL REKAP & EDIT NILAI (MODAL & INLINE) -->
                 <div id="tabelKonten" style="display:none;">
                     <!-- STAT CARDS -->
                     <div class="row g-3 mb-4">
@@ -657,7 +685,7 @@
                         <div class="p-4 border-bottom bg-white d-flex flex-wrap justify-content-between align-items-center gap-3">
                             <div>
                                 <h5 id="judulTabel" class="fw-bold text-dark mb-0"><i class="fas fa-table text-primary me-2"></i>DATA TABEL NILAI</h5>
-                                <small class="text-muted">Klik tombol <b>Edit</b> pada baris siswa untuk mengubah nilai langsung di tabel, lalu klik <b>Simpan</b>.</small>
+                                <small class="text-muted">Klik <b>Edit Modal</b> (nyaman untuk HP) atau <b>Inline</b> untuk mengubah seluruh nilai job siswa.</small>
                             </div>
                             <div class="d-flex align-items-center gap-2">
                                 <select id="kelasTabel" class="form-select form-select-sm w-auto fw-bold bg-light" onchange="refreshTabel()">
@@ -713,6 +741,42 @@
     </div>
 </div>
 
+<!-- MODAL EDIT SEMUA NILAI SISWA (MOBILE FRIENDLY) -->
+<div class="modal fade" id="modalEditNilaiSiswa" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 18px;">
+            <div class="modal-header border-bottom bg-light">
+                <div>
+                    <span class="badge bg-primary-subtle text-primary mb-1" id="modalEditKelasBadge">XI SA</span>
+                    <h5 class="modal-title fw-bold text-dark mb-0" id="modalEditNamaSiswa">Nama Siswa</h5>
+                    <small class="text-muted" id="modalEditSubJudul">Edit seluruh nilai job praktik</small>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+            </div>
+            <div class="modal-body p-3 p-sm-4">
+                <div id="modalEditJobsList" class="d-flex flex-column gap-2"></div>
+
+                <!-- LIVE PREVIEW NILAI AKHIR -->
+                <div class="mt-3 p-3 rounded-3 bg-light border d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="small fw-semibold text-secondary">Rata-Rata Nilai Akhir (NA)</div>
+                        <small class="text-muted" style="font-size: 0.72rem;">KKM Minimal: 75</small>
+                    </div>
+                    <div class="h3 fw-bold mb-0" id="modalEditPreviewNA">0</div>
+                </div>
+            </div>
+            <div class="modal-footer border-top bg-white">
+                <button type="button" class="btn btn-outline-secondary rounded-3 px-3" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i> Batal
+                </button>
+                <button type="button" class="btn btn-success fw-semibold rounded-3 px-4" id="btnSimpanModalNilai" onclick="simpanDariModal()">
+                    <i class="fas fa-save me-1"></i> Simpan Semua Perubahan
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- MODAL BANTUAN -->
 <div class="modal fade" id="modalBantuan" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
@@ -728,10 +792,10 @@
                     <li><b>Input Nilai Praktek:</b> Data masuk ke sheet <code>PRAKTEK_XI SA</code>, <code>PRAKTEK_XI SB</code>, <code>PRAKTEK_XI SC</code> (khusus arsip admin).</li>
                 </ul>
                 <hr>
-                <h6 class="fw-bold text-primary mb-2">2. Edit Nilai Langsung di Tabel (Inline Edit)</h6>
+                <h6 class="fw-bold text-primary mb-2">2. Edit Nilai via Modal (HP) atau Inline (Laptop)</h6>
                 <ul class="text-muted small mb-0">
-                    <li>Klik tombol <b>Edit</b> pada baris siswa di menu <b>Rekap Nilai Laporan</b> atau <b>Rekap Nilai Praktek</b>.</li>
-                    <li>Ubah skor pada kolom Job yang muncul, lalu klik <b>Simpan</b> untuk memperbarui data ke Google Sheet.</li>
+                    <li><b>Edit Modal (Tombol Biru):</b> Membuka jendela pop-up berisi seluruh daftar Job siswa tersebut secara vertikal agar mudah diketik lewat layar HP.</li>
+                    <li><b>Edit Inline (Tombol Ikon Pensil):</b> Mengubah angka langsung di dalam kolom tabel (cocok untuk layar komputer/laptop).</li>
                 </ul>
             </div>
             <div class="modal-footer border-top">
@@ -751,6 +815,9 @@
     let dataGabungan = [];
     let daftarHeaderJob = [];
     let tempNames = null, tempTable = null;
+    let activeModalSiswaId = null;
+    let activeModalScores = [];
+    let modalEditInstance = null;
 
     if (sessionStorage.getItem("admin_tsm_logged_in") === "true") {
         document.getElementById('loginWrapper').style.display = 'none';
@@ -846,7 +913,6 @@
         pilihModeEdit(mode, menuEl);
     }
 
-    // Helper membaca JSONP sebagai Promise untuk statistik dashboard
     function bacaSheetJsonp(sheetName) {
         return new Promise((resolve) => {
             const cbName = "cbDash_" + sheetName.replace(/\s+/g, "_") + "_" + Date.now() + "_" + Math.floor(Math.random() * 1000);
@@ -962,7 +1028,6 @@
         document.getElementById('dashRataLaporan').innerText = rataGlobal;
         document.getElementById('dashProgresKelasContainer').innerHTML = htmlPerKelas;
 
-        // Cek ketersediaan sheet Praktek
         const sheetPraktekAktif = hasilPraktek.filter(t => Array.isArray(t) && t.length >= 2).length;
         const statusPraktekEl = document.getElementById('dashStatusPraktek');
         const infoPraktekEl = document.getElementById('dashInfoPraktek');
@@ -1074,7 +1139,7 @@
     };
 
     /* ======================================================
-       BAGIAN TABEL REKAP & INLINE EDIT (TOMBOL EDIT -> SIMPAN)
+       BAGIAN TABEL REKAP, EDIT MODAL (MOBILE) & INLINE EDIT
     ====================================================== */
     function sendUpdatePromise(sheetTarget, n, j, ni) {
         return new Promise((resolve, reject) => {
@@ -1192,7 +1257,7 @@
             <th class="text-start">Nama Siswa</th>
             ${daftarHeaderJob.map(j => `<th>${j}</th>`).join('')}
             <th>NA</th>
-            <th width="145">Aksi</th>
+            <th width="165">Aksi</th>
         `;
 
         dataGabungan = tempNames.map((namaRaw, idx) => {
@@ -1311,9 +1376,14 @@
                 `;
             } else {
                 aksiHtml += `
-                    <button type="button" class="btn btn-sm btn-outline-warning text-dark fw-semibold rounded-3 px-2" onclick="mulaiEditBaris(${s.id})" title="Edit Nilai">
-                        <i class="fas fa-pen me-1"></i>Edit
-                    </button>
+                    <div class="d-inline-flex gap-1">
+                        <button type="button" class="btn btn-sm btn-primary fw-semibold rounded-3 px-2" onclick="bukaModalEditNilai(${s.id})" title="Edit Semua Nilai via Modal (Nyaman di HP)">
+                            <i class="fas fa-edit me-1"></i>Edit
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-warning text-dark rounded-3 px-2" onclick="mulaiEditBaris(${s.id})" title="Edit Langsung di Tabel (Inline)">
+                            <i class="fas fa-table"></i>
+                        </button>
+                    </div>
                 `;
             }
             aksiHtml += `</td>`;
@@ -1323,6 +1393,133 @@
         });
     }
 
+    /* ======================================================
+       MODAL EDIT SEMUA NILAI (MOBILE FRIENDLY)
+    ====================================================== */
+    function bukaModalEditNilai(siswaId) {
+        const s = dataGabungan.find(item => item.id === siswaId);
+        if (!s) return;
+
+        activeModalSiswaId = siswaId;
+        activeModalScores = [...s.scores];
+
+        const kelas = document.getElementById('kelasTabel').value;
+        const labelMode = editModeMapel === 'PRAKTEK' ? 'Nilai Praktek (Admin)' : 'Nilai Laporan (PKSM)';
+
+        document.getElementById('modalEditKelasBadge').innerText = `${kelas} • ${labelMode}`;
+        document.getElementById('modalEditNamaSiswa').innerText = s.nama;
+        document.getElementById('modalEditSubJudul').innerText = `Ubah semua skor job praktik di bawah lalu klik Simpan`;
+
+        const container = document.getElementById('modalEditJobsList');
+        container.innerHTML = activeModalScores.map((val, idx) => {
+            const namaJob = daftarHeaderJob[idx] || `Job ${idx + 1}`;
+            const isPass = val >= 75;
+            return `
+                <div class="modal-job-card ${isPass ? 'pass-card' : 'fail-card'} d-flex justify-content-between align-items-center gap-3" id="modalJobCard_${idx}">
+                    <div>
+                        <div class="fw-bold text-dark small">${namaJob}</div>
+                        <small class="${isPass ? 'text-success' : 'text-danger'} fw-medium" id="modalJobStatus_${idx}">
+                            ${isPass ? '<i class="fas fa-check-circle me-1"></i>Tuntas KKM' : '<i class="fas fa-exclamation-circle me-1"></i>Belum Tuntas (< 75)'}
+                        </small>
+                    </div>
+                    <input
+                        type="number"
+                        inputmode="numeric"
+                        min="0"
+                        max="100"
+                        class="form-control modal-score-input"
+                        id="modalJobInp_${idx}"
+                        value="${val}"
+                        onfocus="this.select()"
+                        oninput="ubahNilaiDiModal(${idx}, this)"
+                    >
+                </div>
+            `;
+        }).join('');
+
+        perbaruiPreviewNAModal();
+
+        if (!modalEditInstance) {
+            modalEditInstance = new bootstrap.Modal(document.getElementById('modalEditNilaiSiswa'));
+        }
+        modalEditInstance.show();
+    }
+
+    function ubahNilaiDiModal(jobIdx, inputEl) {
+        let val = parseFloat(inputEl.value);
+        if (isNaN(val)) val = 0;
+        if (val < 0) val = 0;
+        if (val > 100) val = 100;
+
+        activeModalScores[jobIdx] = val;
+
+        const isPass = val >= 75;
+        const card = document.getElementById(`modalJobCard_${jobIdx}`);
+        const statusEl = document.getElementById(`modalJobStatus_${jobIdx}`);
+
+        if (card) {
+            card.classList.remove('pass-card', 'fail-card');
+            card.classList.add(isPass ? 'pass-card' : 'fail-card');
+        }
+        if (statusEl) {
+            statusEl.className = `${isPass ? 'text-success' : 'text-danger'} fw-medium`;
+            statusEl.innerHTML = isPass
+                ? '<i class="fas fa-check-circle me-1"></i>Tuntas KKM'
+                : '<i class="fas fa-exclamation-circle me-1"></i>Belum Tuntas (< 75)';
+        }
+
+        perbaruiPreviewNAModal();
+    }
+
+    function perbaruiPreviewNAModal() {
+        const na = hitungNA(activeModalScores);
+        const naEl = document.getElementById('modalEditPreviewNA');
+        if (naEl) {
+            naEl.innerText = na;
+            naEl.className = `h3 fw-bold mb-0 ${na >= 75 ? 'text-success' : 'text-danger'}`;
+        }
+    }
+
+    async function simpanDariModal() {
+        const s = dataGabungan.find(item => item.id === activeModalSiswaId);
+        if (!s) return;
+
+        const btn = document.getElementById('btnSimpanModalNilai');
+        const originalText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Menyimpan...`;
+
+        const k = document.getElementById('kelasTabel').value;
+        const targetSheet = getNamaSheet(k, editModeMapel);
+
+        try {
+            for (let idx = 0; idx < activeModalScores.length; idx++) {
+                if (activeModalScores[idx] !== s.originalScores[idx]) {
+                    const res = await sendUpdatePromise(targetSheet, s.nama, idx + 1, activeModalScores[idx]);
+                    if (!res || res.status !== "success") {
+                        throw new Error(`Gagal menyimpan ${daftarHeaderJob[idx] || 'Job ' + (idx + 1)} untuk ${s.nama}`);
+                    }
+                    s.originalScores[idx] = activeModalScores[idx];
+                }
+            }
+            s.scores = [...activeModalScores];
+            s.na = hitungNA(s.scores);
+            s.editing = false;
+
+            if (modalEditInstance) modalEditInstance.hide();
+            perbaruiStatistikAdmin();
+            filterBarisTabel();
+        } catch (err) {
+            alert("❌ " + (err.message || "Gagal menyimpan perubahan."));
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+        }
+    }
+
+    /* ======================================================
+       INLINE EDIT DI TABEL (UNTUK DESKTOP / LAPTOP)
+    ====================================================== */
     function mulaiEditBaris(siswaId) {
         const s = dataGabungan.find(item => item.id === siswaId);
         if (!s) return;

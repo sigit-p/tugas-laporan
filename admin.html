@@ -88,7 +88,6 @@
       border-color: #fca5a5;
       color: #b91c1c;
     }
-    /* Hilangkan panah spinner bawaan input number agar rapi */
     .inline-score-input::-webkit-outer-spin-button,
     .inline-score-input::-webkit-inner-spin-button {
       -webkit-appearance: none;
@@ -174,13 +173,13 @@
       <form onsubmit="prosesLoginAdmin(event)">
         <div class="mb-3">
           <label class="form-label small fw-bold text-secondary">Username / Kode Guru</label>
-          <input type="text" id="loginUser" class="form-control rounded-3" placeholder="Masukkan username..." required>
+          <input type="text" id="loginUser" class="form-control rounded-3" placeholder="Masukkan username (opsional jika hanya password)..." autocomplete="username">
         </div>
         <div class="mb-4">
-          <label class="form-label small fw-bold text-secondary">Password</label>
-          <input type="password" id="loginPass" class="form-control rounded-3" placeholder="Masukkan password..." required>
+          <label class="form-label small fw-bold text-secondary">Password <span class="text-danger">*</span></label>
+          <input type="password" id="loginPass" class="form-control rounded-3" placeholder="Masukkan password..." required autocomplete="current-password">
         </div>
-        <button type="submit" class="btn btn-primary w-100 py-2.5 rounded-3 fw-bold">
+        <button type="submit" id="btnSubmitLogin" class="btn btn-primary w-100 py-2.5 rounded-3 fw-bold">
           <i class="fas fa-sign-in-alt me-1"></i> Masuk ke Workspace Nilai
         </button>
       </form>
@@ -301,18 +300,12 @@
   const API_URL = "https://script.google.com/macros/s/AKfycbwswDuj1YQHP4C6fXfdEa1G1rqW6hvbx6ZCnnfsRJsHC1fb5byCpHtMmU0vIZBgoYqaPg/exec";
   const KKM = 75;
 
-  // Kredensial default (silakan sesuaikan jika sudah memakai auth backend)
-  const ADMIN_CREDENTIALS = [
-    { user: "admin", pass: "admin123" },
-    { user: "sigit", pass: "pksm2026" },
-    { user: "guru", pass: "tsmmupa" }
-  ];
-
   let kelasAktif = "XI SA";
-  let masterSiswa = []; // Menyimpan objek lengkap tiap siswa
+  let masterSiswa = [];
   let headerJobs = ["Sistem Pengapian", "Sistem Starter", "Sistem Pengisian", "Sistem Penerangan"];
   let tempNames = null;
   let tempTable = null;
+  let adminPasswordSession = "";
 
   const toastObj = new bootstrap.Toast(document.getElementById('liveToast'), { delay: 2800 });
 
@@ -325,31 +318,116 @@
 
   // CEK SESI LOGIN SAAT HALAMAN DIBUKA
   document.addEventListener("DOMContentLoaded", () => {
-    if (sessionStorage.getItem("pksm_admin_logged") === "true") {
+    const savedPass = sessionStorage.getItem("pksm_admin_pass");
+    if (sessionStorage.getItem("pksm_admin_logged") === "true" && savedPass) {
+      adminPasswordSession = savedPass;
       tampilkanWorkspace();
     }
   });
 
-  function prosesLoginAdmin(e) {
-    e.preventDefault();
-    const u = document.getElementById("loginUser").value.trim().toLowerCase();
-    const p = document.getElementById("loginPass").value.trim();
+  // FUNGSI HELPER PANGGIL JSONP KE APPS SCRIPT
+  function panggilJsonp(paramsObj) {
+    return new Promise((resolve, reject) => {
+      const cbName = "cbGas_" + Date.now() + "_" + Math.floor(Math.random() * 1000);
+      const timer = setTimeout(() => {
+        delete window[cbName];
+        const el = document.getElementById(cbName);
+        if (el) el.remove();
+        reject(new Error("Waktu koneksi habis (timeout)"));
+      }, 10000);
 
-    const valid = ADMIN_CREDENTIALS.some(acc => acc.user === u && acc.pass === p);
-    if (!valid) {
-      tampilNotif("Username atau password salah!", "danger");
+      window[cbName] = function(res) {
+        clearTimeout(timer);
+        delete window[cbName];
+        const el = document.getElementById(cbName);
+        if (el) el.remove();
+        resolve(res);
+      };
+
+      const query = new URLSearchParams({
+        ...paramsObj,
+        callback: cbName,
+        t: Date.now()
+      }).toString();
+
+      const script = document.createElement("script");
+      script.id = cbName;
+      script.src = `${API_URL}?${query}`;
+      script.onerror = () => {
+        clearTimeout(timer);
+        delete window[cbName];
+        script.remove();
+        reject(new Error("Gagal terhubung ke Google Apps Script"));
+      };
+      document.head.appendChild(script);
+    });
+  }
+
+  // PROSES LOGIN ADMIN TERHUBUNG KE APPS SCRIPT
+  async function prosesLoginAdmin(e) {
+    e.preventDefault();
+    const u = document.getElementById("loginUser").value.trim();
+    const p = document.getElementById("loginPass").value.trim();
+    const btn = document.getElementById("btnSubmitLogin");
+
+    if (!p) {
+      tampilNotif("Password wajib diisi!", "warning");
       return;
     }
 
-    sessionStorage.setItem("pksm_admin_logged", "true");
-    tampilkanWorkspace();
+    const teksAsli = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Memeriksa...`;
+
+    try {
+      // Kirim parameter lengkap agar kompatibel dengan script login versi password saja maupun username+password
+      const res = await panggilJsonp({
+        action: "login",
+        username: u,
+        user: u,
+        password: p,
+        pass: p
+      });
+
+      const isOk = res === true ||
+        res === "ok" ||
+        res === "success" ||
+        (res && (
+          res.status === "ok" ||
+          res.status === "success" ||
+          res.success === true ||
+          res.valid === true ||
+          res.login === true ||
+          res.auth === true
+        ));
+
+      if (isOk) {
+        adminPasswordSession = p;
+        sessionStorage.setItem("pksm_admin_logged", "true");
+        sessionStorage.setItem("pksm_admin_pass", p);
+        tampilNotif("Login berhasil! Memuat data siswa...", "success");
+        tampilkanWorkspace();
+      } else {
+        const msg = (res && (res.message || res.error || res.msg)) || "Username atau password salah!";
+        tampilNotif(msg, "danger");
+      }
+    } catch (err) {
+      console.error("Login Error:", err);
+      tampilNotif(err.message || "Gagal memverifikasi login ke server.", "danger");
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = teksAsli;
+    }
   }
 
   function logoutAdmin() {
+    adminPasswordSession = "";
     sessionStorage.removeItem("pksm_admin_logged");
+    sessionStorage.removeItem("pksm_admin_pass");
     document.getElementById("viewWorkspaceAdmin").classList.add("d-none");
     document.getElementById("btnLogoutAdmin").classList.add("d-none");
     document.getElementById("viewLoginAdmin").classList.remove("d-none");
+    document.getElementById("loginPass").value = "";
   }
 
   function tampilkanWorkspace() {
@@ -440,7 +518,6 @@
       headerJobs = jobCols.map(c => c.judul);
     }
 
-    // Update header tabel dinamis sesuai kolom spreadsheet
     document.getElementById("theadAdmin").innerHTML = `
       <tr>
         <th width="50">No</th>
@@ -463,7 +540,7 @@
 
       return {
         indexAsli: idx,
-        rowSheet: idx + 2, // Baris aktual di Google Sheet (baris 1 header)
+        rowSheet: idx + 2,
         nama: nama,
         scores: scores,
         originalScores: [...scores],
@@ -557,7 +634,6 @@
     }).join("");
   }
 
-  // DIPANGGIL REALTIME SAAT GURU MENGETIK NILAI DI KOTAK INPUT
   function ubahNilaiInline(siswaIdx, jobIdx, inputEl) {
     const s = masterSiswa.find(item => item.indexAsli === siswaIdx);
     if (!s) return;
@@ -569,14 +645,11 @@
 
     s.scores[jobIdx] = val;
 
-    // Ubah warna pill kotak input secara instan
     inputEl.classList.remove("score-pass", "score-fail");
     inputEl.classList.add(val >= KKM ? "score-pass" : "score-fail");
 
-    // Cek apakah ada perbedaan dari nilai awal di server
     s.dirty = s.scores.some((v, i) => v !== s.originalScores[i]);
 
-    // Update Nilai Akhir baris tersebut tanpa me-render ulang seluruh tabel (agar fokus kursor tidak hilang)
     const na = hitungRataRata(s.scores);
     const naEl = document.getElementById(`naSiswa_${siswaIdx}`);
     if (naEl) {
@@ -607,6 +680,8 @@
     try {
       const payload = {
         action: "updateNilai",
+        password: adminPasswordSession,
+        pass: adminPasswordSession,
         sheet: kelasAktif,
         row: s.rowSheet,
         nama: s.nama,

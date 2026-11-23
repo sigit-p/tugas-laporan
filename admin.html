@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard | Portal PKSM</title>
+    <title>Admin Dashboard | Portal PKSM & Praktek</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -220,8 +220,7 @@
         .stat-icon.green { background: #ecfdf5; color: #059669; }
         .stat-icon.red { background: #fef2f2; color: #dc2626; }
 
-        /* FORM & TABLE POLISH */
-/* FORM & TABLE POLISH */
+        /* FORM & TABLE POLISH (SPACE PANAH DROPDOWN SUDAH DIPERBAIKI) */
         .form-control {
             border-radius: 10px;
             border-color: #cbd5e1;
@@ -242,6 +241,7 @@
             border-color: #2563eb;
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
         }
+
         .table-modern thead th {
             background: #f8fafc;
             color: #475569;
@@ -355,7 +355,7 @@
                 </a>
             </div>
             <div class="text-center text-muted mt-4 pt-3 border-top" style="font-size: 0.75rem;">
-                &copy; 2026 TSM SMK Muhammadiyah Pakem &bull; Portal PKSM v1.0
+                &copy; 2026 TSM SMK Muhammadiyah Pakem &bull; Portal PKSM v1.1
             </div>
         </div>
     </div>
@@ -380,21 +380,21 @@
 
         <div class="list-group list-group-flush">
             <div class="nav-section-label">Input Nilai</div>
-            <a href="#" onclick="pilihMapel('PKSM', this); return false;" class="list-group-item list-group-item-action">
+            <a href="#" onclick="pilihMapel('PKSM', this); return false;" class="list-group-item list-group-item-action" id="menuInputPKSM">
                 <i class="fas fa-bolt text-warning me-2"></i> Input Mapel PKSM
             </a>
-            <a href="#" onclick="return false;" class="list-group-item disabled" style="opacity: 0.4; cursor: not-allowed;">
-                <i class="fas fa-cogs me-2"></i> Input Mapel PSSM
-                <span class="badge bg-secondary ms-auto" style="font-size: 0.65rem;">Off</span>
+            <a href="#" onclick="pilihMapel('PRAKTEK', this); return false;" class="list-group-item list-group-item-action" id="menuInputPraktek">
+                <i class="fas fa-tools text-success me-2"></i> Input Nilai Praktek
+                <span class="badge bg-secondary ms-auto" style="font-size: 0.62rem;">Admin</span>
             </a>
 
             <div class="nav-section-label mt-2">Rekap & Edit Tabel</div>
-            <a href="#" onclick="pilihModeEdit('PKSM', this); return false;" class="list-group-item list-group-item-action">
+            <a href="#" onclick="pilihModeEdit('PKSM', this); return false;" class="list-group-item list-group-item-action" id="menuTabelPKSM">
                 <i class="fas fa-table text-info me-2"></i> Tabel Nilai PKSM
             </a>
-            <a href="#" onclick="return false;" class="list-group-item disabled" style="opacity: 0.4; cursor: not-allowed;">
-                <i class="fas fa-table me-2"></i> Tabel Nilai PSSM
-                <span class="badge bg-secondary ms-auto" style="font-size: 0.65rem;">Off</span>
+            <a href="#" onclick="pilihModeEdit('PRAKTEK', this); return false;" class="list-group-item list-group-item-action" id="menuTabelPraktek">
+                <i class="fas fa-clipboard-list text-success me-2"></i> Tabel Nilai Praktek
+                <span class="badge bg-secondary ms-auto" style="font-size: 0.62rem;">Admin</span>
             </a>
 
             <div class="nav-section-label mt-2">Sistem</div>
@@ -435,39 +435,45 @@
                 <div id="welcomeMsg" class="hero-welcome p-4 p-md-5 mb-4 shadow-sm">
                     <span class="badge bg-primary mb-2 px-3 py-1 rounded-pill">ADMINISTRATOR</span>
                     <h3 class="fw-bold mb-2">Selamat Datang, Pak Sigit!</h3>
-                    <p class="text-white-50 mb-4" style="max-width: 560px;">
-                        Kelola input nilai praktik kelistrikan (PKSM), pantau ketuntasan KKM siswa per kelas, dan perbarui data langsung ke Google Sheet.
+                    <p class="text-white-50 mb-4" style="max-width: 580px;">
+                        Kelola input nilai praktik kelistrikan (PKSM) maupun nilai praktek bengkel tambahan (khusus admin) langsung ke Google Sheet.
                     </p>
                     <div class="d-flex flex-wrap gap-2 position-relative" style="z-index: 2;">
-                        <button type="button" class="btn btn-primary fw-semibold px-4 py-2 rounded-3" onclick="pilihModeEdit('PKSM', document.querySelectorAll('.list-group-item')[2])">
-                            <i class="fas fa-table me-2"></i> Buka Rekap Nilai PKSM
+                        <button type="button" class="btn btn-primary fw-semibold px-4 py-2 rounded-3" onclick="pilihModeEdit('PKSM', document.getElementById('menuTabelPKSM'))">
+                            <i class="fas fa-table me-2"></i> Rekap Nilai PKSM
                         </button>
-                        <button type="button" class="btn btn-outline-light fw-semibold px-4 py-2 rounded-3" onclick="pilihMapel('PKSM', document.querySelectorAll('.list-group-item')[0])">
-                            <i class="fas fa-plus me-2"></i> Input Nilai Baru
+                        <button type="button" class="btn btn-success fw-semibold px-4 py-2 rounded-3" onclick="pilihMapel('PRAKTEK', document.getElementById('menuInputPraktek'))">
+                            <i class="fas fa-tools me-2"></i> Input Nilai Praktek
+                        </button>
+                        <button type="button" class="btn btn-outline-light fw-semibold px-4 py-2 rounded-3" onclick="pilihMapel('PKSM', document.getElementById('menuInputPKSM'))">
+                            <i class="fas fa-plus me-2"></i> Input Nilai PKSM
                         </button>
                     </div>
                 </div>
 
-                <!-- FORM INPUT NILAI (TETAP SAMA SEPERTI ASLINYA) -->
+                <!-- FORM INPUT NILAI -->
                 <div id="formKonten" class="modern-card overflow-hidden" style="display:none;">
                     <div class="p-4 border-bottom bg-white d-flex flex-wrap justify-content-between align-items-center gap-2">
                         <div>
                             <h5 class="fw-bold text-dark mb-0" id="judulForm"><i class="fas fa-edit text-primary me-2"></i>Input Nilai</h5>
-                            <small class="text-muted">Data yang disimpan akan langsung tersinkron ke spreadsheet kelas.</small>
+                            <small class="text-muted" id="subJudulForm">Data yang disimpan akan langsung tersinkron ke spreadsheet kelas.</small>
                         </div>
-                        <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill">
+                        <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill" id="badgeSyncForm">
                             <i class="fas fa-cloud-upload-alt me-1"></i> Auto-Sync Sheet
                         </span>
                     </div>
                     <div class="p-4">
+                        <div id="infoSheetPraktek" class="alert alert-info small py-2 px-3 d-none">
+                            <i class="fas fa-eye-slash me-1"></i> <strong>Mode Admin Only:</strong> Nilai praktek ini tersimpan di tab sheet <code>PRAKTEK_XI SA</code> / <code>SB</code> / <code>SC</code> dan <strong>tidak ditampilkan di portal siswa</strong>.
+                        </div>
                         <div class="row g-3">
                             <div class="col-md-4">
                                 <label class="form-label fw-semibold small text-secondary">Pilih Kelas</label>
                                 <select id="kelas" class="form-select" onchange="loadStudentNames()">
                                     <option value="">-- Pilih Kelas --</option>
-                                    <option value="XI SA">XI SA  </option>
-                                    <option value="XI SB">XI SB  </option>
-                                    <option value="XI SC">XI SC  </option>
+                                    <option value="XI SA">XI SA</option>
+                                    <option value="XI SB">XI SB</option>
+                                    <option value="XI SC">XI SC</option>
                                 </select>
                             </div>
                             <div class="col-md-8">
@@ -492,7 +498,7 @@
                     </div>
                 </div>
 
-                <!-- TABEL REKAP & EDIT NILAI -->
+                <!-- TABEL REKAP & INLINE EDIT NILAI -->
                 <div id="tabelKonten" style="display:none;">
                     <!-- STAT CARDS -->
                     <div class="row g-3 mb-4">
@@ -580,7 +586,7 @@
                 &copy; 2026 <strong>TSM SMK Muhammadiyah Pakem</strong>. Dikembangkan oleh <strong>Sigit Prabowo</strong>.
             </div>
             <div>
-                <span class="badge bg-light text-secondary border px-2 py-1">Portal PKSM v1.0</span>
+                <span class="badge bg-light text-secondary border px-2 py-1">Portal PKSM & Praktek v1.1</span>
             </div>
         </footer>
     </div>
@@ -595,18 +601,16 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-4">
-                <h6 class="fw-bold text-primary mb-2">1. Menginput Nilai Baru</h6>
+                <h6 class="fw-bold text-primary mb-2">1. Input Nilai Praktek (Khusus Admin)</h6>
                 <ul class="text-muted small">
-                    <li>Pilih menu <b>Input Mapel PKSM</b> pada sidebar sebelah kiri.</li>
-                    <li>Pilih kelas, ketik nama siswa, pilih nomor Job praktik, lalu isi nilai dan klik <b>Simpan Nilai ke Google Sheet</b>.</li>
+                    <li>Pilih menu <b>Input Nilai Praktek</b> untuk memasukkan nilai praktek tambahan yang tidak perlu tampil di portal siswa.</li>
+                    <li>Pastikan di Google Spreadsheet Anda sudah ada tab sheet bernama <b><code>PRAKTEK_XI SA</code></b>, <b><code>PRAKTEK_XI SB</code></b>, dan <b><code>PRAKTEK_XI SC</code></b>.</li>
                 </ul>
                 <hr>
-                <h6 class="fw-bold text-primary mb-2">2. Memantau & Mengedit Nilai (Inline Edit)</h6>
+                <h6 class="fw-bold text-primary mb-2">2. Edit Nilai Langsung di Tabel (Inline Edit)</h6>
                 <ul class="text-muted small mb-0">
-                    <li>Buka menu <b>Tabel Nilai PKSM</b> untuk melihat rekap seluruh siswa dan statistik ketuntasan.</li>
-                    <li>Klik tombol <b>Edit</b> pada baris siswa untuk membuka kolom input nilai secara langsung di tabel.</li>
-                    <li>Setelah nilai diubah, tombol <b>Edit</b> berubah menjadi <b>Simpan</b>. Klik <b>Simpan</b> untuk mengirim perubahan ke Google Sheet.</li>
-                    <li>Skor di bawah <b>75 (KKM)</b> ditandai dengan badge merah lembut, sedangkan <b>&ge; 75</b> ditandai hijau lembut.</li>
+                    <li>Klik tombol <b>Edit</b> pada baris siswa di menu <b>Tabel Nilai PKSM</b> atau <b>Tabel Nilai Praktek</b>.</li>
+                    <li>Ubah skor pada kolom Job yang muncul, lalu klik <b>Simpan</b> untuk memperbarui data ke Google Sheet.</li>
                 </ul>
             </div>
             <div class="modal-footer border-top">
@@ -642,6 +646,12 @@
 
     function tutupSidebarMobile() {
         document.body.classList.remove('sidebar-mobile-open');
+    }
+
+    // Helper menentukan nama sheet di Google Spreadsheet
+    function getNamaSheet(kelas, mode) {
+        if (mode === 'PRAKTEK') return `PRAKTEK_${kelas}`;
+        return kelas;
     }
 
     async function handleLogin(e) {
@@ -691,7 +701,7 @@
     });
 
     /* ======================================================
-       BAGIAN INPUT NILAI (TETAP SAMA SEPERTI ASLINYA)
+       BAGIAN INPUT NILAI (PKSM & PRAKTEK ADMIN)
     ====================================================== */
     function pilihMapel(m, el) {
         currentMapel = m;
@@ -699,26 +709,49 @@
         document.getElementById('welcomeMsg').style.display = 'none';
         document.getElementById('tabelKonten').style.display = 'none';
         document.getElementById('formKonten').style.display = 'block';
-        document.getElementById('judulForm').innerHTML = `<i class="fas fa-edit text-primary me-2"></i>Input Nilai ${m}`;
-        document.getElementById('nav-status').innerText = `Input Nilai / ${m}`;
+
+        const isPraktek = (m === 'PRAKTEK');
+        document.getElementById('judulForm').innerHTML = isPraktek
+            ? `<i class="fas fa-tools text-success me-2"></i>Input Nilai Praktek (Admin Only)`
+            : `<i class="fas fa-edit text-primary me-2"></i>Input Nilai ${m}`;
+        document.getElementById('nav-status').innerText = isPraktek ? `Input Nilai / Praktek` : `Input Nilai / ${m}`;
+
+        const infoBox = document.getElementById('infoSheetPraktek');
+        if (infoBox) infoBox.classList.toggle('d-none', !isPraktek);
+
         document.querySelectorAll('.list-group-item').forEach(i => i.classList.remove('active-menu'));
         if (el) el.classList.add('active-menu');
+
         updateJobSelect('job_index', m);
+        loadStudentNames();
     }
 
     function updateJobSelect(id, m) {
         const js = document.getElementById(id);
         const j = {
-            'PKSM': ["Sistem Pengapian", "Sistem Starter", "Sistem Pengisian", "Sistem Penerangan"],
-            'PSSM': ["Rem Tromol", "Rem Cakram", "CVT Drive Pulley", "Kemudi/Komstir", "Suspensi Depan", "Tambal Ban Bakar", "Tyre Changer"]
+            'PKSM': [
+                "Sistem Pengapian",
+                "Sistem Starter",
+                "Sistem Pengisian",
+                "Sistem Penerangan"
+            ],
+            'PRAKTEK': [
+                "Praktek 1 (Servis Berkala / Tune Up)",
+                "Praktek 2 (Sistem Rem & Roda)",
+                "Praktek 3 (CVT / Transmisi)",
+                "Praktek 4 (Suspensi & Kemudi)",
+                "Praktek 5 (Sistem Bahan Bakar / Injeksi)",
+                "Praktek 6 (Uji Kompetensi Praktek)"
+            ]
         };
-        js.innerHTML = '<option value="">-- Pilih Job --</option>';
+        js.innerHTML = '<option value="">-- Pilih Job / Materi Praktek --</option>';
         (j[m] || []).forEach((item, i) => js.innerHTML += `<option value="${i + 1}">Job ${i + 1} - ${item}</option>`);
     }
 
     function loadStudentNames() {
         const k = document.getElementById('kelas').value;
         if (!k) return;
+        // Daftar nama siswa selalu diambil dari sheet kelas utama (XI SA/SB/SC) agar autocomplete selalu jalan
         fetch(`${SCRIPT_URL}?sheet=${encodeURIComponent(k)}`).then(r => r.json()).then(d => {
             const dl = document.getElementById('listSiswa');
             dl.innerHTML = "";
@@ -736,13 +769,15 @@
         const j = document.getElementById('job_index').value;
         const ni = document.getElementById('nilai').value;
         if (!k || !n || !j || !ni) return alert("Mohon lengkapi semua data!");
+
+        const targetSheet = getNamaSheet(k, currentMapel);
         btn.disabled = true;
         btn.innerText = "Mengirim...";
-        sendUpdate(k, n, j, ni, "handleUpdateResponse");
+        sendUpdate(targetSheet, n, j, ni, "handleUpdateResponse");
     }
 
-    function sendUpdate(k, n, j, ni, cb) {
-        const url = `${SCRIPT_URL}?action=update&sheet=${encodeURIComponent(k)}&nama=${encodeURIComponent(n)}&job_index=${j}&nilai=${ni}&callback=${cb}`;
+    function sendUpdate(sheetTarget, n, j, ni, cb) {
+        const url = `${SCRIPT_URL}?action=update&sheet=${encodeURIComponent(sheetTarget)}&nama=${encodeURIComponent(n)}&job_index=${j}&nilai=${ni}&callback=${cb}`;
         const s = document.createElement('script');
         s.src = url;
         document.head.appendChild(s);
@@ -751,16 +786,18 @@
     window.handleUpdateResponse = function (r) {
         document.getElementById('btnSimpan').disabled = false;
         document.getElementById('btnSimpan').innerHTML = `<i class="fas fa-save me-2"></i> Simpan Nilai ke Google Sheet`;
-        if (r.status === "success") {
+        if (r && r.status === "success") {
             alert("✅ Nilai berhasil disimpan!");
             document.getElementById('nilai').value = "";
+        } else {
+            alert("⚠️ Gagal menyimpan: " + (r?.message || "Pastikan tab sheet sudah dibuat di Google Spreadsheet."));
         }
     };
 
     /* ======================================================
-       BAGIAN TABEL REKAP & INLINE EDIT DENGAN TOMBOL EDIT -> SIMPAN
+       BAGIAN TABEL REKAP & INLINE EDIT (TOMBOL EDIT -> SIMPAN)
     ====================================================== */
-    function sendUpdatePromise(k, n, j, ni) {
+    function sendUpdatePromise(sheetTarget, n, j, ni) {
         return new Promise((resolve, reject) => {
             const cbName = "cbUpd_" + Date.now() + "_" + Math.floor(Math.random() * 10000);
             const timer = setTimeout(() => {
@@ -778,7 +815,7 @@
                 resolve(r);
             };
 
-            const url = `${SCRIPT_URL}?action=update&sheet=${encodeURIComponent(k)}&nama=${encodeURIComponent(n)}&job_index=${j}&nilai=${ni}&callback=${cbName}&t=${Date.now()}`;
+            const url = `${SCRIPT_URL}?action=update&sheet=${encodeURIComponent(sheetTarget)}&nama=${encodeURIComponent(n)}&job_index=${j}&nilai=${ni}&callback=${cbName}&t=${Date.now()}`;
             const s = document.createElement('script');
             s.id = cbName;
             s.src = url;
@@ -798,8 +835,13 @@
         document.getElementById('welcomeMsg').style.display = 'none';
         document.getElementById('formKonten').style.display = 'none';
         document.getElementById('tabelKonten').style.display = 'block';
-        document.getElementById('judulTabel').innerHTML = `<i class="fas fa-table text-primary me-2"></i>Rekap & Edit Nilai ${m}`;
-        document.getElementById('nav-status').innerText = `Tabel Nilai / ${m}`;
+
+        const isPraktek = (m === 'PRAKTEK');
+        document.getElementById('judulTabel').innerHTML = isPraktek
+            ? `<i class="fas fa-clipboard-list text-success me-2"></i>Rekap & Edit Nilai Praktek (Admin)`
+            : `<i class="fas fa-table text-primary me-2"></i>Rekap & Edit Nilai ${m}`;
+        document.getElementById('nav-status').innerText = isPraktek ? `Tabel Nilai / Praktek` : `Tabel Nilai / ${m}`;
+
         document.querySelectorAll('.list-group-item').forEach(i => i.classList.remove('active-menu'));
         if (el) el.classList.add('active-menu');
         refreshTabel();
@@ -807,21 +849,22 @@
 
     function refreshTabel() {
         const k = document.getElementById('kelasTabel').value;
+        const targetSheet = getNamaSheet(k, editModeMapel);
         const b = document.getElementById('bodyTable');
         tempNames = null;
         tempTable = null;
-        b.innerHTML = '<tr><td colspan="10" class="py-4 text-muted"><div class="spinner-border spinner-border-sm text-primary me-2"></div> Memuat data kelas...</td></tr>';
+        b.innerHTML = `<tr><td colspan="10" class="py-4 text-muted"><div class="spinner-border spinner-border-sm text-primary me-2"></div> Memuat data sheet <strong>${targetSheet}</strong>...</td></tr>`;
 
         ["adminGasNames", "adminGasTable"].forEach(id => { const old = document.getElementById(id); if (old) old.remove(); });
 
         const s1 = document.createElement('script');
         s1.id = "adminGasNames";
-        s1.src = `${SCRIPT_URL}?sheet=${encodeURIComponent(k)}&mapel=${encodeURIComponent(editModeMapel)}&callback=adminOnNames&t=${Date.now()}`;
+        s1.src = `${SCRIPT_URL}?sheet=${encodeURIComponent(targetSheet)}&callback=adminOnNames&t=${Date.now()}`;
         document.head.appendChild(s1);
 
         const s2 = document.createElement('script');
         s2.id = "adminGasTable";
-        s2.src = `${SCRIPT_URL}?action=read&sheet=${encodeURIComponent(k)}&mapel=${encodeURIComponent(editModeMapel)}&callback=adminOnTable&t=${Date.now()}`;
+        s2.src = `${SCRIPT_URL}?action=read&sheet=${encodeURIComponent(targetSheet)}&callback=adminOnTable&t=${Date.now()}`;
         document.head.appendChild(s2);
     }
 
@@ -838,10 +881,20 @@
     function gabungDataAdmin() {
         if (tempNames === null || tempTable === null) return;
 
+        const k = document.getElementById('kelasTabel').value;
+        const targetSheet = getNamaSheet(k, editModeMapel);
+
         if (tempTable.length < 2) {
             dataGabungan = [];
             perbaruiStatistikAdmin();
-            renderTabelAdmin([]);
+            document.getElementById('bodyTable').innerHTML = `
+                <tr>
+                    <td colspan="10" class="py-4 text-muted">
+                        Data di sheet <strong>${targetSheet}</strong> belum ditemukan atau masih kosong.<br>
+                        <small>Pastikan tab <code>${targetSheet}</code> sudah dibuat di Google Spreadsheet.</small>
+                    </td>
+                </tr>
+            `;
             return;
         }
 
@@ -938,7 +991,6 @@
             const noHtml = `<td class="text-muted fw-medium">${noUrut + 1}</td>`;
             const namaHtml = `<td class="text-start fw-semibold text-dark">${s.nama}</td>`;
 
-            // Jika mode edit aktif -> tampilkan input angka; jika tidak -> tampilkan badge biasa
             const jobsHtml = s.scores.map((val, jobIdx) => {
                 const cls = val >= 75 ? 'score-pass' : 'score-fail';
                 if (s.editing) {
@@ -964,7 +1016,6 @@
             const naCls = s.na >= 75 ? 'text-success' : 'text-danger';
             const naHtml = `<td class="fw-bold ${naCls}" id="naSiswa_${s.id}">${s.na}</td>`;
 
-            // Tombol Aksi: Default "Edit" -> diklik berubah jadi "Simpan" & "Batal"
             let aksiHtml = `<td>`;
             if (s.saving) {
                 aksiHtml += `<button class="btn btn-sm btn-secondary rounded-3 px-2" disabled><span class="spinner-border spinner-border-sm me-1"></span>Menyimpan</button>`;
@@ -1038,13 +1089,14 @@
         if (!s) return;
 
         const k = document.getElementById('kelasTabel').value;
+        const targetSheet = getNamaSheet(k, editModeMapel);
         s.saving = true;
         filterBarisTabel();
 
         try {
             for (let idx = 0; idx < s.scores.length; idx++) {
                 if (s.scores[idx] !== s.originalScores[idx]) {
-                    const res = await sendUpdatePromise(k, s.nama, idx + 1, s.scores[idx]);
+                    const res = await sendUpdatePromise(targetSheet, s.nama, idx + 1, s.scores[idx]);
                     if (!res || res.status !== "success") {
                         throw new Error(`Gagal menyimpan Job ${idx + 1} untuk ${s.nama}`);
                     }

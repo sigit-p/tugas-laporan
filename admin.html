@@ -1,736 +1,917 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Panel & Input Nilai PKSM | TSM SMK Muhammadiyah Pakem</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    :root {
-      --bg-body: #f1f5f9;
-      --primary-accent: #2563eb;
-      --card-radius: 16px;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Portal PKSM</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-body: #f1f5f9;
+            --sidebar-bg: #0f172a;
+            --sidebar-hover: #1e293b;
+            --primary-accent: #2563eb;
+            --primary-soft: #eff6ff;
+            --card-radius: 16px;
+        }
 
-    body {
-      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-      background-color: var(--bg-body);
-      color: #1e293b;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-body);
+            color: #1e293b;
+            overflow-x: hidden;
+        }
 
-    /* TOP NAVBAR */
-    .top-navbar {
-      background: rgba(15, 23, 42, 0.96);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      position: sticky;
-      top: 0;
-      z-index: 1020;
-    }
-    .brand-icon {
-      width: 38px;
-      height: 38px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, #2563eb, #1d4ed8);
-      color: #fff;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
-    }
+        /* LOGIN SCREEN MODERN */
+        .login-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at top right, #dbeafe 0%, #f1f5f9 45%, #e2e8f0 100%);
+            padding: 20px;
+        }
+        #cardLogin {
+            width: 100%;
+            max-width: 410px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.12);
+        }
+        .login-icon-box {
+            width: 58px;
+            height: 58px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            box-shadow: 0 10px 20px -5px rgba(37, 99, 235, 0.4);
+        }
 
-    /* MODERN CARDS */
-    .modern-card {
-      background: #fff;
-      border: 1px solid #e2e8f0;
-      border-radius: var(--card-radius);
-      box-shadow: 0 6px 22px -8px rgba(15, 23, 42, 0.06);
-    }
+        /* SIDEBAR MODERN */
+        .sidebar {
+            height: 100vh;
+            width: 260px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: var(--sidebar-bg);
+            color: #94a3b8;
+            transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1030;
+            overflow-y: auto;
+            padding: 16px 14px;
+        }
+        .sidebar .brand-box {
+            padding: 10px 12px 18px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            margin-bottom: 14px;
+        }
+        .brand-logo {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .nav-section-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #64748b;
+            padding: 12px 12px 6px;
+        }
+        .sidebar .list-group-item {
+            background: transparent;
+            color: #cbd5e1;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 14px;
+            margin-bottom: 4px;
+            font-size: 0.88rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+        .sidebar .list-group-item i {
+            width: 22px;
+            font-size: 0.95rem;
+        }
+        .sidebar .list-group-item:hover:not(.disabled) {
+            background: var(--sidebar-hover);
+            color: #fff;
+            transform: translateX(3px);
+        }
+        .active-menu {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
+            color: #fff !important;
+            font-weight: 600 !important;
+            box-shadow: 0 6px 16px -4px rgba(37, 99, 235, 0.5);
+        }
 
-    /* LOGIN BOX */
-    .login-wrapper {
-      max-width: 430px;
-      margin: 60px auto;
-    }
+        /* MAIN SHELL & NAVBAR */
+        .main-shell {
+            margin-left: 260px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .main-header {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            padding: 14px 28px;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 1020;
+        }
+        .btn-toggle-nav {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            color: #334155;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+        .btn-toggle-nav:hover {
+            background: #f8fafc;
+            color: var(--primary-accent);
+            border-color: #cbd5e1;
+        }
+        .content-wrapper {
+            padding: 28px;
+            flex: 1;
+        }
+        .app-footer {
+            background: #fff;
+            padding: 16px 28px;
+            border-top: 1px solid #e2e8f0;
+            color: #64748b;
+        }
 
-    /* INLINE INPUT NILAI */
-    .inline-score-input {
-      width: 74px;
-      text-align: center;
-      font-weight: 700;
-      font-size: 0.9rem;
-      border-radius: 9px;
-      padding: 6px 6px;
-      border: 1.5px solid #cbd5e1;
-      transition: all 0.15s ease;
-      margin: 0 auto;
-    }
-    .inline-score-input:focus {
-      outline: none;
-      border-color: #2563eb;
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.16);
-      background-color: #fff !important;
-    }
-    .inline-score-input.score-pass {
-      background-color: #ecfdf5;
-      border-color: #6ee7b7;
-      color: #047857;
-    }
-    .inline-score-input.score-fail {
-      background-color: #fef2f2;
-      border-color: #fca5a5;
-      color: #b91c1c;
-    }
-    .inline-score-input::-webkit-outer-spin-button,
-    .inline-score-input::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-    .inline-score-input[type=number] {
-      -moz-appearance: textfield;
-    }
+        /* STATE SIDEBAR DILIPAT */
+        body.sidebar-collapsed .sidebar { margin-left: -260px; }
+        body.sidebar-collapsed .main-shell { margin-left: 0; }
+        @media (max-width: 768px) {
+            .sidebar { margin-left: -260px; }
+            .main-shell { margin-left: 0; }
+            body.sidebar-mobile-open .sidebar { margin-left: 0; }
+            .content-wrapper { padding: 18px; }
+        }
 
-    /* BARIS YANG BERUBAH (DIRTY) */
-    tr.row-dirty {
-      background-color: #fffbeb !important;
-    }
+        /* MODERN CARDS & HERO */
+        .modern-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--card-radius);
+            box-shadow: 0 4px 20px -6px rgba(15, 23, 42, 0.05);
+        }
+        .hero-welcome {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            color: #fff;
+            border-radius: var(--card-radius);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-welcome::after {
+            content: "";
+            position: absolute;
+            right: -40px;
+            top: -40px;
+            width: 220px;
+            height: 220px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.35) 0%, transparent 70%);
+            border-radius: 50%;
+        }
 
-    /* TABLE STYLING */
-    .table-modern thead th {
-      background: #f8fafc;
-      color: #475569;
-      font-weight: 700;
-      font-size: 0.76rem;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      border-bottom: 2px solid #e2e8f0;
-      padding: 13px 10px;
-      white-space: nowrap;
-    }
-    .table-modern tbody td {
-      padding: 10px 8px;
-      border-color: #f1f5f9;
-    }
+        /* STATISTIC CARDS */
+        .stat-box {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--card-radius);
+            padding: 18px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 4px 16px -6px rgba(15, 23, 42, 0.04);
+        }
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+        .stat-icon.blue { background: #eff6ff; color: #2563eb; }
+        .stat-icon.green { background: #ecfdf5; color: #059669; }
+        .stat-icon.red { background: #fef2f2; color: #dc2626; }
 
-    /* STATISTIC PILLS */
-    .stat-pill {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 12px;
-      padding: 10px 16px;
-    }
+        /* FORM & TABLE POLISH */
+        .form-control, .form-select {
+            border-radius: 10px;
+            border-color: #cbd5e1;
+            padding: 0.55rem 0.85rem;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
+        .table-modern thead th {
+            background: #f8fafc;
+            color: #475569;
+            font-weight: 700;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            border-bottom: 2px solid #e2e8f0;
+            padding: 12px 10px;
+        }
+        .table-modern tbody td {
+            padding: 11px 10px;
+            border-color: #f1f5f9;
+        }
+        .score-pill {
+            display: inline-block;
+            min-width: 38px;
+            padding: 3px 8px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.82rem;
+        }
+        .score-pass { background: #ecfdf5; color: #059669; }
+        .score-fail { background: #fef2f2; color: #dc2626; }
+        .btn-edit-row {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #fffbeb;
+            color: #d97706;
+            border: 1px solid #fde68a;
+            transition: 0.2s;
+        }
+        .btn-edit-row:hover {
+            background: #f59e0b;
+            color: #fff;
+            border-color: #f59e0b;
+        }
 
-    .app-footer {
-      background: #fff;
-      border-top: 1px solid #e2e8f0;
-      margin-top: auto;
-    }
-  </style>
+        #adminPanel { display: none; animation: fadeIn 0.35s ease; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
 </head>
 <body>
 
-<!-- NAVBAR -->
-<nav class="navbar navbar-dark top-navbar py-2.5 shadow-sm">
-  <div class="container d-flex justify-content-between align-items-center">
-    <a class="navbar-brand d-flex align-items-center gap-2.5 fw-bold" href="index.html">
-      <span class="brand-icon"><i class="fas fa-user-shield"></i></span>
-      <div>
-        <div class="lh-sm fs-6">Admin & Guru PKSM</div>
-        <small class="d-block fw-normal text-white-50" style="font-size: 0.72rem;">TSM SMK Muhammadiyah Pakem</small>
-      </div>
-    </a>
-    <div class="d-flex align-items-center gap-2">
-      <a href="index.html" class="btn btn-outline-light btn-sm rounded-3 px-3">
-        <i class="fas fa-home me-1"></i> Portal Siswa
-      </a>
-      <button type="button" id="btnLogoutAdmin" onclick="logoutAdmin()" class="btn btn-danger btn-sm rounded-3 px-3 d-none">
-        <i class="fas fa-sign-out-alt me-1"></i> Keluar
-      </button>
+<!-- HALAMAN LOGIN -->
+<div class="login-wrapper" id="loginWrapper">
+    <div id="cardLogin" class="card bg-white">
+        <div class="card-body p-4 p-sm-5">
+            <div class="text-center mb-4">
+                <div class="login-icon-box text-white d-inline-flex align-items-center justify-content-center mb-3">
+                    <i class="fas fa-user-shield fs-4"></i>
+                </div>
+                <h4 class="fw-bold mb-1 text-dark">Admin Portal</h4>
+                <p class="text-muted small mb-0">Praktik & Nilai PKSM &bull; Bengkel TSM</p>
+            </div>
+            <form onsubmit="handleLogin(event)">
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold text-secondary">Username</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0 text-muted"><i class="fas fa-user"></i></span>
+                        <input type="text" id="user" class="form-control border-start-0 bg-light" placeholder="Masukkan username" required>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label small fw-semibold text-secondary">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0 text-muted"><i class="fas fa-lock"></i></span>
+                        <input type="password" id="pass" class="form-control border-start-0 border-end-0 bg-light" placeholder="Masukkan password" required>
+                        <button class="btn btn-light border border-start-0 text-muted" type="button" id="togglePassword">
+                            <i class="fas fa-eye" id="eyeIcon"></i>
+                        </button>
+                    </div>
+                </div>
+                <button type="submit" id="btnLogin" class="btn btn-primary w-100 fw-semibold py-2 rounded-3 shadow-sm">
+                    Masuk ke Dashboard <i class="fas fa-arrow-right ms-1"></i>
+                </button>
+            </form>
+            <div class="text-center mt-4">
+                <a href="index.html" class="small text-decoration-none text-secondary fw-medium">
+                    <i class="fas fa-arrow-left me-1"></i> Kembali ke Portal Siswa
+                </a>
+            </div>
+            <div class="text-center text-muted mt-4 pt-3 border-top" style="font-size: 0.75rem;">
+                &copy; 2026 TSM SMK Muhammadiyah Pakem &bull; Portal PKSM v1.0
+            </div>
+        </div>
     </div>
-  </div>
-</nav>
-
-<main class="container py-4">
-
-  <!-- 1. FORM LOGIN GURU / ADMIN -->
-  <section id="viewLoginAdmin" class="login-wrapper">
-    <div class="modern-card p-4 p-md-5">
-      <div class="text-center mb-4">
-        <div class="brand-icon mx-auto mb-3" style="width: 52px; height: 52px; font-size: 1.3rem;">
-          <i class="fas fa-lock"></i>
-        </div>
-        <h4 class="fw-bold text-dark mb-1">Login Pengampu PKSM</h4>
-        <p class="small text-muted mb-0">Masuk untuk mengelola & input nilai praktik siswa</p>
-      </div>
-
-      <form onsubmit="prosesLoginAdmin(event)">
-        <div class="mb-3">
-          <label class="form-label small fw-bold text-secondary">Username / Kode Guru</label>
-          <input type="text" id="loginUser" class="form-control rounded-3" placeholder="Masukkan username (opsional jika hanya password)..." autocomplete="username">
-        </div>
-        <div class="mb-4">
-          <label class="form-label small fw-bold text-secondary">Password <span class="text-danger">*</span></label>
-          <input type="password" id="loginPass" class="form-control rounded-3" placeholder="Masukkan password..." required autocomplete="current-password">
-        </div>
-        <button type="submit" id="btnSubmitLogin" class="btn btn-primary w-100 py-2.5 rounded-3 fw-bold">
-          <i class="fas fa-sign-in-alt me-1"></i> Masuk ke Workspace Nilai
-        </button>
-      </form>
-    </div>
-  </section>
-
-  <!-- 2. WORKSPACE INPUT NILAI INLINE (4 JOB LANGSUNG) -->
-  <section id="viewWorkspaceAdmin" class="d-none">
-
-    <!-- HEADER & PILIH KELAS -->
-    <div class="modern-card p-4 mb-4">
-      <div class="row g-3 align-items-center justify-content-between">
-        <div class="col-lg-6">
-          <span class="badge bg-primary-subtle text-primary fw-bold mb-1">INLINE EDIT MODE &bull; KKM 75</span>
-          <h4 class="fw-bold text-dark mb-1">Input & Edit Nilai 4 Job PKSM</h4>
-          <p class="small text-muted mb-0">Ketik nilai langsung di tabel (tekan <kbd>Tab</kbd> untuk pindah kolom), lalu klik <strong>Simpan</strong>.</p>
-        </div>
-
-        <div class="col-lg-6 d-flex flex-wrap justify-content-lg-end align-items-center gap-2">
-          <div class="btn-group" role="group" id="groupKelasAdmin">
-            <button type="button" class="btn btn-primary fw-semibold" onclick="pilihKelasAdmin('XI SA', this)">XI SA</button>
-            <button type="button" class="btn btn-outline-secondary fw-semibold" onclick="pilihKelasAdmin('XI SB', this)">XI SB</button>
-            <button type="button" class="btn btn-outline-secondary fw-semibold" onclick="pilihKelasAdmin('XI SC', this)">XI SC</button>
-          </div>
-
-          <button type="button" onclick="muatDataAdmin()" class="btn btn-outline-primary rounded-3" title="Muat Ulang Data">
-            <i class="fas fa-sync-alt"></i>
-          </button>
-        </div>
-      </div>
-
-      <!-- RINGKASAN STATISTIK & TOMBOL SIMPAN MASSAL -->
-      <div class="row g-2 align-items-center mt-3 pt-3 border-top">
-        <div class="col-md-7 d-flex flex-wrap gap-2">
-          <div class="stat-pill small">
-            <span class="text-muted">Total Siswa:</span> <strong class="text-dark" id="statTotalSiswa">0</strong>
-          </div>
-          <div class="stat-pill small">
-            <span class="text-muted">Tuntas Semua:</span> <strong class="text-success" id="statTuntasSiswa">0</strong>
-          </div>
-          <div class="stat-pill small">
-            <span class="text-muted">Belum Tuntas:</span> <strong class="text-danger" id="statBelumSiswa">0</strong>
-          </div>
-        </div>
-
-        <div class="col-md-5 text-md-end">
-          <button type="button" id="btnSimpanSemua" onclick="simpanSemuaPerubahan()" class="btn btn-success fw-bold rounded-3 px-4 py-2 d-none shadow-sm">
-            <i class="fas fa-save me-1"></i> Simpan Semua Perubahan (<span id="jumlahDirty">0</span>)
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- TABEL INLINE EDITING -->
-    <div class="modern-card overflow-hidden">
-      <div class="p-3 px-4 bg-white border-bottom d-flex flex-wrap justify-content-between align-items-center gap-2">
-        <div class="input-group" style="max-width: 320px;">
-          <span class="input-group-text bg-light border-end-0 text-muted"><i class="fas fa-search"></i></span>
-          <input type="search" id="cariSiswaAdmin" class="form-control border-start-0 bg-light" placeholder="Filter nama siswa..." oninput="filterTabelAdmin()">
-        </div>
-
-        <div class="small text-muted">
-          <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle me-1">Kuning</span> = Belum disimpan ke server
-        </div>
-      </div>
-
-      <div class="table-responsive">
-        <table class="table table-hover table-modern align-middle mb-0 text-center">
-          <thead id="theadAdmin">
-            <tr>
-              <th width="50">No</th>
-              <th class="text-start">Nama Siswa</th>
-              <th>Sistem Pengapian</th>
-              <th>Sistem Starter</th>
-              <th>Sistem Pengisian</th>
-              <th>Sistem Penerangan</th>
-              <th>Nilai Akhir</th>
-              <th width="130">Aksi Simpan</th>
-            </tr>
-          </thead>
-          <tbody id="tbodyAdmin">
-            <tr>
-              <td colspan="8" class="py-5 text-muted">Memuat data siswa...</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-  </section>
-
-</main>
-
-<!-- TOAST NOTIFIKASI -->
-<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1080;">
-  <div id="liveToast" class="toast align-items-center text-bg-dark border-0 rounded-3 shadow" role="alert">
-    <div class="d-flex">
-      <div class="toast-body fw-medium" id="toastMsg">Berhasil disimpan</div>
-      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-    </div>
-  </div>
 </div>
 
-<!-- FOOTER -->
-<footer class="app-footer py-3 small text-muted">
-  <div class="container d-flex flex-wrap justify-content-between align-items-center gap-2">
-    <div>
-      &copy; 2026 <strong>TSM SMK Muhammadiyah Pakem</strong>. Dikembangkan oleh <strong>Sigit Prabowo</strong>.
+<!-- DASHBOARD ADMIN -->
+<div id="adminPanel">
+    <!-- SIDEBAR -->
+    <aside class="sidebar shadow-lg" id="sidebarMenu">
+        <div class="brand-box d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-2">
+                <div class="brand-logo"><i class="fas fa-motorcycle"></i></div>
+                <div>
+                    <div class="fw-bold text-white lh-sm">Portal PKSM</div>
+                    <small style="font-size: 0.72rem; color: #94a3b8;">Pak Sigit Prabowo</small>
+                </div>
+            </div>
+            <button type="button" class="btn btn-sm btn-dark d-md-none text-white" onclick="toggleSidebar()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="list-group list-group-flush">
+            <div class="nav-section-label">Input Nilai</div>
+            <a href="#" onclick="pilihMapel('PKSM', this); return false;" class="list-group-item list-group-item-action">
+                <i class="fas fa-bolt text-warning me-2"></i> Input Mapel PKSM
+            </a>
+            <a href="#" onclick="return false;" class="list-group-item disabled" style="opacity: 0.4; cursor: not-allowed;">
+                <i class="fas fa-cogs me-2"></i> Input Mapel PSSM
+                <span class="badge bg-secondary ms-auto" style="font-size: 0.65rem;">Off</span>
+            </a>
+
+            <div class="nav-section-label mt-2">Rekap & Edit Tabel</div>
+            <a href="#" onclick="pilihModeEdit('PKSM', this); return false;" class="list-group-item list-group-item-action">
+                <i class="fas fa-table text-info me-2"></i> Tabel Nilai PKSM
+            </a>
+            <a href="#" onclick="return false;" class="list-group-item disabled" style="opacity: 0.4; cursor: not-allowed;">
+                <i class="fas fa-table me-2"></i> Tabel Nilai PSSM
+                <span class="badge bg-secondary ms-auto" style="font-size: 0.65rem;">Off</span>
+            </a>
+
+            <div class="nav-section-label mt-2">Sistem</div>
+            <a href="index.html" class="list-group-item list-group-item-action">
+                <i class="fas fa-external-link-alt text-light me-2"></i> Lihat Web Siswa
+            </a>
+            <a href="#" class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#modalBantuan">
+                <i class="fas fa-circle-question text-primary me-2"></i> Bantuan & Panduan
+            </a>
+            <a href="#" onclick="handleLogout(); return false;" class="list-group-item list-group-item-action text-danger mt-2">
+                <i class="fas fa-sign-out-alt me-2"></i> Keluar (Logout)
+            </a>
+        </div>
+    </aside>
+
+    <!-- MAIN SHELL -->
+    <div class="main-shell">
+        <!-- NAVBAR -->
+        <nav class="main-header d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-3">
+                <button type="button" class="btn-toggle-nav" onclick="toggleSidebar()" title="Tampilkan / Sembunyikan Sidebar">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div>
+                    <span class="fw-bold text-dark" id="nav-status">Dashboard Admin</span>
+                </div>
+            </div>
+            <span class="badge rounded-pill bg-primary-subtle text-primary px-3 py-2 fw-semibold">
+                <i class="fas fa-wrench me-1"></i> Bengkel TSM
+            </span>
+        </nav>
+
+        <!-- KONTEN -->
+        <main class="content-wrapper">
+            <div class="container-fluid px-0">
+
+                <!-- HERO WELCOME -->
+                <div id="welcomeMsg" class="hero-welcome p-4 p-md-5 mb-4 shadow-sm">
+                    <span class="badge bg-primary mb-2 px-3 py-1 rounded-pill">ADMINISTRATOR</span>
+                    <h3 class="fw-bold mb-2">Selamat Datang, Pak Sigit!</h3>
+                    <p class="text-white-50 mb-4" style="max-width: 560px;">
+                        Kelola input nilai praktik kelistrikan (PKSM), pantau ketuntasan KKM siswa per kelas, dan perbarui data langsung ke Google Sheet.
+                    </p>
+                    <div class="d-flex flex-wrap gap-2 position-relative" style="z-index: 2;">
+                        <button type="button" class="btn btn-primary fw-semibold px-4 py-2 rounded-3" onclick="pilihModeEdit('PKSM', document.querySelectorAll('.list-group-item')[2])">
+                            <i class="fas fa-table me-2"></i> Buka Rekap Nilai PKSM
+                        </button>
+                        <button type="button" class="btn btn-outline-light fw-semibold px-4 py-2 rounded-3" onclick="pilihMapel('PKSM', document.querySelectorAll('.list-group-item')[0])">
+                            <i class="fas fa-plus me-2"></i> Input Nilai Baru
+                        </button>
+                    </div>
+                </div>
+
+                <!-- FORM INPUT NILAI -->
+                <div id="formKonten" class="modern-card overflow-hidden" style="display:none;">
+                    <div class="p-4 border-bottom bg-white d-flex flex-wrap justify-content-between align-items-center gap-2">
+                        <div>
+                            <h5 class="fw-bold text-dark mb-0" id="judulForm"><i class="fas fa-edit text-primary me-2"></i>Input Nilai</h5>
+                            <small class="text-muted">Data yang disimpan akan langsung tersinkron ke spreadsheet kelas.</small>
+                        </div>
+                        <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill">
+                            <i class="fas fa-cloud-upload-alt me-1"></i> Auto-Sync Sheet
+                        </span>
+                    </div>
+                    <div class="p-4">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold small text-secondary">Pilih Kelas</label>
+                                <select id="kelas" class="form-select" onchange="loadStudentNames()">
+                                    <option value="">-- Pilih Kelas --</option>
+                                    <option value="XI SA">XI SA</option>
+                                    <option value="XI SB">XI SB</option>
+                                    <option value="XI SC">XI SC</option>
+                                </select>
+                            </div>
+                            <div class="col-md-8">
+                                <label class="form-label fw-semibold small text-secondary">Nama Lengkap Siswa</label>
+                                <input type="text" id="nama" class="form-control" list="listSiswa" placeholder="Pilih kelas dulu, lalu ketik nama siswa...">
+                                <datalist id="listSiswa"></datalist>
+                            </div>
+                            <div class="col-md-8">
+                                <label class="form-label fw-semibold small text-secondary">Tugas / Job Praktik</label>
+                                <select id="job_index" class="form-select"></select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold small text-secondary">Skor Nilai (0 - 100)</label>
+                                <input type="number" id="nilai" class="form-control" min="0" max="100" placeholder="Contoh: 85">
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-2">
+                            <button id="btnSimpan" onclick="simpanNilai()" class="btn btn-primary w-100 fw-semibold py-2 rounded-3 shadow-sm">
+                                <i class="fas fa-save me-2"></i> Simpan Nilai ke Google Sheet
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TABEL REKAP & EDIT NILAI -->
+                <div id="tabelKonten" style="display:none;">
+                    <!-- STAT CARDS -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <div class="stat-box">
+                                <div class="stat-icon blue"><i class="fas fa-users"></i></div>
+                                <div>
+                                    <div class="small text-muted fw-medium">Total Siswa</div>
+                                    <div class="h4 fw-bold mb-0 text-dark" id="statTotal">-</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="stat-box">
+                                <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
+                                <div>
+                                    <div class="small text-muted fw-medium">Tuntas KKM (&ge; 75)</div>
+                                    <div class="h4 fw-bold mb-0 text-success" id="statTuntas">-</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="stat-box">
+                                <div class="stat-icon red"><i class="fas fa-exclamation-circle"></i></div>
+                                <div>
+                                    <div class="small text-muted fw-medium">Belum Tuntas / &lt; 75</div>
+                                    <div class="h4 fw-bold mb-0 text-danger" id="statKurang">-</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TABLE CARD -->
+                    <div class="modern-card overflow-hidden">
+                        <div class="p-4 border-bottom bg-white d-flex flex-wrap justify-content-between align-items-center gap-3">
+                            <div>
+                                <h5 id="judulTabel" class="fw-bold text-dark mb-0"><i class="fas fa-table text-primary me-2"></i>DATA TABEL NILAI</h5>
+                                <small class="text-muted">Klik ikon pensil kuning pada baris siswa untuk mengubah nilai job.</small>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <select id="kelasTabel" class="form-select form-select-sm w-auto fw-bold bg-light" onchange="refreshTabel()">
+                                    <option value="XI SA">XI SA</option>
+                                    <option value="XI SB">XI SB</option>
+                                    <option value="XI SC">XI SC</option>
+                                </select>
+                                <button onclick="refreshTabel()" class="btn btn-outline-primary btn-sm rounded-3 px-3" title="Muat Ulang Data">
+                                    <i class="fas fa-sync-alt me-1"></i> Refresh
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="p-4">
+                            <div class="row g-2 mb-3">
+                                <div class="col-md-5">
+                                    <div class="input-group input-group-sm">
+                                        <span class="input-group-text bg-light border-end-0"><i class="fas fa-search text-muted"></i></span>
+                                        <input type="search" id="cariNamaTabel" class="form-control border-start-0 bg-light" placeholder="Cari nama siswa..." oninput="filterBarisTabel()">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <select id="filterKetuntasan" class="form-select form-select-sm bg-light" onchange="filterBarisTabel()">
+                                        <option value="all">Tampilkan Semua Siswa</option>
+                                        <option value="kurang">Belum Tuntas (&lt; 75 / Kosong)</option>
+                                        <option value="tuntas">Sudah Tuntas Semua Job</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="table-responsive rounded-3 border">
+                                <table class="table table-hover table-modern align-middle mb-0 text-center" style="font-size: 0.86rem;">
+                                    <thead><tr id="headerTable"></tr></thead>
+                                    <tbody id="bodyTable"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+        <!-- FOOTER -->
+        <footer class="app-footer small d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div>
+                &copy; 2026 <strong>TSM SMK Muhammadiyah Pakem</strong>. Dikembangkan oleh <strong>Sigit Prabowo</strong>.
+            </div>
+            <div>
+                <span class="badge bg-light text-secondary border px-2 py-1">Portal PKSM v1.0</span>
+            </div>
+        </footer>
     </div>
-    <div>
-      <span class="badge bg-light text-secondary border px-2 py-1">Workspace PKSM &bull; Inline Editor v2.0</span>
+</div>
+
+<!-- MODAL EDIT NILAI -->
+<div class="modal fade" id="modalEdit" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+            <div class="modal-header border-bottom">
+                <h5 class="modal-title fw-bold text-dark"><i class="fas fa-user-edit text-warning me-2"></i>Edit Nilai Siswa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="p-3 rounded-3 bg-light mb-3">
+                    <small class="text-muted d-block">Nama Siswa</small>
+                    <span id="m_nama" class="text-primary fw-bold fs-6"></span>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold small text-secondary">Pilih Job Praktik</label>
+                    <select id="m_job" class="form-select"></select>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label fw-semibold small text-secondary">Nilai Baru (0 - 100)</label>
+                    <input type="number" id="m_nilai" class="form-control" min="0" max="100" placeholder="Masukkan angka 0 - 100">
+                </div>
+            </div>
+            <div class="modal-footer border-top">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+                <button type="button" onclick="simpanEditModal()" class="btn btn-primary fw-semibold px-4" id="btnUpdateModal">Simpan Perubahan</button>
+            </div>
+        </div>
     </div>
-  </div>
-</footer>
+</div>
+
+<!-- MODAL BANTUAN -->
+<div class="modal fade" id="modalBantuan" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+            <div class="modal-header border-bottom">
+                <h5 class="modal-title fw-bold text-dark"><i class="fas fa-circle-question text-primary me-2"></i> Panduan Penggunaan Panel Admin</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <h6 class="fw-bold text-primary mb-2">1. Menginput Nilai Baru</h6>
+                <ul class="text-muted small">
+                    <li>Pilih menu <b>Input Mapel PKSM</b> pada sidebar sebelah kiri.</li>
+                    <li>Pilih kelas, ketik nama siswa, pilih nomor Job praktik, lalu isi nilai dan klik <b>Simpan Nilai ke Google Sheet</b>.</li>
+                </ul>
+                <hr>
+                <h6 class="fw-bold text-primary mb-2">2. Memantau & Mengedit Nilai</h6>
+                <ul class="text-muted small mb-0">
+                    <li>Buka menu <b>Tabel Nilai PKSM</b> untuk melihat rekap seluruh siswa dan statistik ketuntasan.</li>
+                    <li>Klik ikon pensil kuning pada baris siswa untuk memperbaiki nilai job tertentu.</li>
+                    <li>Skor di bawah <b>75 (KKM)</b> ditandai dengan badge merah lembut, sedangkan <b>&ge; 75</b> ditandai hijau lembut.</li>
+                </ul>
+            </div>
+            <div class="modal-footer border-top">
+                <button type="button" class="btn btn-secondary btn-sm px-4" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbwswDuj1YQHP4C6fXfdEa1G1rqW6hvbx6ZCnnfsRJsHC1fb5byCpHtMmU0vIZBgoYqaPg/exec";
-  const KKM = 75;
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwswDuj1YQHP4C6fXfdEa1G1rqW6hvbx6ZCnnfsRJsHC1fb5byCpHtMmU0vIZBgoYqaPg/exec";
+    const AUTH_URL = "https://script.google.com/macros/s/AKfycbxsVNyON7D61zX2jKKZ4gnEbsicM8b_ViaO4cEY0rnS-UkIaTV2EUplyy1wahtiHE6X2w/exec";
 
-  let kelasAktif = "XI SA";
-  let masterSiswa = [];
-  let headerJobs = ["Sistem Pengapian", "Sistem Starter", "Sistem Pengisian", "Sistem Penerangan"];
-  let tempNames = null;
-  let tempTable = null;
-  let adminPasswordSession = "";
+    let currentMapel = '';
+    let editModeMapel = '';
+    let dataGabungan = [];
+    let daftarHeaderJob = [];
+    let tempNames = null, tempTable = null;
+    const myModal = new bootstrap.Modal(document.getElementById('modalEdit'));
 
-  const toastObj = new bootstrap.Toast(document.getElementById('liveToast'), { delay: 2800 });
-
-  function tampilNotif(pesan, tipe = "dark") {
-    const el = document.getElementById('liveToast');
-    el.className = `toast align-items-center text-bg-${tipe} border-0 rounded-3 shadow`;
-    document.getElementById('toastMsg').textContent = pesan;
-    toastObj.show();
-  }
-
-  // CEK SESI LOGIN SAAT HALAMAN DIBUKA
-  document.addEventListener("DOMContentLoaded", () => {
-    const savedPass = sessionStorage.getItem("pksm_admin_pass");
-    if (sessionStorage.getItem("pksm_admin_logged") === "true" && savedPass) {
-      adminPasswordSession = savedPass;
-      tampilkanWorkspace();
-    }
-  });
-
-  // FUNGSI HELPER PANGGIL JSONP KE APPS SCRIPT
-  function panggilJsonp(paramsObj) {
-    return new Promise((resolve, reject) => {
-      const cbName = "cbGas_" + Date.now() + "_" + Math.floor(Math.random() * 1000);
-      const timer = setTimeout(() => {
-        delete window[cbName];
-        const el = document.getElementById(cbName);
-        if (el) el.remove();
-        reject(new Error("Waktu koneksi habis (timeout)"));
-      }, 10000);
-
-      window[cbName] = function(res) {
-        clearTimeout(timer);
-        delete window[cbName];
-        const el = document.getElementById(cbName);
-        if (el) el.remove();
-        resolve(res);
-      };
-
-      const query = new URLSearchParams({
-        ...paramsObj,
-        callback: cbName,
-        t: Date.now()
-      }).toString();
-
-      const script = document.createElement("script");
-      script.id = cbName;
-      script.src = `${API_URL}?${query}`;
-      script.onerror = () => {
-        clearTimeout(timer);
-        delete window[cbName];
-        script.remove();
-        reject(new Error("Gagal terhubung ke Google Apps Script"));
-      };
-      document.head.appendChild(script);
-    });
-  }
-
-  // PROSES LOGIN ADMIN TERHUBUNG KE APPS SCRIPT
-  async function prosesLoginAdmin(e) {
-    e.preventDefault();
-    const u = document.getElementById("loginUser").value.trim();
-    const p = document.getElementById("loginPass").value.trim();
-    const btn = document.getElementById("btnSubmitLogin");
-
-    if (!p) {
-      tampilNotif("Password wajib diisi!", "warning");
-      return;
+    if (sessionStorage.getItem("admin_tsm_logged_in") === "true") {
+        document.getElementById('loginWrapper').style.display = 'none';
+        document.getElementById('adminPanel').style.display = 'block';
     }
 
-    const teksAsli = btn.innerHTML;
-    btn.disabled = true;
-    btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Memeriksa...`;
-
-    try {
-      // Kirim parameter lengkap agar kompatibel dengan script login versi password saja maupun username+password
-      const res = await panggilJsonp({
-        action: "login",
-        username: u,
-        user: u,
-        password: p,
-        pass: p
-      });
-
-      const isOk = res === true ||
-        res === "ok" ||
-        res === "success" ||
-        (res && (
-          res.status === "ok" ||
-          res.status === "success" ||
-          res.success === true ||
-          res.valid === true ||
-          res.login === true ||
-          res.auth === true
-        ));
-
-      if (isOk) {
-        adminPasswordSession = p;
-        sessionStorage.setItem("pksm_admin_logged", "true");
-        sessionStorage.setItem("pksm_admin_pass", p);
-        tampilNotif("Login berhasil! Memuat data siswa...", "success");
-        tampilkanWorkspace();
-      } else {
-        const msg = (res && (res.message || res.error || res.msg)) || "Username atau password salah!";
-        tampilNotif(msg, "danger");
-      }
-    } catch (err) {
-      console.error("Login Error:", err);
-      tampilNotif(err.message || "Gagal memverifikasi login ke server.", "danger");
-    } finally {
-      btn.disabled = false;
-      btn.innerHTML = teksAsli;
-    }
-  }
-
-  function logoutAdmin() {
-    adminPasswordSession = "";
-    sessionStorage.removeItem("pksm_admin_logged");
-    sessionStorage.removeItem("pksm_admin_pass");
-    document.getElementById("viewWorkspaceAdmin").classList.add("d-none");
-    document.getElementById("btnLogoutAdmin").classList.add("d-none");
-    document.getElementById("viewLoginAdmin").classList.remove("d-none");
-    document.getElementById("loginPass").value = "";
-  }
-
-  function tampilkanWorkspace() {
-    document.getElementById("viewLoginAdmin").classList.add("d-none");
-    document.getElementById("viewWorkspaceAdmin").classList.remove("d-none");
-    document.getElementById("btnLogoutAdmin").classList.remove("d-none");
-    muatDataAdmin();
-  }
-
-  function pilihKelasAdmin(kelas, btnEl) {
-    const adaDirty = masterSiswa.some(s => s.dirty);
-    if (adaDirty && !confirm("Ada nilai yang belum disimpan. Pindah kelas dan batalkan perubahan?")) {
-      return;
+    function toggleSidebar() {
+        if (window.innerWidth <= 768) {
+            document.body.classList.toggle('sidebar-mobile-open');
+        } else {
+            document.body.classList.toggle('sidebar-collapsed');
+        }
     }
 
-    kelasAktif = kelas;
-    document.querySelectorAll("#groupKelasAdmin button").forEach(b => {
-      b.classList.remove("btn-primary");
-      b.classList.add("btn-outline-secondary");
-    });
-    if (btnEl) {
-      btnEl.classList.remove("btn-outline-secondary");
-      btnEl.classList.add("btn-primary");
+    function tutupSidebarMobile() {
+        document.body.classList.remove('sidebar-mobile-open');
     }
-    muatDataAdmin();
-  }
 
-  // LOAD DATA DARI GOOGLE APPS SCRIPT (JSONP)
-  function muatDataAdmin() {
-    tempNames = null;
-    tempTable = null;
-    document.getElementById("tbodyAdmin").innerHTML = `
-      <tr>
-        <td colspan="8" class="py-5 text-muted">
-          <div class="spinner-border spinner-border-sm text-primary me-2"></div>
-          Memuat data siswa kelas <strong>${kelasAktif}</strong>...
-        </td>
-      </tr>
-    `;
+    async function handleLogin(e) {
+        if (e) e.preventDefault();
+        const u = document.getElementById('user').value.trim();
+        const p = document.getElementById('pass').value.trim();
+        const btn = document.getElementById('btnLogin');
 
-    ["admGasNames", "admGasTable"].forEach(id => {
-      const old = document.getElementById(id);
-      if (old) old.remove();
+        if (!u || !p) return alert("Username dan Password harus diisi!");
+
+        const originalText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Memverifikasi...`;
+
+        try {
+            const resp = await fetch(`${AUTH_URL}?user=${encodeURIComponent(u)}&pass=${encodeURIComponent(p)}`);
+            const hasil = await resp.json();
+
+            if (hasil.status === "success") {
+                sessionStorage.setItem("admin_tsm_logged_in", "true");
+                document.getElementById('loginWrapper').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+            } else {
+                alert("Gagal: " + hasil.message);
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
+        } catch (err) {
+            alert("Terjadi kesalahan koneksi ke server login.");
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+        }
+    }
+
+    function handleLogout() {
+        sessionStorage.removeItem("admin_tsm_logged_in");
+        location.reload();
+    }
+
+    document.getElementById('togglePassword').addEventListener('click', function () {
+        const passwordField = document.getElementById('pass');
+        const eyeIcon = document.getElementById('eyeIcon');
+        const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordField.setAttribute('type', type);
+        eyeIcon.classList.toggle('fa-eye');
+        eyeIcon.classList.toggle('fa-eye-slash');
     });
 
-    const s1 = document.createElement("script");
-    s1.id = "admGasNames";
-    s1.src = `${API_URL}?sheet=${encodeURIComponent(kelasAktif)}&callback=onAdminNames&t=${Date.now()}`;
-    document.head.appendChild(s1);
-
-    const s2 = document.createElement("script");
-    s2.id = "admGasTable";
-    s2.src = `${API_URL}?action=read&sheet=${encodeURIComponent(kelasAktif)}&callback=onAdminTable&t=${Date.now()}`;
-    document.head.appendChild(s2);
-  }
-
-  window.onAdminNames = function(names) {
-    tempNames = Array.isArray(names) ? names : [];
-    gabungDataAdmin();
-  };
-
-  window.onAdminTable = function(table) {
-    tempTable = Array.isArray(table) ? table : [];
-    gabungDataAdmin();
-  };
-
-  function gabungDataAdmin() {
-    if (tempNames === null || tempTable === null) return;
-
-    if (tempTable.length < 2) {
-      masterSiswa = [];
-      renderTabelAdmin();
-      return;
+    function pilihMapel(m, el) {
+        currentMapel = m;
+        tutupSidebarMobile();
+        document.getElementById('welcomeMsg').style.display = 'none';
+        document.getElementById('tabelKonten').style.display = 'none';
+        document.getElementById('formKonten').style.display = 'block';
+        document.getElementById('judulForm').innerHTML = `<i class="fas fa-edit text-primary me-2"></i>Input Nilai ${m}`;
+        document.getElementById('nav-status').innerText = `Input Nilai / ${m}`;
+        document.querySelectorAll('.list-group-item').forEach(i => i.classList.remove('active-menu'));
+        if (el) el.classList.add('active-menu');
+        updateJobSelect('job_index', m);
     }
 
-    const headers = tempTable[0].map(h => String(h || "").trim());
-    const rows = tempTable.slice(1);
-    const idxAkhir = headers.findIndex(h => /nilai\s*akhir|akhir|\bna\b/i.test(h));
-
-    const jobCols = [];
-    headers.forEach((h, i) => {
-      if (i > 0 && i !== idxAkhir && h !== "") {
-        jobCols.push({ colIndex: i, judul: h });
-      }
-    });
-
-    if (jobCols.length > 0) {
-      headerJobs = jobCols.map(c => c.judul);
+    function updateJobSelect(id, m) {
+        const js = document.getElementById(id);
+        const j = {
+            'PKSM': ["Sistem Pengapian", "Sistem Starter", "Sistem Pengisian", "Sistem Penerangan"],
+            'PSSM': ["Rem Tromol", "Rem Cakram", "CVT Drive Pulley", "Kemudi/Komstir", "Suspensi Depan", "Tambal Ban Bakar", "Tyre Changer"]
+        };
+        js.innerHTML = '<option value="">-- Pilih Job --</option>';
+        (j[m] || []).forEach((item, i) => js.innerHTML += `<option value="${i + 1}">Job ${i + 1} - ${item}</option>`);
     }
 
-    document.getElementById("theadAdmin").innerHTML = `
-      <tr>
-        <th width="50">No</th>
-        <th class="text-start">Nama Siswa</th>
-        ${headerJobs.map(j => `<th>${j}</th>`).join("")}
-        <th>Nilai Akhir</th>
-        <th width="130">Aksi Simpan</th>
-      </tr>
-    `;
-
-    masterSiswa = tempNames.map((namaRaw, idx) => {
-      const nama = String(Array.isArray(namaRaw) ? namaRaw[0] : (namaRaw || "")).trim();
-      const r = rows[idx] || [];
-
-      const scores = jobCols.map(c => {
-        const raw = String(r[c.colIndex] ?? "").trim();
-        const num = parseFloat(raw);
-        return (raw === "" || isNaN(num)) ? 0 : num;
-      });
-
-      return {
-        indexAsli: idx,
-        rowSheet: idx + 2,
-        nama: nama,
-        scores: scores,
-        originalScores: [...scores],
-        dirty: false,
-        saving: false
-      };
-    }).filter(s => s.nama !== "");
-
-    perbaruiStatistik();
-    renderTabelAdmin();
-  }
-
-  function hitungRataRata(scores) {
-    if (!scores || !scores.length) return 0;
-    const total = scores.reduce((a, b) => a + (Number(b) || 0), 0);
-    return Number((total / scores.length).toFixed(1));
-  }
-
-  function perbaruiStatistik() {
-    const total = masterSiswa.length;
-    const tuntas = masterSiswa.filter(s => s.scores.length > 0 && s.scores.every(v => v >= KKM)).length;
-    const belum = total - tuntas;
-
-    document.getElementById("statTotalSiswa").textContent = total;
-    document.getElementById("statTuntasSiswa").textContent = tuntas;
-    document.getElementById("statBelumSiswa").textContent = belum;
-
-    const dirtyCount = masterSiswa.filter(s => s.dirty).length;
-    const btnMassal = document.getElementById("btnSimpanSemua");
-    document.getElementById("jumlahDirty").textContent = dirtyCount;
-    if (dirtyCount > 0) {
-      btnMassal.classList.remove("d-none");
-    } else {
-      btnMassal.classList.add("d-none");
-    }
-  }
-
-  function filterTabelAdmin() {
-    renderTabelAdmin();
-  }
-
-  function renderTabelAdmin() {
-    const q = document.getElementById("cariSiswaAdmin").value.toLowerCase().trim();
-    const tbody = document.getElementById("tbodyAdmin");
-
-    const list = masterSiswa.filter(s => s.nama.toLowerCase().includes(q));
-    if (!list.length) {
-      tbody.innerHTML = `<tr><td colspan="${headerJobs.length + 4}" class="py-4 text-muted">Siswa tidak ditemukan.</td></tr>`;
-      return;
+    function loadStudentNames() {
+        const k = document.getElementById('kelas').value;
+        if (!k) return;
+        fetch(`${SCRIPT_URL}?sheet=${encodeURIComponent(k)}`).then(r => r.json()).then(d => {
+            const dl = document.getElementById('listSiswa');
+            dl.innerHTML = "";
+            d.forEach(item => {
+                const nama = Array.isArray(item) ? item[0] : item;
+                if (nama) dl.innerHTML += `<option value="${String(nama).trim()}">`;
+            });
+        });
     }
 
-    tbody.innerHTML = list.map((s, noUrut) => {
-      const na = hitungRataRata(s.scores);
-      const naClass = na >= KKM ? "text-success" : "text-danger";
+    function simpanNilai() {
+        const btn = document.getElementById('btnSimpan');
+        const k = document.getElementById('kelas').value;
+        const n = document.getElementById('nama').value;
+        const j = document.getElementById('job_index').value;
+        const ni = document.getElementById('nilai').value;
+        if (!k || !n || !j || !ni) return alert("Mohon lengkapi semua data!");
+        btn.disabled = true;
+        btn.innerText = "Mengirim...";
+        sendUpdate(k, n, j, ni, "handleUpdateResponse");
+    }
 
-      const inputsHtml = s.scores.map((val, jobIdx) => {
-        const scoreCls = val >= KKM ? "score-pass" : "score-fail";
-        return `
-          <td>
-            <input
-              type="number"
-              min="0"
-              max="100"
-              step="1"
-              class="form-control inline-score-input ${scoreCls}"
-              value="${val}"
-              data-siswa="${s.indexAsli}"
-              data-job="${jobIdx}"
-              onfocus="this.select()"
-              oninput="ubahNilaiInline(${s.indexAsli}, ${jobIdx}, this)"
-            >
-          </td>
+    function sendUpdate(k, n, j, ni, cb) {
+        const url = `${SCRIPT_URL}?action=update&sheet=${encodeURIComponent(k)}&nama=${encodeURIComponent(n)}&job_index=${j}&nilai=${ni}&callback=${cb}`;
+        const s = document.createElement('script');
+        s.src = url;
+        document.head.appendChild(s);
+    }
+
+    window.handleUpdateResponse = function (r) {
+        document.getElementById('btnSimpan').disabled = false;
+        document.getElementById('btnSimpan').innerHTML = `<i class="fas fa-save me-2"></i> Simpan Nilai ke Google Sheet`;
+        if (r.status === "success") {
+            alert("✅ Nilai berhasil disimpan!");
+            document.getElementById('nilai').value = "";
+        }
+    };
+
+    function pilihModeEdit(m, el) {
+        editModeMapel = m;
+        tutupSidebarMobile();
+        document.getElementById('welcomeMsg').style.display = 'none';
+        document.getElementById('formKonten').style.display = 'none';
+        document.getElementById('tabelKonten').style.display = 'block';
+        document.getElementById('judulTabel').innerHTML = `<i class="fas fa-table text-primary me-2"></i>Rekap & Edit Nilai ${m}`;
+        document.getElementById('nav-status').innerText = `Tabel Nilai / ${m}`;
+        document.querySelectorAll('.list-group-item').forEach(i => i.classList.remove('active-menu'));
+        if (el) el.classList.add('active-menu');
+        refreshTabel();
+    }
+
+    function refreshTabel() {
+        const k = document.getElementById('kelasTabel').value;
+        const b = document.getElementById('bodyTable');
+        tempNames = null;
+        tempTable = null;
+        b.innerHTML = '<tr><td colspan="10" class="py-4 text-muted"><div class="spinner-border spinner-border-sm text-primary me-2"></div> Memuat data kelas...</td></tr>';
+
+        ["adminGasNames", "adminGasTable"].forEach(id => { const old = document.getElementById(id); if (old) old.remove(); });
+
+        const s1 = document.createElement('script');
+        s1.id = "adminGasNames";
+        s1.src = `${SCRIPT_URL}?sheet=${encodeURIComponent(k)}&mapel=${encodeURIComponent(editModeMapel)}&callback=adminOnNames&t=${Date.now()}`;
+        document.head.appendChild(s1);
+
+        const s2 = document.createElement('script');
+        s2.id = "adminGasTable";
+        s2.src = `${SCRIPT_URL}?action=read&sheet=${encodeURIComponent(k)}&mapel=${encodeURIComponent(editModeMapel)}&callback=adminOnTable&t=${Date.now()}`;
+        document.head.appendChild(s2);
+    }
+
+    window.adminOnNames = function(names) {
+        tempNames = Array.isArray(names) ? names : [];
+        gabungDataAdmin();
+    };
+
+    window.adminOnTable = function(table) {
+        tempTable = Array.isArray(table) ? table : [];
+        gabungDataAdmin();
+    };
+
+    function gabungDataAdmin() {
+        if (tempNames === null || tempTable === null) return;
+
+        if (tempTable.length < 2) {
+            dataGabungan = [];
+            renderTabelAdmin([]);
+            return;
+        }
+
+        const headers = tempTable[0].map(h => String(h || "").trim());
+        const rows = tempTable.slice(1);
+        const idxAkhir = headers.findIndex(h => /nilai\s*akhir|akhir|\bna\b/i.test(h));
+
+        const jobCols = [];
+        headers.forEach((h, i) => {
+            if (i > 0 && i !== idxAkhir && h !== "") jobCols.push({ i, judul: h });
+        });
+        daftarHeaderJob = jobCols.map(c => c.judul);
+
+        document.getElementById('headerTable').innerHTML = `
+            <th width="60">Aksi</th>
+            <th class="text-start">Nama Siswa</th>
+            ${daftarHeaderJob.map(j => `<th>${j}</th>`).join('')}
+            <th>NA</th>
         `;
-      }).join("");
 
-      const btnSimpanHtml = s.saving
-        ? `<button type="button" class="btn btn-sm btn-secondary rounded-3 px-3" disabled><span class="spinner-border spinner-border-sm"></span></button>`
-        : s.dirty
-          ? `<button type="button" class="btn btn-sm btn-warning text-dark fw-bold rounded-3 px-3 shadow-sm" onclick="simpanSatuBaris(${s.indexAsli})"><i class="fas fa-save me-1"></i> Simpan</button>`
-          : `<span class="badge bg-light text-muted border px-2.5 py-1.5"><i class="fas fa-check text-success me-1"></i> Tersimpan</span>`;
+        dataGabungan = tempNames.map((namaRaw, idx) => {
+            const nama = String(Array.isArray(namaRaw) ? namaRaw[0] : (namaRaw || "")).trim();
+            const r = rows[idx] || [];
 
-      return `
-        <tr id="rowSiswa_${s.indexAsli}" class="${s.dirty ? 'row-dirty' : ''}">
-          <td class="text-muted fw-medium">${noUrut + 1}</td>
-          <td class="text-start fw-semibold text-dark">${s.nama}</td>
-          ${inputsHtml}
-          <td class="fw-bold fs-6 ${naClass}" id="naSiswa_${s.indexAsli}">${na}</td>
-          <td id="aksiSiswa_${s.indexAsli}">${btnSimpanHtml}</td>
-        </tr>
-      `;
-    }).join("");
-  }
+            let na = "-";
+            if (idxAkhir >= 0 && r[idxAkhir] !== "" && r[idxAkhir] != null) {
+                const n = parseFloat(r[idxAkhir]);
+                na = !isNaN(n) ? Number(n.toFixed(1)) : r[idxAkhir];
+            }
 
-  function ubahNilaiInline(siswaIdx, jobIdx, inputEl) {
-    const s = masterSiswa.find(item => item.indexAsli === siswaIdx);
-    if (!s) return;
+            const nilaiJobs = jobCols.map(c => {
+                const raw = String(r[c.i] ?? "").trim();
+                const num = parseFloat(raw);
+                return {
+                    val: raw === "" ? 0 : (isNaN(num) ? 0 : num),
+                    tuntas: !isNaN(num) && num >= 75
+                };
+            });
 
-    let val = parseFloat(inputEl.value);
-    if (isNaN(val)) val = 0;
-    if (val < 0) val = 0;
-    if (val > 100) val = 100;
+            const tuntasSemua = nilaiJobs.length > 0 && nilaiJobs.every(j => j.tuntas);
+            return { nama, nilaiJobs, na, tuntasSemua };
+        }).filter(s => s.nama !== "");
 
-    s.scores[jobIdx] = val;
+        document.getElementById('statTotal').innerText = dataGabungan.length;
+        document.getElementById('statTuntas').innerText = dataGabungan.filter(s => s.tuntasSemua).length;
+        document.getElementById('statKurang').innerText = dataGabungan.filter(s => !s.tuntasSemua).length;
 
-    inputEl.classList.remove("score-pass", "score-fail");
-    inputEl.classList.add(val >= KKM ? "score-pass" : "score-fail");
-
-    s.dirty = s.scores.some((v, i) => v !== s.originalScores[i]);
-
-    const na = hitungRataRata(s.scores);
-    const naEl = document.getElementById(`naSiswa_${siswaIdx}`);
-    if (naEl) {
-      naEl.textContent = na;
-      naEl.className = `fw-bold fs-6 ${na >= KKM ? 'text-success' : 'text-danger'}`;
+        filterBarisTabel();
     }
 
-    const rowEl = document.getElementById(`rowSiswa_${siswaIdx}`);
-    const aksiEl = document.getElementById(`aksiSiswa_${siswaIdx}`);
-    if (rowEl) rowEl.classList.toggle("row-dirty", s.dirty);
-    if (aksiEl) {
-      aksiEl.innerHTML = s.dirty
-        ? `<button type="button" class="btn btn-sm btn-warning text-dark fw-bold rounded-3 px-3 shadow-sm" onclick="simpanSatuBaris(${siswaIdx})"><i class="fas fa-save me-1"></i> Simpan</button>`
-        : `<span class="badge bg-light text-muted border px-2.5 py-1.5"><i class="fas fa-check text-success me-1"></i> Tersimpan</span>`;
+    function filterBarisTabel() {
+        const q = document.getElementById('cariNamaTabel').value.toLowerCase().trim();
+        const st = document.getElementById('filterKetuntasan').value;
+
+        const filtered = dataGabungan.filter(s => {
+            if (!s.nama.toLowerCase().includes(q)) return false;
+            if (st === "tuntas") return s.tuntasSemua;
+            if (st === "kurang") return !s.tuntasSemua;
+            return true;
+        });
+
+        renderTabelAdmin(filtered);
     }
 
-    perbaruiStatistik();
-  }
+    function renderTabelAdmin(list) {
+        const b = document.getElementById('bodyTable');
+        b.innerHTML = "";
+        if (!list.length) {
+            b.innerHTML = `<tr><td colspan="${daftarHeaderJob.length + 3}" class="py-4 text-muted">Data siswa tidak ditemukan.</td></tr>`;
+            return;
+        }
 
-  // SIMPAN NILAI 4 JOB UNTUK 1 SISWA KE APPS SCRIPT
-  async function simpanSatuBaris(siswaIdx) {
-    const s = masterSiswa.find(item => item.indexAsli === siswaIdx);
-    if (!s) return;
+        list.forEach(s => {
+            const tr = document.createElement('tr');
+            const namaAman = s.nama.replace(/'/g, "\\'");
+            const btnHtml = `<td><button class="btn-edit-row" onclick="bukaModalEdit('${namaAman}')" title="Edit Nilai"><i class="fas fa-pen"></i></button></td>`;
+            const namaHtml = `<td class="text-start fw-semibold text-dark">${s.nama}</td>`;
+            const jobsHtml = s.nilaiJobs.map(j => {
+                const cls = j.val >= 75 ? 'score-pass' : 'score-fail';
+                return `<td><span class="score-pill ${cls}">${j.val}</span></td>`;
+            }).join('');
+            const naHtml = `<td class="fw-bold text-dark">${s.na}</td>`;
 
-    s.saving = true;
-    renderTabelAdmin();
-
-    try {
-      const payload = {
-        action: "updateNilai",
-        password: adminPasswordSession,
-        pass: adminPasswordSession,
-        sheet: kelasAktif,
-        row: s.rowSheet,
-        nama: s.nama,
-        scores: s.scores,
-        job1: s.scores[0] ?? 0,
-        job2: s.scores[1] ?? 0,
-        job3: s.scores[2] ?? 0,
-        job4: s.scores[3] ?? 0,
-        nilai_akhir: hitungRataRata(s.scores)
-      };
-
-      await fetch(API_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-
-      s.originalScores = [...s.scores];
-      s.dirty = false;
-      tampilNotif(`Nilai ${s.nama} berhasil disimpan!`, "success");
-    } catch (err) {
-      console.error(err);
-      tampilNotif(`Gagal menyimpan nilai ${s.nama}.`, "danger");
-    } finally {
-      s.saving = false;
-      perbaruiStatistik();
-      renderTabelAdmin();
-    }
-  }
-
-  // SIMPAN SEMUA BARIS YANG DIEDIT SEKALIGUS
-  async function simpanSemuaPerubahan() {
-    const dirtyList = masterSiswa.filter(s => s.dirty);
-    if (!dirtyList.length) return;
-
-    const btnMassal = document.getElementById("btnSimpanSemua");
-    btnMassal.disabled = true;
-    btnMassal.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Menyimpan (${dirtyList.length})...`;
-
-    for (const s of dirtyList) {
-      await simpanSatuBaris(s.indexAsli);
+            tr.innerHTML = btnHtml + namaHtml + jobsHtml + naHtml;
+            b.appendChild(tr);
+        });
     }
 
-    btnMassal.disabled = false;
-    btnMassal.innerHTML = `<i class="fas fa-save me-1"></i> Simpan Semua Perubahan (<span id="jumlahDirty">0</span>)`;
-    perbaruiStatistik();
-    tampilNotif(`Semua perubahan (${dirtyList.length} siswa) telah disimpan!`, "success");
-  }
+    function bukaModalEdit(namaSiswa) {
+        document.getElementById('m_nama').innerText = namaSiswa;
+        document.getElementById('m_nilai').value = "";
+        updateJobSelect('m_job', editModeMapel);
+        myModal.show();
+    }
+
+    function simpanEditModal() {
+        const k = document.getElementById('kelasTabel').value;
+        const n = document.getElementById('m_nama').innerText;
+        const j = document.getElementById('m_job').value;
+        const ni = document.getElementById('m_nilai').value;
+        if (!j || !ni) return alert("Pilih Job dan Isi Nilai!");
+        document.getElementById('btnUpdateModal').disabled = true;
+        sendUpdate(k, n, j, ni, "handleModalResponse");
+    }
+
+    window.handleModalResponse = function (r) {
+        document.getElementById('btnUpdateModal').disabled = false;
+        if (r.status === "success") {
+            alert("✅ Data berhasil diupdate!");
+            myModal.hide();
+            refreshTabel();
+        }
+    };
 </script>
 </body>
 </html>

@@ -1,801 +1,440 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Portal Praktik & Rekap Laporan PKSM | Kelas XI</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    :root {
-      --bg-body: #f1f5f9;
-      --primary-accent: #2563eb;
-      --card-radius: 16px;
-    }
-
-    body {
-      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-      background-color: var(--bg-body);
-      color: #1e293b;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* TOP NAVBAR GLASSMORPHISM */
-    .top-navbar {
-      background: rgba(15, 23, 42, 0.94);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      position: sticky;
-      top: 0;
-      z-index: 1020;
-    }
-    .brand-icon {
-      width: 38px;
-      height: 38px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, #f59e0b, #d97706);
-      color: #fff;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35);
-    }
-
-    /* HERO BANNER MODERN */
-    .hero-banner {
-      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 60%, #2563eb 100%);
-      color: #fff;
-      padding: 46px 0 68px;
-      position: relative;
-      overflow: hidden;
-    }
-    .hero-banner::after {
-      content: "";
-      position: absolute;
-      right: -80px;
-      top: -80px;
-      width: 300px;
-      height: 300px;
-      background: radial-gradient(circle, rgba(255, 255, 255, 0.14) 0%, transparent 70%);
-      border-radius: 50%;
-      pointer-events: none;
-    }
-
-    .main-card-overlap {
-      margin-top: -42px;
-      position: relative;
-      z-index: 10;
-    }
-
-    /* MODERN CARDS */
-    .modern-card {
-      background: #fff;
-      border: 1px solid #e2e8f0;
-      border-radius: var(--card-radius);
-      box-shadow: 0 10px 25px -10px rgba(15, 23, 42, 0.08);
-    }
-
-    /* CLASS SELECTOR BUTTONS */
-    .btn-kelas {
-      border: 1.5px solid #e2e8f0;
-      background: #fff;
-      border-radius: 14px;
-      transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .btn-kelas:hover {
-      border-color: #2563eb;
-      background: #f8fafc;
-      transform: translateY(-4px);
-      box-shadow: 0 12px 24px -8px rgba(37, 99, 235, 0.18) !important;
-    }
-    .kelas-arrow {
-      width: 42px;
-      height: 42px;
-      border-radius: 12px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      transition: 0.2s;
-    }
-    .btn-kelas:hover .kelas-arrow {
-      transform: translateX(3px);
-    }
-
-    /* JOBSHEET & MATERI CARDS */
-    .job-card {
-      background: #fff;
-      border: 1px solid #e2e8f0;
-      border-radius: 16px;
-      transition: all 0.22s ease;
-    }
-    .job-card:hover {
-      transform: translateY(-4px);
-      border-color: #cbd5e1;
-      box-shadow: 0 14px 26px -12px rgba(15, 23, 42, 0.14) !important;
-    }
-    .materi-item {
-      border: none;
-      border-bottom: 1px solid #f1f5f9;
-      padding: 16px 22px;
-      transition: background 0.18s ease, padding-left 0.18s ease;
-    }
-    .materi-item:last-child {
-      border-bottom: none;
-    }
-    .materi-item:hover {
-      background-color: #f8fafc;
-      padding-left: 26px;
-    }
-    .materi-icon-box {
-      width: 42px;
-      height: 42px;
-      border-radius: 11px;
-      background: #ecfdf5;
-      color: #059669;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    /* TABLE & COLOR-CODED STATUS BADGES */
-    .table-modern thead th {
-      background: #f8fafc;
-      color: #475569;
-      font-weight: 700;
-      font-size: 0.78rem;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      border-bottom: 2px solid #e2e8f0;
-      padding: 13px 12px;
-    }
-    .table-modern tbody td {
-      padding: 12px;
-      border-color: #f1f5f9;
-    }
-    .row-siswa {
-      cursor: pointer;
-      transition: background 0.15s ease;
-    }
-    .row-siswa:hover {
-      background-color: #eff6ff !important;
-    }
-
-    .pill-status {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 5px 12px;
-      border-radius: 999px;
-      font-size: 0.76rem;
-      font-weight: 700;
-      border: 1px solid transparent;
-      white-space: nowrap;
-    }
-    .pill-ok {
-      background: #ecfdf5;
-      color: #059669;
-      border-color: #a7f3d0;
-    }
-    .pill-kurang-1 {
-      background: #eff6ff;
-      color: #1d4ed8;
-      border-color: #bfdbfe;
-    }
-    .pill-kurang-2 {
-      background: #fffbeb;
-      color: #b45309;
-      border-color: #fde68a;
-    }
-    .pill-kurang-3 {
-      background: #fff7ed;
-      color: #c2410c;
-      border-color: #fed7aa;
-    }
-    .pill-kurang-4 {
-      background: #fef2f2;
-      color: #dc2626;
-      border-color: #fecaca;
-    }
-
-    /* FORM INPUT */
-    .form-control, .form-select {
-      border-radius: 10px;
-      border-color: #cbd5e1;
-      padding: 0.55rem 0.9rem;
-    }
-    .form-control:focus, .form-select:focus {
-      border-color: #2563eb;
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
-    }
-
-    /* EMBED VIEWER & FOOTER */
-    .viewer-frame {
-      width: 100%;
-      height: 78vh;
-      border: none;
-      background: #0f172a;
-    }
-    .app-footer {
-      background: #fff;
-      border-top: 1px solid #e2e8f0;
-      margin-top: auto;
-    }
-
-    .fade-in {
-      animation: fadeIn 0.3s ease;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
-</head>
-<body>
-
-<!-- NAVBAR -->
-<nav class="navbar navbar-dark top-navbar py-2.5 shadow-sm">
-  <div class="container">
-<a class="navbar-brand d-flex align-items-center gap-3 fw-bold" href="#" onclick="kembaliKeBeranda(event)">
-      <span class="brand-icon"><i class="fas fa-motorcycle"></i></span>
-      <div>
-        <div class="lh-sm fs-6">Portal PKSM Kelas XI</div>
-        <small class="d-block fw-normal text-white-50" style="font-size: 0.72rem;">TSM SMK Muhammadiyah Pakem</small>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Portal Praktik & Rekap Laporan PKSM | Kelas XI</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23f59e0b'/%3E%3Cpath fill='%23ffffff' d='M36 10L16 36h14l-2 18 20-26H34l2-18z'/%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="assets/css/portal.css?v=1.5" />
+  </head>
+  <body>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-dark top-navbar py-2 shadow-sm">
+      <div class="container">
+        <a
+          class="navbar-brand d-flex align-items-center gap-3 fw-bold"
+          href="#"
+          onclick="kembaliKeBeranda(event)"
+        >
+          <span class="brand-icon"><i class="fas fa-motorcycle"></i></span>
+          <div>
+            <div class="lh-sm fs-6">Portal PKSM Kelas XI</div>
+            <small
+              class="d-block fw-normal text-white-50"
+              style="font-size: 0.72rem"
+              >TSM SMK Muhammadiyah Pakem</small
+            >
+          </div>
+        </a>
+        <a
+          href="admin.html"
+          class="btn btn-outline-light btn-sm rounded-3 px-3 py-2 fw-semibold"
+        >
+          <i class="fas fa-user-shield me-1"></i> Admin
+        </a>
       </div>
-    </a>
-    <a href="admin.html" class="btn btn-outline-light btn-sm rounded-3 px-3 py-1.5 fw-semibold">
-      <i class="fas fa-user-shield me-1"></i> Admin
-    </a>
-  </div>
-</nav>
+    </nav>
 
-<!-- HERO BANNER -->
-<header class="hero-banner text-center">
-  <div class="container position-relative" style="z-index: 2;">
-    <span class="badge bg-warning text-dark fw-bold px-3 py-1.5 rounded-pill mb-3 shadow-sm">
-      <i class="fas fa-bolt me-1"></i> Pemeliharaan Kelistrikan Sepeda Motor
-    </span>
-    <h1 class="h2 fw-bold mb-2">Panduan Jobsheet, Materi & Cek Laporan Siswa</h1>
-    <p class="mb-0 text-white-50">Oleh Pak Guru Sigit Prabowo &bull; Berlaku untuk seluruh kelas XI TSM</p>
-  </div>
-</header>
-
-<!-- KONTEN UTAMA -->
-<main class="container main-card-overlap mb-5">
-
-  <!-- 1. HALAMAN DEPAN -->
-  <div id="viewBeranda" class="fade-in">
-    <!-- PILIH KELAS -->
-    <div class="modern-card p-4 mb-4">
-      <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
-        <div>
-          <h5 class="fw-bold text-dark mb-1"><i class="fas fa-clipboard-check text-primary me-2"></i>Cek Status Laporan & Nilai Per Kelas</h5>
-          <p class="small text-muted mb-0">Pilih kelas Anda untuk melihat daftar nama dan rincian tugas yang belum selesai</p>
-        </div>
-        <span class="badge bg-primary-subtle text-primary rounded-pill px-3 py-2 fw-semibold">KKM Praktik: 75</span>
-      </div>
-
-      <div class="row g-3">
-        <div class="col-md-4">
-          <button type="button" onclick="bukaKelas('XI SA')" class="btn btn-kelas w-100 p-3 text-start shadow-sm">
-            <div class="d-flex align-items-center justify-content-between">
-              <div>
-                <span class="badge bg-primary-subtle text-primary fw-bold mb-1">Rombel A</span>
-                <h5 class="fw-bold text-dark mb-0">Kelas XI SA</h5>
-                <small class="text-muted">Klik untuk cek rekap siswa</small>
-              </div>
-              <span class="kelas-arrow bg-primary-subtle text-primary fs-5">
-                <i class="fas fa-arrow-right"></i>
-              </span>
-            </div>
-          </button>
-        </div>
-        <div class="col-md-4">
-          <button type="button" onclick="bukaKelas('XI SB')" class="btn btn-kelas w-100 p-3 text-start shadow-sm">
-            <div class="d-flex align-items-center justify-content-between">
-              <div>
-                <span class="badge bg-success-subtle text-success fw-bold mb-1">Rombel B</span>
-                <h5 class="fw-bold text-dark mb-0">Kelas XI SB</h5>
-                <small class="text-muted">Klik untuk cek rekap siswa</small>
-              </div>
-              <span class="kelas-arrow bg-success-subtle text-success fs-5">
-                <i class="fas fa-arrow-right"></i>
-              </span>
-            </div>
-          </button>
-        </div>
-        <div class="col-md-4">
-          <button type="button" onclick="bukaKelas('XI SC')" class="btn btn-kelas w-100 p-3 text-start shadow-sm">
-            <div class="d-flex align-items-center justify-content-between">
-              <div>
-                <span class="badge bg-warning-subtle text-warning-emphasis fw-bold mb-1">Rombel C</span>
-                <h5 class="fw-bold text-dark mb-0">Kelas XI SC</h5>
-                <small class="text-muted">Klik untuk cek rekap siswa</small>
-              </div>
-              <span class="kelas-arrow bg-warning-subtle text-warning-emphasis fs-5">
-                <i class="fas fa-arrow-right"></i>
-              </span>
-            </div>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- BAGIAN DAFTAR JOB PRAKTEK & JOBSHEET -->
-    <div class="modern-card p-4 mb-4">
-      <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
-        <div>
-          <h5 class="fw-bold text-dark mb-1">
-            <i class="fas fa-tools text-primary me-2"></i>Daftar Job Praktek & Jobsheet (Kelas XI)
-          </h5>
-          <p class="text-muted small mb-0">
-            Pelajari panduan langkah kerja setiap job sebelum melaksanakan praktik
-          </p>
-        </div>
-        <span class="badge bg-light text-secondary border rounded-pill px-3 py-2 fw-semibold">
-          Semua Kelas XI
+    <!-- HERO BANNER -->
+    <header class="hero-banner text-center">
+      <div class="container position-relative" style="z-index: 2">
+        <span
+          class="badge bg-warning text-dark fw-bold px-3 py-2 rounded-pill mb-3 shadow-sm"
+        >
+          <i class="fas fa-bolt me-1"></i> Pemeliharaan Kelistrikan Sepeda Motor
         </span>
+        <h1 class="h2 fw-bold mb-2">
+          Panduan Jobsheet, Materi & Cek Laporan Siswa
+        </h1>
+        <p class="mb-0 text-white-50">
+          Oleh Pak Guru Sigit Prabowo &bull; Berlaku untuk seluruh kelas XI TSM
+        </p>
       </div>
+    </header>
 
-      <div class="row g-3" id="containerJobsheet"></div>
-    </div>
+    <!-- KONTEN UTAMA -->
+    <main class="container main-card-overlap mb-5">
+      <!-- 1. HALAMAN DEPAN -->
+      <div id="viewBeranda" class="fade-in">
+        <!-- PILIH KELAS -->
+        <div class="modern-card p-4 mb-4">
+          <div
+            class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2"
+          >
+            <div>
+              <h5 class="fw-bold text-dark mb-1">
+                <i class="fas fa-clipboard-check text-primary me-2"></i>Cek
+                Status Laporan & Nilai Per Kelas
+              </h5>
+              <p class="small text-muted mb-0">
+                Pilih kelas Anda untuk melihat daftar nama dan rincian tugas
+                yang belum selesai
+              </p>
+            </div>
+            <span
+              class="badge bg-primary-subtle text-primary rounded-pill px-3 py-2 fw-semibold"
+              >KKM Praktik: 75</span
+            >
+          </div>
 
-    <!-- DAFTAR MATERI -->
-    <div class="modern-card overflow-hidden">
-      <div class="bg-white px-4 py-3 border-bottom d-flex justify-content-between align-items-center">
-        <div>
-          <h5 class="fw-bold text-dark mb-0"><i class="fas fa-book-open text-success me-2"></i>Materi Pembelajaran & Panduan Laporan</h5>
-          <small class="text-muted">Klik pada modul di bawah untuk membaca langsung melalui pratinjau PDF</small>
-        </div>
-        <span class="badge bg-success-subtle text-success rounded-pill px-3 py-1.5 d-none d-sm-inline-block">4 Modul PDF</span>
-      </div>
-      <div class="list-group list-group-flush" id="containerMateri"></div>
-    </div>
-  </div>
-
-  <!-- 2. HALAMAN REKAP KELAS -->
-  <div id="viewRekapKelas" class="d-none fade-in">
-    <div class="modern-card p-4 mb-3">
-      <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
-        <div>
-          <span class="badge bg-primary-subtle text-primary fw-bold mb-1">Mapel PKSM</span>
-          <h4 class="fw-bold text-dark mb-0" id="judulKelasAktif">Rekap Laporan Kelas</h4>
-          <small class="text-muted">Klik pada <strong>Nama Siswa</strong> untuk melihat detail kekurangan laporan</small>
-        </div>
-        <div class="d-flex gap-2">
-          <button type="button" class="btn btn-outline-primary btn-sm rounded-3 px-3 fw-semibold" onclick="muatUlangKelas()">
-            <i class="fas fa-sync-alt me-1"></i> Refresh
-          </button>
-          <button type="button" class="btn btn-dark btn-sm rounded-3 px-3 fw-semibold" onclick="kembaliKeBeranda()">
-            <i class="fas fa-arrow-left me-1"></i> Kembali ke Beranda
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <div class="modern-card overflow-hidden">
-      <div class="p-4 border-bottom bg-white">
-        <div class="row g-2 align-items-center">
-          <div class="col-md-5">
-            <div class="input-group">
-              <span class="input-group-text bg-light border-end-0 text-muted"><i class="fas fa-search"></i></span>
-              <input type="search" id="inputCariNama" class="form-control border-start-0 bg-light" placeholder="Ketik nama siswa..." oninput="terapkanFilterSiswa()">
+          <div class="row g-3">
+            <div class="col-md-4">
+              <button
+                type="button"
+                onclick="bukaKelas('XI SA')"
+                class="btn btn-kelas w-100 p-3 text-start shadow-sm"
+              >
+                <div class="d-flex align-items-center justify-content-between">
+                  <div>
+                    <span
+                      class="badge bg-primary-subtle text-primary fw-bold mb-1"
+                      >Rombel A</span
+                    >
+                    <h5 class="fw-bold text-dark mb-0">Kelas XI SA</h5>
+                    <small class="text-muted">Klik untuk cek rekap siswa</small>
+                  </div>
+                  <span class="kelas-arrow bg-primary-subtle text-primary fs-5">
+                    <i class="fas fa-arrow-right"></i>
+                  </span>
+                </div>
+              </button>
+            </div>
+            <div class="col-md-4">
+              <button
+                type="button"
+                onclick="bukaKelas('XI SB')"
+                class="btn btn-kelas w-100 p-3 text-start shadow-sm"
+              >
+                <div class="d-flex align-items-center justify-content-between">
+                  <div>
+                    <span
+                      class="badge bg-success-subtle text-success fw-bold mb-1"
+                      >Rombel B</span
+                    >
+                    <h5 class="fw-bold text-dark mb-0">Kelas XI SB</h5>
+                    <small class="text-muted">Klik untuk cek rekap siswa</small>
+                  </div>
+                  <span class="kelas-arrow bg-success-subtle text-success fs-5">
+                    <i class="fas fa-arrow-right"></i>
+                  </span>
+                </div>
+              </button>
+            </div>
+            <div class="col-md-4">
+              <button
+                type="button"
+                onclick="bukaKelas('XI SC')"
+                class="btn btn-kelas w-100 p-3 text-start shadow-sm"
+              >
+                <div class="d-flex align-items-center justify-content-between">
+                  <div>
+                    <span
+                      class="badge bg-warning-subtle text-warning-emphasis fw-bold mb-1"
+                      >Rombel C</span
+                    >
+                    <h5 class="fw-bold text-dark mb-0">Kelas XI SC</h5>
+                    <small class="text-muted">Klik untuk cek rekap siswa</small>
+                  </div>
+                  <span
+                    class="kelas-arrow bg-warning-subtle text-warning-emphasis fs-5"
+                  >
+                    <i class="fas fa-arrow-right"></i>
+                  </span>
+                </div>
+              </button>
             </div>
           </div>
-          <div class="col-md-4">
-            <select id="filterStatusSiswa" class="form-select bg-light" onchange="terapkanFilterSiswa()">
-              <option value="all">Semua Status Laporan</option>
-              <option value="0">Lengkap / Tuntas Semua (Hijau)</option>
-              <option value="1">Kurang 1 Job (Biru)</option>
-              <option value="2">Kurang 2 Job (Kuning)</option>
-              <option value="3">Kurang 3 Job (Oranye)</option>
-              <option value="4">Kurang 4 Job / Belum Semua (Merah)</option>
-            </select>
-          </div>
-          <div class="col-md-3 text-md-end">
-            <span class="badge bg-light text-secondary border px-3 py-2" id="infoJumlahSiswa"></span>
-          </div>
         </div>
 
-        <!-- LEGENDA WARNA STATUS -->
-        <div class="d-flex flex-wrap align-items-center gap-2 mt-3 pt-2 border-top small">
-          <span class="text-muted fw-semibold me-1">Keterangan Warna:</span>
-          <span class="pill-status pill-ok"><i class="fas fa-check-circle"></i> Lengkap</span>
-          <span class="pill-status pill-kurang-1"><i class="fas fa-clock"></i> Kurang 1</span>
-          <span class="pill-status pill-kurang-2"><i class="fas fa-exclamation-circle"></i> Kurang 2</span>
-          <span class="pill-status pill-kurang-3"><i class="fas fa-exclamation-triangle"></i> Kurang 3</span>
-          <span class="pill-status pill-kurang-4"><i class="fas fa-times-circle"></i> Kurang 4</span>
+        <!-- DAFTAR JOB PRAKTEK & JOBSHEET -->
+        <div class="modern-card p-4 mb-4">
+          <div
+            class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3"
+          >
+            <div>
+              <h5 class="fw-bold text-dark mb-1">
+                <i class="fas fa-tools text-primary me-2"></i>Daftar Job Praktek
+                & Jobsheet (Kelas XI)
+              </h5>
+              <p class="text-muted small mb-0">
+                Pelajari panduan langkah kerja setiap job sebelum melaksanakan
+                praktik
+              </p>
+            </div>
+            <span
+              class="badge bg-light text-secondary border rounded-pill px-3 py-2 fw-semibold"
+            >
+              Semua Kelas XI
+            </span>
+          </div>
+
+          <div class="row g-3" id="containerJobsheet"></div>
+        </div>
+
+        <!-- DAFTAR MATERI -->
+        <div class="modern-card overflow-hidden">
+          <div
+            class="bg-white px-4 py-3 border-bottom d-flex justify-content-between align-items-center"
+          >
+            <div>
+              <h5 class="fw-bold text-dark mb-0">
+                <i class="fas fa-book-open text-success me-2"></i>Materi
+                Pembelajaran & Panduan Laporan
+              </h5>
+              <small class="text-muted"
+                >Klik pada modul di bawah untuk membaca langsung melalui
+                pratinjau PDF</small
+              >
+            </div>
+            <span
+              class="badge bg-success-subtle text-success rounded-pill px-3 py-2 d-none d-sm-inline-block"
+              >4 Modul PDF</span
+            >
+          </div>
+          <div class="list-group list-group-flush" id="containerMateri"></div>
         </div>
       </div>
 
-      <div class="table-responsive">
-        <table class="table table-hover table-modern align-middle mb-0">
-          <thead>
-            <tr>
-              <th width="55" class="text-center">No</th>
-              <th>Nama Siswa</th>
-              <th class="text-center">Status Laporan</th>
-              <th class="text-center">Nilai Akhir</th>
-              <th class="text-center" width="115">Detail</th>
-            </tr>
-          </thead>
-          <tbody id="tbodySiswa"></tbody>
-        </table>
+      <!-- 2. HALAMAN REKAP KELAS -->
+      <div id="viewRekapKelas" class="d-none fade-in">
+        <div class="modern-card p-4 mb-3">
+          <div
+            class="d-flex flex-wrap justify-content-between align-items-center gap-3"
+          >
+            <div>
+              <span class="badge bg-primary-subtle text-primary fw-bold mb-1"
+                >Mapel PKSM</span
+              >
+              <h4 class="fw-bold text-dark mb-0" id="judulKelasAktif">
+                Rekap Laporan Kelas
+              </h4>
+              <small class="text-muted"
+                >Klik pada <strong>Nama Siswa</strong> untuk melihat detail
+                kekurangan laporan</small
+              >
+            </div>
+            <div class="d-flex gap-2">
+              <button
+                type="button"
+                class="btn btn-outline-primary btn-sm rounded-3 px-3 fw-semibold"
+                onclick="muatUlangKelas()"
+              >
+                <i class="fas fa-sync-alt me-1"></i> Refresh
+              </button>
+              <button
+                type="button"
+                class="btn btn-dark btn-sm rounded-3 px-3 fw-semibold"
+                onclick="kembaliKeBeranda()"
+              >
+                <i class="fas fa-arrow-left me-1"></i> Kembali ke Beranda
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="modern-card overflow-hidden">
+          <div class="p-4 border-bottom bg-white">
+            <div class="row g-2 align-items-center">
+              <div class="col-md-5">
+                <div class="input-group">
+                  <span
+                    class="input-group-text bg-light border-end-0 text-muted"
+                    ><i class="fas fa-search"></i
+                  ></span>
+                  <input
+                    type="search"
+                    id="inputCariNama"
+                    class="form-control border-start-0 bg-light"
+                    placeholder="Ketik nama siswa..."
+                    oninput="terapkanFilterSiswa()"
+                  />
+                </div>
+              </div>
+              <div class="col-md-4">
+                <select
+                  id="filterStatusSiswa"
+                  class="form-select bg-light"
+                  onchange="terapkanFilterSiswa()"
+                >
+                  <option value="all">Semua Status Laporan</option>
+                  <option value="0">Lengkap / Tuntas Semua (Hijau)</option>
+                  <option value="1">Kurang 1 Job (Biru)</option>
+                  <option value="2">Kurang 2 Job (Kuning)</option>
+                  <option value="3">Kurang 3 Job (Oranye)</option>
+                  <option value="4">Kurang 4 Job / Belum Semua (Merah)</option>
+                </select>
+              </div>
+              <div class="col-md-3 text-md-end">
+                <span
+                  class="badge bg-light text-secondary border px-3 py-2"
+                  id="infoJumlahSiswa"
+                ></span>
+              </div>
+            </div>
+
+            <!-- LEGENDA WARNA STATUS -->
+            <div
+              class="d-flex flex-wrap align-items-center gap-2 mt-3 pt-2 border-top small"
+            >
+              <span class="text-muted fw-semibold me-1">Keterangan Warna:</span>
+              <span class="pill-status pill-ok"
+                ><i class="fas fa-check-circle"></i> Lengkap</span
+              >
+              <span class="pill-status pill-kurang-1"
+                ><i class="fas fa-clock"></i> Kurang 1</span
+              >
+              <span class="pill-status pill-kurang-2"
+                ><i class="fas fa-exclamation-circle"></i> Kurang 2</span
+              >
+              <span class="pill-status pill-kurang-3"
+                ><i class="fas fa-exclamation-triangle"></i> Kurang 3</span
+              >
+              <span class="pill-status pill-kurang-4"
+                ><i class="fas fa-times-circle"></i> Kurang 4</span
+              >
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="table table-hover table-modern align-middle mb-0">
+              <thead>
+                <tr>
+                  <th width="55" class="text-center">No</th>
+                  <th>Nama Siswa</th>
+                  <th class="text-center">Status Laporan</th>
+                  <th class="text-center">Nilai Akhir</th>
+                  <th class="text-center" width="115">Detail</th>
+                </tr>
+              </thead>
+              <tbody id="tbodySiswa"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- MODAL DETAIL SISWA -->
+    <div
+      class="modal fade"
+      id="modalDetailSiswa"
+      tabindex="-1"
+      aria-hidden="true"
+    >
+      <div
+        class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable"
+      >
+        <div
+          class="modal-content border-0 shadow-lg"
+          style="border-radius: 18px"
+        >
+          <div class="modal-header bg-primary text-white border-0 px-4 py-3">
+            <div>
+              <h5 class="modal-title fw-bold mb-0" id="modalNamaSiswa">
+                Nama Siswa
+              </h5>
+              <small class="opacity-75" id="modalInfoKelas">Kelas XI</small>
+            </div>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body p-4" id="modalIsiLaporan"></div>
+          <div
+            class="modal-footer justify-content-between bg-light border-top px-4"
+          >
+            <button
+              type="button"
+              class="btn btn-outline-primary btn-sm rounded-3 px-3 fw-semibold"
+              onclick="bukaPanduanDariModal()"
+            >
+              <i class="fas fa-file-pdf me-1"></i> Buka Jobsheet & Materi
+            </button>
+            <button
+              type="button"
+              class="btn btn-secondary btn-sm rounded-3 px-4"
+              data-bs-dismiss="modal"
+            >
+              Tutup
+            </button>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
 
-</main>
+    <!-- MODAL EMBED VIEWER JOBSHEET & MATERI -->
+    <div
+      class="modal fade"
+      id="modalDocViewer"
+      tabindex="-1"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div
+          class="modal-content border-0 shadow-lg overflow-hidden"
+          style="border-radius: 16px"
+        >
+          <div class="modal-header bg-dark text-white py-2 px-4">
+            <h6 class="modal-title fw-bold mb-0" id="viewerDocTitle">
+              <i class="fas fa-file-pdf text-warning me-2"></i>Pratinjau Dokumen
+            </h6>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              onclick="tutupViewer()"
+            ></button>
+          </div>
+          <div class="modal-body p-0">
+            <iframe
+              id="iframeDocViewer"
+              class="viewer-frame"
+              src=""
+              allow="autoplay"
+            ></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
 
-<!-- MODAL DETAIL SISWA -->
-<div class="modal fade" id="modalDetailSiswa" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
-    <div class="modal-content border-0 shadow-lg" style="border-radius: 18px;">
-      <div class="modal-header bg-primary text-white border-0 px-4 py-3">
+    <!-- FOOTER -->
+    <footer class="app-footer py-3 small text-muted">
+      <div
+        class="container d-flex flex-wrap justify-content-between align-items-center gap-2"
+      >
         <div>
-          <h5 class="modal-title fw-bold mb-0" id="modalNamaSiswa">Nama Siswa</h5>
-          <small class="opacity-75" id="modalInfoKelas">Kelas XI</small>
+          &copy; 2026 <strong>TSM SMK Muhammadiyah Pakem</strong>. Dikembangkan
+          oleh <strong>Sigit Prabowo</strong>.
         </div>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body p-4" id="modalIsiLaporan"></div>
-      <div class="modal-footer justify-content-between bg-light border-top px-4">
-        <button type="button" class="btn btn-outline-primary btn-sm rounded-3 px-3 fw-semibold" onclick="bukaPanduanDariModal()">
-          <i class="fas fa-file-pdf me-1"></i> Buka Jobsheet & Materi
-        </button>
-        <button type="button" class="btn btn-secondary btn-sm rounded-3 px-4" data-bs-dismiss="modal">Tutup</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL EMBED VIEWER JOBSHEET & MATERI -->
-<div class="modal fade" id="modalDocViewer" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-xl modal-dialog-centered">
-    <div class="modal-content border-0 shadow-lg overflow-hidden" style="border-radius: 16px;">
-      <div class="modal-header bg-dark text-white py-2.5 px-4">
-        <h6 class="modal-title fw-bold mb-0" id="viewerDocTitle"><i class="fas fa-file-pdf text-warning me-2"></i>Pratinjau Dokumen</h6>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" onclick="tutupViewer()"></button>
-      </div>
-      <div class="modal-body p-0">
-        <iframe id="iframeDocViewer" class="viewer-frame" src="" allow="autoplay"></iframe>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- FOOTER -->
-<footer class="app-footer py-3 small text-muted">
-  <div class="container d-flex flex-wrap justify-content-between align-items-center gap-2">
-    <div>
-      &copy; 2026 <strong>TSM SMK Muhammadiyah Pakem</strong>. Dikembangkan oleh <strong>Sigit Prabowo</strong>.
-    </div>
-    <div class="d-flex align-items-center gap-2">
-      <span class="badge bg-light text-secondary border px-2 py-1" id="footerVisitorBadge"></span>
-      <span class="badge bg-light text-secondary border px-2 py-1">Portal PKSM Kelas XI &bull; v1.0</span>
-    </div>
-  </div>
-</footer>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbwswDuj1YQHP4C6fXfdEa1G1rqW6hvbx6ZCnnfsRJsHC1fb5byCpHtMmU0vIZBgoYqaPg/exec";
-
-  const DAFTAR_JOBSHEET = [
-    {
-      no: 1,
-      judul: "Sistem Pengapian",
-      ket: "Pemeriksaan koil, pulser/CKP, tutup busi, celah busi, dan tegangan puncak (PVA).",
-      pdf: "https://drive.google.com/file/d/14QdqrC6Z6Q8QmUGpEUdO--mT82xoJSg9/view?usp=drive_link"
-    },
-    {
-      no: 2,
-      judul: "Sistem Starter",
-      ket: "Overhaul motor starter, sikat arang, komutator, dan rangkaian pada stand trainer.",
-      pdf: "https://drive.google.com/file/d/1ODP_f2FZFhv0DdP7QfsAYlkweB0_ATy9/view?usp=drive_link"
-    },
-    {
-      no: 3,
-      judul: "Sistem Pengisian",
-      ket: "Pengukuran tegangan pengisian, kebocoran arus, relay utama, stator ACG, dan sekring.",
-      pdf: "https://drive.google.com/file/d/1mWGy1f1Zc4DHJUm4NLK1K5bQkn2PtKXM/view?usp=drive_link"
-    },
-    {
-      no: 4,
-      judul: "Sistem Penerangan",
-      ket: "Pemeriksaan kunci kontak, sakelar, dan merangkai lampu dekat, jauh, lampu belakang, serta klakson.",
-      pdf: "https://drive.google.com/file/d/14NyyTuIUJH57kkJyR5ximhm9AZKROKRN/view?usp=drive_link"
-    }
-  ];
-
-  const DAFTAR_MATERI = [
-    {
-      judul: "Modul: Dasar-dasar Otomotif 1",
-      ket: "Materi Dasar otomotif 1",
-      pdf: "https://drive.google.com/file/d/1G2WAdKq1M3ZBD8s0G5leFIiSJtm9jQvS/view?usp=drive_link"
-    },
-    {
-      judul: "Modul: Dasar-dasar Otomotif 2",
-      ket: "Materi Dasar otomotif 2",
-      pdf: "https://drive.google.com/file/d/1I9_-9lRKVwKbBYkquj81qYsP3yUTLPAU/view?usp=drive_link"
-    },
-    {
-      judul: "Modul: Sistem Kelistrikan Sepeda Motor",
-      ket: "Materi Kelistrikan Sepeda Motor",
-      pdf: "https://drive.google.com/file/d/1-p7F27JsvXr82LeeKO5iFI-8dE8sMrhn/view?usp=sharing"
-    },
-    {
-      judul: "Modul: Sistem PGM-FI Honda",
-      ket: "Sistem bahan bakar injeksi",
-      pdf: "https://drive.google.com/file/d/1Y8BZxoJ1v6L0Aoq_dYcXq64CPfAxTeUk/view?usp=drive_link"
-    }
-  ];
-
-  let kelasAktif = "", dataSiswa = [], timerLoad = null;
-  let tempNames = null, tempTable = null;
-
-  /* ======================================================
-     PENCATAT AKTIVITAS & KETERANGAN PENGUNJUNG SISWA
-  ====================================================== */
-  function kirimLogSiswa(namaHalaman, keterangan, isInitialVisit = false) {
-    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ? "HP / Mobile" : "Laptop / PC";
-    const aksi = (isInitialVisit && sessionStorage.getItem("pksm_siswa_visited")) ? "get_stats" : "visit";
-
-    const cbName = "cbLogSiswa_" + Date.now() + "_" + Math.floor(Math.random() * 10000);
-    window[cbName] = function(res) {
-      if (isInitialVisit && res && res.status === "success") {
-        sessionStorage.setItem("pksm_siswa_visited", "1");
-        const el = document.getElementById("footerVisitorBadge");
-        if (el) {
-          el.innerHTML = `<i class="fas fa-eye text-primary me-1"></i> ${Number(res.total || 0).toLocaleString('id-ID')} Kunjungan (${res.hari_ini || 0} Hari Ini)`;
-        }
-      }
-      delete window[cbName];
-      const oldScript = document.getElementById(cbName);
-      if (oldScript) oldScript.remove();
-    };
-
-    const s = document.createElement("script");
-    s.id = cbName;
-    s.src = `${API_URL}?action=${aksi}&page=${encodeURIComponent(namaHalaman)}&device=${encodeURIComponent(isMobile)}&info=${encodeURIComponent(keterangan)}&callback=${cbName}&t=${Date.now()}`;
-    document.head.appendChild(s);
-  }
-
-  function toDriveEmbedUrl(url) {
-    if (!url || url === "#") return "";
-    const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-    if (match && match[1]) {
-      return `https://drive.google.com/file/d/${match[1]}/preview`;
-    }
-    return url;
-  }
-
-  function bukaEmbedDokumen(judul, rawUrl) {
-    const embedUrl = toDriveEmbedUrl(rawUrl);
-    if (!embedUrl) {
-      alert("Link Google Drive untuk dokumen \"" + judul + "\" belum diisi.");
-      return;
-    }
-    kirimLogSiswa(judul, "Membaca pratinjau dokumen PDF");
-    document.getElementById("viewerDocTitle").innerHTML = `<i class="fas fa-file-pdf text-warning me-2"></i>${judul}`;
-    document.getElementById("iframeDocViewer").src = embedUrl;
-    new bootstrap.Modal(document.getElementById("modalDocViewer")).show();
-  }
-
-  function tutupViewer() {
-    document.getElementById("iframeDocViewer").src = "";
-  }
-
-  document.getElementById("modalDocViewer").addEventListener("hidden.bs.modal", tutupViewer);
-
-  document.getElementById("containerJobsheet").innerHTML = DAFTAR_JOBSHEET.map((j, idx) => `
-    <div class="col-md-6 col-lg-3">
-      <div class="card job-card h-100 shadow-sm">
-        <div class="card-body d-flex flex-column p-3.5">
-          <div class="d-flex justify-content-between align-items-center mb-2">
-            <span class="badge bg-primary-subtle text-primary fw-bold px-2.5 py-1 rounded-pill">Job ${j.no}</span>
-            <i class="fas fa-file-pdf text-danger opacity-75"></i>
-          </div>
-          <h6 class="fw-bold text-dark mb-2">${j.judul}</h6>
-          <p class="small text-muted mb-3 flex-grow-1">${j.ket}</p>
-          <button type="button" onclick="bukaEmbedDokumen('Jobsheet ${j.no}: ${j.judul}', DAFTAR_JOBSHEET[${idx}].pdf)" class="btn btn-sm btn-outline-primary rounded-3 fw-semibold mt-auto w-100 py-1.5">
-            <i class="fas fa-eye me-1"></i> Lihat Jobsheet ${j.no}
-          </button>
+        <div class="d-flex align-items-center gap-2">
+          <span
+            class="badge bg-light text-secondary border px-2 py-1"
+            id="footerVisitorBadge"
+          ></span>
+          <span class="badge bg-light text-secondary border px-2 py-1"
+            >Portal PKSM Kelas XI &bull; v1.5</span
+          >
         </div>
       </div>
-    </div>
-  `).join("");
+    </footer>
 
-  document.getElementById("containerMateri").innerHTML = DAFTAR_MATERI.map((m, idx) => `
-    <button type="button" onclick="bukaEmbedDokumen(DAFTAR_MATERI[${idx}].judul, DAFTAR_MATERI[${idx}].pdf)" class="list-group-item list-group-item-action materi-item d-flex justify-content-between align-items-center gap-3 text-start">
-      <div class="d-flex align-items-center gap-3">
-        <span class="materi-icon-box"><i class="fas fa-book"></i></span>
-        <div>
-          <div class="fw-bold text-dark">${m.judul}</div>
-          <small class="text-muted">${m.ket}</small>
-        </div>
-      </div>
-      <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-2 fw-semibold flex-shrink-0">
-        <i class="fas fa-eye me-1"></i> Baca di Sini
-      </span>
-    </button>
-  `).join("");
-
-  function bukaKelas(kelas) {
-    kelasAktif = kelas;
-    kirimLogSiswa(`Rekap Kelas ${kelas}`, `Membuka daftar rekap laporan siswa kelas ${kelas}`);
-    document.getElementById("judulKelasAktif").textContent = "Rekap Laporan Kelas " + kelas;
-    document.getElementById("inputCariNama").value = "";
-    document.getElementById("filterStatusSiswa").value = "all";
-    document.getElementById("viewBeranda").classList.add("d-none");
-    document.getElementById("viewRekapKelas").classList.remove("d-none");
-    window.scrollTo(0, 0);
-    muatUlangKelas();
-  }
-
-  function muatUlangKelas() {
-    let detik = 0;
-    tempNames = null;
-    tempTable = null;
-
-    document.getElementById("tbodySiswa").innerHTML = `<tr><td colspan="5" class="text-center py-5 text-muted"><div class="spinner-border text-primary mb-2"></div><div class="fw-bold text-dark">Memuat ${kelasAktif}... (<span id="detikLoad">0</span>s)</div></td></tr>`;
-    clearInterval(timerLoad);
-    timerLoad = setInterval(() => { detik++; const el = document.getElementById("detikLoad"); if (el) el.textContent = detik; }, 1000);
-
-    ["gasNames", "gasTable"].forEach(id => { const old = document.getElementById(id); if (old) old.remove(); });
-
-    const s1 = document.createElement("script");
-    s1.id = "gasNames";
-    s1.src = `${API_URL}?sheet=${encodeURIComponent(kelasAktif)}&callback=terimaNama&t=${Date.now()}`;
-    document.head.appendChild(s1);
-
-    const s2 = document.createElement("script");
-    s2.id = "gasTable";
-    s2.src = `${API_URL}?action=read&sheet=${encodeURIComponent(kelasAktif)}&callback=terimaNilai&t=${Date.now()}`;
-    document.head.appendChild(s2);
-  }
-
-  window.terimaNama = function(names) {
-    tempNames = Array.isArray(names) ? names : [];
-    gabungkanData();
-  };
-
-  window.terimaNilai = function(table) {
-    tempTable = Array.isArray(table) ? table : [];
-    gabungkanData();
-  };
-
-  function gabungkanData() {
-    if (tempNames === null || tempTable === null) return;
-    clearInterval(timerLoad);
-
-    if (tempTable.length < 2) { dataSiswa = []; renderTabel([]); return; }
-
-    const headers = tempTable[0].map(h => String(h || "").trim());
-    const rows = tempTable.slice(1);
-
-    const idxAkhir = headers.findIndex(h => /nilai\s*akhir|akhir|\bna\b/i.test(h));
-    const jobCols = [];
-    headers.forEach((h, i) => {
-      if (i > 0 && i !== idxAkhir && h !== "") jobCols.push({ i, judul: h });
-    });
-
-    dataSiswa = tempNames.map((namaRaw, idx) => {
-      const nama = String(Array.isArray(namaRaw) ? namaRaw[0] : (namaRaw || "")).trim();
-      const r = rows[idx] || [];
-
-      let na = "-";
-      if (idxAkhir >= 0 && r[idxAkhir] !== "" && r[idxAkhir] != null) {
-        const n = parseFloat(r[idxAkhir]);
-        na = !isNaN(n) ? Number(n.toFixed(1)) : r[idxAkhir];
-      }
-
-      const jobs = jobCols.map(c => {
-        const raw = String(r[c.i] ?? "").trim();
-        const num = parseFloat(raw);
-        let status = "Belum";
-        if (raw !== "" && !isNaN(num) && num > 0) {
-          status = num >= 75 ? "Tuntas" : "Perlu Perbaikan";
-        }
-        return { judul: c.judul, nilai: raw === "" ? "0" : raw, status };
-      });
-
-      return {
-        nama,
-        na,
-        jobs,
-        kurang: jobs.filter(j => j.status !== "Tuntas").length
-      };
-    }).filter(s => s.nama !== "");
-
-    terapkanFilterSiswa();
-  }
-
-  function terapkanFilterSiswa() {
-    const q = document.getElementById("inputCariNama").value.toLowerCase().trim();
-    const st = document.getElementById("filterStatusSiswa").value;
-
-    const filtered = dataSiswa.filter(s => {
-      if (!s.nama.toLowerCase().includes(q)) return false;
-      if (st === "all") return true;
-      if (st === "4") return s.kurang >= 4;
-      return String(s.kurang) === st;
-    });
-
-    renderTabel(filtered);
-  }
-
-  function getBadgeStatusSiswa(s) {
-    const totalJob = s.jobs.length;
-    if (s.kurang === 0) {
-      return `<span class="pill-status pill-ok"><i class="fas fa-check-circle"></i> Lengkap (${totalJob}/${totalJob})</span>`;
-    }
-    if (s.kurang === 1) {
-      return `<span class="pill-status pill-kurang-1"><i class="fas fa-clock"></i> Kurang 1 Job</span>`;
-    }
-    if (s.kurang === 2) {
-      return `<span class="pill-status pill-kurang-2"><i class="fas fa-exclamation-circle"></i> Kurang 2 Job</span>`;
-    }
-    if (s.kurang === 3) {
-      return `<span class="pill-status pill-kurang-3"><i class="fas fa-exclamation-triangle"></i> Kurang 3 Job</span>`;
-    }
-    return `<span class="pill-status pill-kurang-4"><i class="fas fa-times-circle"></i> Kurang ${s.kurang} Job</span>`;
-  }
-
-  function renderTabel(list) {
-    document.getElementById("infoJumlahSiswa").textContent = `Menampilkan ${list.length} siswa`;
-    if (!list.length) {
-      document.getElementById("tbodySiswa").innerHTML = `<tr><td colspan="5" class="text-center text-muted py-4">Data siswa tidak ditemukan.</td></tr>`;
-      return;
-    }
-    document.getElementById("tbodySiswa").innerHTML = list.map((s, idx) => {
-      const badge = getBadgeStatusSiswa(s);
-      const asli = dataSiswa.indexOf(s);
-      const naNum = parseFloat(s.na);
-      const naClass = isNaN(naNum) ? 'text-dark' : (naNum >= 75 ? 'text-success' : 'text-danger');
-      return `<tr class="row-siswa" onclick="detailSiswa(${asli})">
-        <td class="text-center text-muted fw-medium">${idx + 1}</td>
-        <td class="fw-semibold text-dark">${s.nama}</td>
-        <td class="text-center">${badge}</td>
-        <td class="text-center fw-bold ${naClass}">${s.na}</td>
-        <td class="text-center"><button type="button" class="btn btn-sm btn-outline-primary rounded-3 px-2.5 fw-semibold">Detail</button></td></tr>`;
-    }).join("");
-  }
-
-  function detailSiswa(idx) {
-    const s = dataSiswa[idx];
-    if (!s) return;
-    kirimLogSiswa(`Cek Detail (${kelasAktif})`, `Mengecek rincian laporan: ${s.nama}`);
-    document.getElementById("modalNamaSiswa").textContent = s.nama;
-    document.getElementById("modalInfoKelas").textContent = `Kelas ${kelasAktif} • Nilai Akhir: ${s.na}`;
-    document.getElementById("modalIsiLaporan").innerHTML = `<div class="list-group rounded-3 overflow-hidden">` + s.jobs.map(j => {
-      if (j.status === "Tuntas") return `<div class="list-group-item p-3"><div class="d-flex justify-content-between align-items-center mb-1"><strong class="text-dark">${j.judul}</strong><span class="badge bg-success-subtle text-success rounded-pill px-3 py-1">Tuntas (${j.nilai})</span></div><small class="text-muted">Laporan sudah dikumpulkan dan tuntas.</small></div>`;
-      if (j.status === "Perlu Perbaikan") return `<div class="list-group-item list-group-item-warning p-3"><div class="d-flex justify-content-between align-items-center mb-1"><strong>${j.judul}</strong><span class="badge bg-warning text-dark rounded-pill px-3 py-1">Di Bawah KKM (${j.nilai})</span></div><small>Nilai di bawah 75, silakan konfirmasi perbaikan.</small></div>`;
-      return `<div class="list-group-item list-group-item-danger p-3"><div class="d-flex justify-content-between align-items-center mb-1"><strong>${j.judul}</strong><span class="badge bg-danger rounded-pill px-3 py-1">Belum Mengumpulkan</span></div><small class="text-danger">Laporan & nilai praktik belum masuk.</small></div>`;
-    }).join("") + `</div>`;
-    new bootstrap.Modal(document.getElementById("modalDetailSiswa")).show();
-  }
-
-  function kembaliKeBeranda(e) {
-    if (e) e.preventDefault();
-    document.getElementById("viewRekapKelas").classList.add("d-none");
-    document.getElementById("viewBeranda").classList.remove("d-none");
-    window.scrollTo(0, 0);
-  }
-
-  function bukaPanduanDariModal() {
-    const m = bootstrap.Modal.getInstance(document.getElementById("modalDetailSiswa"));
-    if (m) m.hide();
-    kembaliKeBeranda();
-  }
-
-  // Catat kunjungan awal saat halaman portal siswa dibuka
-  kirimLogSiswa("Portal Siswa", "Membuka halaman beranda portal siswa", true);
-</script>
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/config.js?v=1.5"></script>
+    <script src="assets/js/portal.js?v=1.5"></script>
+  </body>
 </html>

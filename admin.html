@@ -1,1816 +1,1028 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin Dashboard | Portal PKSM & Praktek</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --bg-body: #f1f5f9;
-            --sidebar-bg: #0f172a;
-            --sidebar-hover: #1e293b;
-            --primary-accent: #2563eb;
-            --primary-soft: #eff6ff;
-            --card-radius: 16px;
-        }
-
-        body {
-            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-            background-color: var(--bg-body);
-            color: #1e293b;
-            overflow-x: hidden;
-        }
-
-        /* LOGIN SCREEN MODERN */
-        .login-wrapper {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: radial-gradient(circle at top right, #dbeafe 0%, #f1f5f9 45%, #e2e8f0 100%);
-            padding: 20px;
-        }
-        #cardLogin {
-            width: 100%;
-            max-width: 410px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.12);
-        }
-        .login-icon-box {
-            width: 58px;
-            height: 58px;
-            border-radius: 16px;
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
-            box-shadow: 0 10px 20px -5px rgba(37, 99, 235, 0.4);
-        }
-
-        /* SIDEBAR MODERN */
-        .sidebar {
-            height: 100vh;
-            width: 260px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            background: var(--sidebar-bg);
-            color: #94a3b8;
-            transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 1030;
-            overflow-y: auto;
-            padding: 16px 14px;
-        }
-        .sidebar .brand-box {
-            padding: 10px 12px 18px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            margin-bottom: 14px;
-        }
-        .brand-logo {
-            width: 38px;
-            height: 38px;
-            border-radius: 10px;
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: #fff;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .nav-section-label {
-            font-size: 0.7rem;
-            font-weight: 700;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: #64748b;
-            padding: 12px 12px 6px;
-        }
-        .sidebar .list-group-item {
-            background: transparent;
-            color: #cbd5e1;
-            border: none;
-            border-radius: 10px;
-            padding: 10px 14px;
-            margin-bottom: 4px;
-            font-size: 0.88rem;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            transition: all 0.2s ease;
-        }
-        .sidebar .list-group-item i {
-            width: 22px;
-            font-size: 0.95rem;
-        }
-        .sidebar .list-group-item:hover:not(.disabled) {
-            background: var(--sidebar-hover);
-            color: #fff;
-            transform: translateX(3px);
-        }
-        .active-menu {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
-            color: #fff !important;
-            font-weight: 600 !important;
-            box-shadow: 0 6px 16px -4px rgba(37, 99, 235, 0.5);
-        }
-
-        /* MAIN SHELL & NAVBAR */
-        .main-shell {
-            margin-left: 260px;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .main-header {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(10px);
-            padding: 14px 28px;
-            border-bottom: 1px solid #e2e8f0;
-            position: sticky;
-            top: 0;
-            z-index: 1020;
-        }
-        .btn-toggle-nav {
-            width: 38px;
-            height: 38px;
-            border-radius: 10px;
-            border: 1px solid #e2e8f0;
-            background: #fff;
-            color: #334155;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            transition: 0.2s;
-        }
-        .btn-toggle-nav:hover {
-            background: #f8fafc;
-            color: var(--primary-accent);
-            border-color: #cbd5e1;
-        }
-        .content-wrapper {
-            padding: 28px;
-            flex: 1;
-        }
-        .app-footer {
-            background: #fff;
-            padding: 16px 28px;
-            border-top: 1px solid #e2e8f0;
-            color: #64748b;
-        }
-
-        /* STATE SIDEBAR DILIPAT */
-        body.sidebar-collapsed .sidebar { margin-left: -260px; }
-        body.sidebar-collapsed .main-shell { margin-left: 0; }
-        @media (max-width: 768px) {
-            .sidebar { margin-left: -260px; }
-            .main-shell { margin-left: 0; }
-            body.sidebar-mobile-open .sidebar { margin-left: 0; }
-            .content-wrapper { padding: 18px; }
-        }
-
-        /* MODERN CARDS & HERO */
-        .modern-card {
-            background: #fff;
-            border: 1px solid #e2e8f0;
-            border-radius: var(--card-radius);
-            box-shadow: 0 4px 20px -6px rgba(15, 23, 42, 0.05);
-        }
-        .hero-welcome {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            color: #fff;
-            border-radius: var(--card-radius);
-            position: relative;
-            overflow: hidden;
-        }
-        .hero-welcome::after {
-            content: "";
-            position: absolute;
-            right: -40px;
-            top: -40px;
-            width: 220px;
-            height: 220px;
-            background: radial-gradient(circle, rgba(37, 99, 235, 0.35) 0%, transparent 70%);
-            border-radius: 50%;
-        }
-
-        /* STATISTIC CARDS */
-        .stat-box {
-            background: #fff;
-            border: 1px solid #e2e8f0;
-            border-radius: var(--card-radius);
-            padding: 18px 20px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            box-shadow: 0 4px 16px -6px rgba(15, 23, 42, 0.04);
-            height: 100%;
-        }
-        .stat-icon {
-            width: 48px;
-            height: 48px;
-            min-width: 48px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem;
-        }
-        .stat-icon.blue { background: #eff6ff; color: #2563eb; }
-        .stat-icon.green { background: #ecfdf5; color: #059669; }
-        .stat-icon.red { background: #fef2f2; color: #dc2626; }
-        .stat-icon.amber { background: #fffbeb; color: #d97706; }
-        .stat-icon.teal { background: #f0fdfa; color: #0d9488; }
-
-        /* FORM & TABLE POLISH */
-        .form-control {
-            border-radius: 10px;
-            border-color: #cbd5e1;
-            padding: 0.55rem 0.85rem;
-        }
-        .form-select {
-            border-radius: 10px;
-            border-color: #cbd5e1;
-            padding: 0.55rem 2.25rem 0.55rem 0.85rem;
-        }
-        .form-select-sm {
-            padding-top: 0.35rem;
-            padding-bottom: 0.35rem;
-            padding-left: 0.75rem;
-            padding-right: 2.1rem;
-        }
-        .form-control:focus, .form-select:focus {
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
-        }
-
-        .table-modern thead th {
-            background: #f8fafc;
-            color: #475569;
-            font-weight: 700;
-            font-size: 0.78rem;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-            border-bottom: 2px solid #e2e8f0;
-            padding: 12px 10px;
-            white-space: nowrap;
-        }
-        .table-modern tbody td {
-            padding: 10px 8px;
-            border-color: #f1f5f9;
-        }
-        .score-pill {
-            display: inline-block;
-            min-width: 40px;
-            padding: 4px 10px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.84rem;
-        }
-        .score-pass { background: #ecfdf5; color: #059669; }
-        .score-fail { background: #fef2f2; color: #dc2626; }
-
-        /* INLINE INPUT SAAT MODE EDIT AKTIF */
-        .inline-score-input {
-            width: 68px;
-            text-align: center;
-            font-weight: 700;
-            font-size: 0.88rem;
-            border-radius: 8px;
-            padding: 4px 6px;
-            border: 1.5px solid #2563eb;
-            margin: 0 auto;
-            background-color: #fff;
-            transition: all 0.15s ease;
-        }
-        .inline-score-input:focus {
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
-        }
-        .inline-score-input.score-pass {
-            background-color: #ecfdf5;
-            border-color: #059669;
-            color: #059669;
-        }
-        .inline-score-input.score-fail {
-            background-color: #fef2f2;
-            border-color: #dc2626;
-            color: #dc2626;
-        }
-        .inline-score-input::-webkit-outer-spin-button,
-        .inline-score-input::-webkit-inner-spin-button,
-        .modal-score-input::-webkit-outer-spin-button,
-        .modal-score-input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        .inline-score-input[type=number],
-        .modal-score-input[type=number] {
-            -moz-appearance: textfield;
-        }
-        tr.row-editing {
-            background-color: #fffbeb !important;
-        }
-
-        /* INPUT DI DALAM MODAL EDIT NILAI (MOBILE FRIENDLY) */
-        .modal-job-card {
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 12px 14px;
-            background: #f8fafc;
-            transition: all 0.15s ease;
-        }
-        .modal-job-card.pass-card {
-            border-color: #a7f3d0;
-            background: #ecfdf5;
-        }
-        .modal-job-card.fail-card {
-            border-color: #fecaca;
-            background: #fef2f2;
-        }
-        .modal-score-input {
-            width: 90px;
-            text-align: center;
-            font-weight: 700;
-            font-size: 1.05rem;
-            border-radius: 10px;
-            padding: 8px 10px;
-        }
-
-        #adminPanel { display: none; animation: fadeIn 0.35s ease; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* MODE CETAK / PRINT PDF */
-        @media print {
-            .sidebar, .main-header, .app-footer, .no-print, #dashboardView, #formKonten {
-                display: none !important;
-            }
-            .main-shell {
-                margin-left: 0 !important;
-            }
-            .content-wrapper {
-                padding: 0 !important;
-            }
-            .modern-card {
-                border: none !important;
-                box-shadow: none !important;
-            }
-            .col-aksi {
-                display: none !important;
-            }
-            .print-header-only {
-                display: block !important;
-            }
-        }
-        .print-header-only {
-            display: none;
-        }
-    </style>
-</head>
-<body>
-
-<!-- HALAMAN LOGIN -->
-<div class="login-wrapper" id="loginWrapper">
-    <div id="cardLogin" class="card bg-white">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23f59e0b'/%3E%3Cpath fill='%23ffffff' d='M36 10L16 36h14l-2 18 20-26H34l2-18z'/%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="assets/css/admin.css?v=1.5" />
+  </head>
+  <body>
+    <!-- HALAMAN LOGIN -->
+    <div class="login-wrapper" id="loginWrapper">
+      <div id="cardLogin" class="card bg-white">
         <div class="card-body p-4 p-sm-5">
-            <div class="text-center mb-4">
-                <div class="login-icon-box text-white d-inline-flex align-items-center justify-content-center mb-3">
-                    <i class="fas fa-user-shield fs-4"></i>
-                </div>
-                <h4 class="fw-bold mb-1 text-dark">Admin Portal</h4>
-                <p class="text-muted small mb-0">Praktik & Nilai PKSM &bull; Bengkel TSM</p>
+          <div class="text-center mb-4">
+            <div
+              class="login-icon-box text-white d-inline-flex align-items-center justify-content-center mb-3"
+            >
+              <i class="fas fa-user-shield fs-4"></i>
             </div>
-            <form onsubmit="handleLogin(event)">
-                <div class="mb-3">
-                    <label class="form-label small fw-semibold text-secondary">Username</label>
-                    <div class="input-group">
-                        <span class="input-group-text bg-light border-end-0 text-muted"><i class="fas fa-user"></i></span>
-                        <input type="text" id="user" class="form-control border-start-0 bg-light" placeholder="Masukkan username" required>
-                    </div>
-                </div>
-                <div class="mb-4">
-                    <label class="form-label small fw-semibold text-secondary">Password</label>
-                    <div class="input-group">
-                        <span class="input-group-text bg-light border-end-0 text-muted"><i class="fas fa-lock"></i></span>
-                        <input type="password" id="pass" class="form-control border-start-0 border-end-0 bg-light" placeholder="Masukkan password" required>
-                        <button class="btn btn-light border border-start-0 text-muted" type="button" id="togglePassword">
-                            <i class="fas fa-eye" id="eyeIcon"></i>
-                        </button>
-                    </div>
-                </div>
-                <button type="submit" id="btnLogin" class="btn btn-primary w-100 fw-semibold py-2 rounded-3 shadow-sm">
-                    Masuk ke Dashboard <i class="fas fa-arrow-right ms-1"></i>
+            <h4 class="fw-bold mb-1 text-dark">Admin Portal</h4>
+            <p class="text-muted small mb-0">
+              Praktik & Nilai PKSM &bull; Bengkel TSM
+            </p>
+          </div>
+          <form onsubmit="handleLogin(event)">
+            <div class="mb-3">
+              <label class="form-label small fw-semibold text-secondary"
+                >Username</label
+              >
+              <div class="input-group">
+                <span class="input-group-text bg-light border-end-0 text-muted"
+                  ><i class="fas fa-user"></i
+                ></span>
+                <input
+                  type="text"
+                  id="user"
+                  class="form-control border-start-0 bg-light"
+                  placeholder="Masukkan username"
+                  required
+                />
+              </div>
+            </div>
+            <div class="mb-4">
+              <label class="form-label small fw-semibold text-secondary"
+                >Password</label
+              >
+              <div class="input-group">
+                <span class="input-group-text bg-light border-end-0 text-muted"
+                  ><i class="fas fa-lock"></i
+                ></span>
+                <input
+                  type="password"
+                  id="pass"
+                  class="form-control border-start-0 border-end-0 bg-light"
+                  placeholder="Masukkan password"
+                  required
+                />
+                <button
+                  class="btn btn-light border border-start-0 text-muted"
+                  type="button"
+                  id="togglePassword"
+                >
+                  <i class="fas fa-eye" id="eyeIcon"></i>
                 </button>
-            </form>
-            <div class="text-center mt-4">
-                <a href="index.html" class="small text-decoration-none text-secondary fw-medium">
-                    <i class="fas fa-arrow-left me-1"></i> Kembali ke Portal Siswa
-                </a>
+              </div>
             </div>
-            <div class="text-center text-muted mt-4 pt-3 border-top" style="font-size: 0.75rem;">
-                &copy; 2026 TSM SMK Muhammadiyah Pakem &bull; Portal PKSM v1.4
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- DASHBOARD ADMIN -->
-<div id="adminPanel">
-    <!-- SIDEBAR -->
-    <aside class="sidebar shadow-lg" id="sidebarMenu">
-<div class="brand-box d-flex justify-content-between align-items-center">
-            <div class="d-flex align-items-center gap-3">
-                <div class="brand-logo"><i class="fas fa-motorcycle"></i></div>
-                <div>
-                    <div class="fw-bold text-white lh-sm">Portal PKSM</div>
-                    <small style="font-size: 0.72rem; color: #94a3b8;">Pak Sigit Prabowo</small>
-                </div>
-            </div>
-            <button type="button" class="btn btn-sm btn-dark d-md-none text-white" onclick="toggleSidebar()">
-                <i class="fas fa-times"></i>
+            <button
+              type="submit"
+              id="btnLogin"
+              class="btn btn-primary w-100 fw-semibold py-2 rounded-3 shadow-sm"
+            >
+              Masuk ke Dashboard <i class="fas fa-arrow-right ms-1"></i>
             </button>
+          </form>
+          <div class="text-center mt-4">
+            <a
+              href="index.html"
+              class="small text-decoration-none text-secondary fw-medium"
+            >
+              <i class="fas fa-arrow-left me-1"></i> Kembali ke Portal Siswa
+            </a>
+          </div>
+          <div
+            class="text-center text-muted mt-4 pt-3 border-top"
+            style="font-size: 0.75rem"
+          >
+            &copy; 2026 TSM SMK Muhammadiyah Pakem &bull; Portal PKSM v1.5
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DASHBOARD ADMIN -->
+    <div id="adminPanel">
+      <!-- SIDEBAR -->
+      <aside class="sidebar shadow-lg" id="sidebarMenu">
+        <div
+          class="brand-box d-flex justify-content-between align-items-center"
+        >
+          <div class="d-flex align-items-center gap-3">
+            <div class="brand-logo"><i class="fas fa-motorcycle"></i></div>
+            <div>
+              <div class="fw-bold text-white lh-sm">Portal PKSM</div>
+              <small style="font-size: 0.72rem; color: #94a3b8"
+                >Pak Sigit Prabowo</small
+              >
+            </div>
+          </div>
+          <button
+            type="button"
+            class="btn btn-sm btn-dark d-md-none text-white"
+            onclick="toggleSidebar()"
+          >
+            <i class="fas fa-times"></i>
+          </button>
         </div>
 
         <div class="list-group list-group-flush">
-            <!-- MENU UTAMA DASHBOARD -->
-            <div class="nav-section-label">Menu Utama</div>
-            <a href="#" onclick="tampilkanDashboard(this); return false;" class="list-group-item list-group-item-action active-menu" id="menuDashboard">
-                <i class="fas fa-home text-primary me-2"></i> Dashboard
-            </a>
+          <div class="nav-section-label">Menu Utama</div>
+          <a
+            href="#"
+            onclick="
+              tampilkanDashboard(this);
+              return false;
+            "
+            class="list-group-item list-group-item-action active-menu"
+            id="menuDashboard"
+          >
+            <i class="fas fa-home text-primary me-2"></i> Dashboard
+          </a>
 
-            <div class="nav-section-label mt-2">Input Nilai</div>
-            <a href="#" onclick="pilihMapel('PKSM', this); return false;" class="list-group-item list-group-item-action" id="menuInputPKSM">
-                <i class="fas fa-bolt text-warning me-2"></i> Input Nilai Laporan
-            </a>
-            <a href="#" onclick="pilihMapel('PRAKTEK', this); return false;" class="list-group-item list-group-item-action" id="menuInputPraktek">
-                <i class="fas fa-tools text-success me-2"></i> Input Nilai Praktek
-                <span class="badge bg-secondary ms-auto" style="font-size: 0.62rem;">Admin</span>
-            </a>
+          <div class="nav-section-label mt-2">Input Nilai</div>
+          <a
+            href="#"
+            onclick="
+              pilihMapel('PKSM', this);
+              return false;
+            "
+            class="list-group-item list-group-item-action"
+            id="menuInputPKSM"
+          >
+            <i class="fas fa-bolt text-warning me-2"></i> Input Nilai Laporan
+          </a>
+          <a
+            href="#"
+            onclick="
+              pilihMapel('PRAKTEK', this);
+              return false;
+            "
+            class="list-group-item list-group-item-action"
+            id="menuInputPraktek"
+          >
+            <i class="fas fa-tools text-success me-2"></i> Input Nilai Praktek
+            <span class="badge bg-secondary ms-auto" style="font-size: 0.62rem"
+              >Admin</span
+            >
+          </a>
 
-            <div class="nav-section-label mt-2">Rekap & Edit Tabel</div>
-            <a href="#" onclick="pilihModeEdit('PKSM', this); return false;" class="list-group-item list-group-item-action" id="menuTabelPKSM">
-                <i class="fas fa-table text-info me-2"></i> Rekap Nilai Laporan
-            </a>
-            <a href="#" onclick="pilihModeEdit('PRAKTEK', this); return false;" class="list-group-item list-group-item-action" id="menuTabelPraktek">
-                <i class="fas fa-clipboard-list text-success me-2"></i> Rekap Nilai Praktek
-                <span class="badge bg-secondary ms-auto" style="font-size: 0.62rem;">Admin</span>
-            </a>
+          <div class="nav-section-label mt-2">Rekap & Edit Tabel</div>
+          <a
+            href="#"
+            onclick="
+              pilihModeEdit('PKSM', this);
+              return false;
+            "
+            class="list-group-item list-group-item-action"
+            id="menuTabelPKSM"
+          >
+            <i class="fas fa-table text-info me-2"></i> Rekap Nilai Laporan
+          </a>
+          <a
+            href="#"
+            onclick="
+              pilihModeEdit('PRAKTEK', this);
+              return false;
+            "
+            class="list-group-item list-group-item-action"
+            id="menuTabelPraktek"
+          >
+            <i class="fas fa-clipboard-list text-success me-2"></i> Rekap Nilai
+            Praktek
+            <span class="badge bg-secondary ms-auto" style="font-size: 0.62rem"
+              >Admin</span
+            >
+          </a>
 
-            <div class="nav-section-label mt-2">Sistem</div>
-            <a href="index.html" class="list-group-item list-group-item-action">
-                <i class="fas fa-external-link-alt text-light me-2"></i> Lihat Web Siswa
-            </a>
-            <a href="#" class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#modalBantuan">
-                <i class="fas fa-circle-question text-primary me-2"></i> Bantuan & Panduan
-            </a>
-            <a href="#" onclick="handleLogout(); return false;" class="list-group-item list-group-item-action text-danger mt-2">
-                <i class="fas fa-sign-out-alt me-2"></i> Keluar (Logout)
-            </a>
+          <div class="nav-section-label mt-2">Sistem</div>
+          <a href="index.html" class="list-group-item list-group-item-action">
+            <i class="fas fa-external-link-alt text-light me-2"></i> Lihat Web
+            Siswa
+          </a>
+          <a
+            href="#"
+            class="list-group-item list-group-item-action"
+            data-bs-toggle="modal"
+            data-bs-target="#modalBantuan"
+          >
+            <i class="fas fa-circle-question text-primary me-2"></i> Bantuan &
+            Panduan
+          </a>
+          <a
+            href="#"
+            onclick="
+              handleLogout();
+              return false;
+            "
+            class="list-group-item list-group-item-action text-danger mt-2"
+          >
+            <i class="fas fa-sign-out-alt me-2"></i> Keluar (Logout)
+          </a>
         </div>
-    </aside>
+      </aside>
 
-    <!-- MAIN SHELL -->
-    <div class="main-shell">
+      <!-- MAIN SHELL -->
+      <div class="main-shell">
         <!-- NAVBAR -->
-        <nav class="main-header d-flex justify-content-between align-items-center">
-            <div class="d-flex align-items-center gap-3">
-                <button type="button" class="btn-toggle-nav" onclick="toggleSidebar()" title="Tampilkan / Sembunyikan Sidebar">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <div>
-                    <span class="fw-bold text-dark" id="nav-status">Dashboard Admin</span>
-                </div>
+        <nav
+          class="main-header d-flex justify-content-between align-items-center"
+        >
+          <div class="d-flex align-items-center gap-3">
+            <button
+              type="button"
+              class="btn-toggle-nav"
+              onclick="toggleSidebar()"
+              title="Tampilkan / Sembunyikan Sidebar"
+            >
+              <i class="fas fa-bars"></i>
+            </button>
+            <div>
+              <span class="fw-bold text-dark" id="nav-status"
+                >Dashboard Admin</span
+              >
             </div>
-            <span class="badge rounded-pill bg-primary-subtle text-primary px-3 py-2 fw-semibold">
-                <i class="fas fa-wrench me-1"></i> Bengkel TSM
-            </span>
+          </div>
+          <span
+            class="badge rounded-pill bg-primary-subtle text-primary px-3 py-2 fw-semibold"
+          >
+            <i class="fas fa-wrench me-1"></i> Bengkel TSM
+          </span>
         </nav>
 
         <!-- KONTEN -->
         <main class="content-wrapper">
-            <div class="container-fluid px-0">
+          <div class="container-fluid px-0">
+            <!-- 1. VIEW DASHBOARD UTAMA -->
+            <div id="dashboardView">
+              <div class="hero-welcome p-4 p-md-5 mb-4 shadow-sm">
+                <span class="badge bg-primary mb-2 px-3 py-1 rounded-pill"
+                  >ADMINISTRATOR</span
+                >
+                <h3 class="fw-bold mb-2">Selamat Datang, Pak Sigit!</h3>
+                <p class="text-white-50 mb-4" style="max-width: 580px">
+                  Kelola input nilai praktik kelistrikan (PKSM) maupun nilai
+                  praktek bengkel tambahan (khusus admin) langsung ke Google
+                  Sheet.
+                </p>
+                <div
+                  class="d-flex flex-wrap gap-2 position-relative"
+                  style="z-index: 2"
+                >
+                  <button
+                    type="button"
+                    class="btn btn-primary fw-semibold px-4 py-2 rounded-3"
+                    onclick="
+                      pilihModeEdit(
+                        'PKSM',
+                        document.getElementById('menuTabelPKSM'),
+                      )
+                    "
+                  >
+                    <i class="fas fa-table me-2"></i> Rekap Nilai Laporan
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-success fw-semibold px-4 py-2 rounded-3"
+                    onclick="
+                      pilihModeEdit(
+                        'PRAKTEK',
+                        document.getElementById('menuTabelPraktek'),
+                      )
+                    "
+                  >
+                    <i class="fas fa-table me-2"></i> Rekap Nilai Praktek
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-outline-light fw-semibold px-4 py-2 rounded-3"
+                    onclick="
+                      pilihMapel(
+                        'PKSM',
+                        document.getElementById('menuInputPKSM'),
+                      )
+                    "
+                  >
+                    <i class="fas fa-plus me-2"></i> Input Nilai Laporan
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-outline-warning fw-semibold px-4 py-2 rounded-3"
+                    onclick="
+                      pilihMapel(
+                        'PRAKTEK',
+                        document.getElementById('menuInputPraktek'),
+                      )
+                    "
+                  >
+                    <i class="fas fa-plus me-2"></i> Input Nilai Praktek
+                  </button>
+                </div>
+              </div>
 
-                <!-- 1. VIEW DASHBOARD UTAMA -->
-                <div id="dashboardView">
-                    <!-- HERO WELCOME -->
-                    <div class="hero-welcome p-4 p-md-5 mb-4 shadow-sm">
-                        <span class="badge bg-primary mb-2 px-3 py-1 rounded-pill">ADMINISTRATOR</span>
-                        <h3 class="fw-bold mb-2">Selamat Datang, Pak Sigit!</h3>
-                        <p class="text-white-50 mb-4" style="max-width: 580px;">
-                            Kelola input nilai praktik kelistrikan (PKSM) maupun nilai praktek bengkel tambahan (khusus admin) langsung ke Google Sheet.
-                        </p>
-                        <div class="d-flex flex-wrap gap-2 position-relative" style="z-index: 2;">
-                            <button type="button" class="btn btn-primary fw-semibold px-4 py-2 rounded-3" onclick="pilihModeEdit('PKSM', document.getElementById('menuTabelPKSM'))">
-                                <i class="fas fa-table me-2"></i> Rekap Nilai Laporan
-                            </button>
-                            <button type="button" class="btn btn-success fw-semibold px-4 py-2 rounded-3" onclick="pilihModeEdit('PRAKTEK', document.getElementById('menuTabelPraktek'))">
-                                <i class="fas fa-table me-2"></i> Rekap Nilai Praktek
-                            </button>
-                            <button type="button" class="btn btn-outline-light fw-semibold px-4 py-2 rounded-3" onclick="pilihMapel('PKSM', document.getElementById('menuInputPKSM'))">
-                                <i class="fas fa-plus me-2"></i> Input Nilai Laporan
-                            </button>
-                            <button type="button" class="btn btn-outline-warning fw-semibold px-4 py-2 rounded-3" onclick="pilihMapel('PRAKTEK', document.getElementById('menuInputPraktek'))">
-                                <i class="fas fa-plus me-2"></i> Input Nilai Praktek
-                            </button>
-                        </div>
+              <div
+                class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2"
+              >
+                <div>
+                  <h6 class="fw-bold text-dark mb-0">
+                    <i class="fas fa-chart-pie text-primary me-2"></i>Ringkasan
+                    Statistik Keseluruhan (XI SA, XI SB, XI SC)
+                  </h6>
+                  <small class="text-muted" id="dashLastUpdate"
+                    >Memuat statistik terbaru...</small
+                  >
+                </div>
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-primary rounded-3"
+                  onclick="muatStatistikDashboard()"
+                >
+                  <i class="fas fa-sync-alt me-1"></i> Perbarui Statistik
+                </button>
+              </div>
+
+              <div class="row g-3 mb-4">
+                <div class="col-sm-6 col-xl-3">
+                  <div class="stat-box">
+                    <div class="stat-icon blue">
+                      <i class="fas fa-users"></i>
                     </div>
-
-                    <!-- HEADER STATISTIK & TOMBOL REFRESH -->
-                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
-                        <div>
-                            <h6 class="fw-bold text-dark mb-0"><i class="fas fa-chart-pie text-primary me-2"></i>Ringkasan Statistik Keseluruhan (XI SA, XI SB, XI SC)</h6>
-                            <small class="text-muted" id="dashLastUpdate">Memuat statistik terbaru...</small>
-                        </div>
-                        <button type="button" class="btn btn-sm btn-outline-primary rounded-3" onclick="muatStatistikDashboard()">
-                            <i class="fas fa-sync-alt me-1"></i> Perbarui Statistik
-                        </button>
+                    <div>
+                      <div class="small text-muted fw-medium">
+                        Total Siswa XI TSM
+                      </div>
+                      <div
+                        class="h4 fw-bold mb-0 text-dark"
+                        id="dashTotalSiswa"
+                      >
+                        ...
+                      </div>
+                      <small class="text-muted" style="font-size: 0.72rem"
+                        >3 Rombel (SA, SB, SC)</small
+                      >
                     </div>
-
-                    <!-- KARTU RINGKASAN GABUNGAN (LAPORAN & PRAKTEK) -->
-                    <div class="row g-3 mb-4">
-                        <div class="col-sm-6 col-xl-3">
-                            <div class="stat-box">
-                                <div class="stat-icon blue"><i class="fas fa-users"></i></div>
-                                <div>
-                                    <div class="small text-muted fw-medium">Total Siswa XI TSM</div>
-                                    <div class="h4 fw-bold mb-0 text-dark" id="dashTotalSiswa">...</div>
-                                    <small class="text-muted" style="font-size: 0.72rem;">3 Rombel (SA, SB, SC)</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-6 col-xl-3">
-                            <div class="stat-box">
-                                <div class="stat-icon green"><i class="fas fa-file-signature"></i></div>
-                                <div>
-                                    <div class="small text-muted fw-medium">Tuntas Laporan (PKSM)</div>
-                                    <div class="h4 fw-bold mb-0 text-success" id="dashTuntasLaporan">...</div>
-                                    <small class="text-muted" style="font-size: 0.72rem;">Rata-rata: <strong id="dashRataLaporan">-</strong></small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-6 col-xl-3">
-                            <div class="stat-box">
-                                <div class="stat-icon teal"><i class="fas fa-tools"></i></div>
-                                <div>
-                                    <div class="small text-muted fw-medium">Tuntas Nilai Praktek</div>
-                                    <div class="h4 fw-bold mb-0 text-success" id="dashTuntasPraktek">...</div>
-                                    <small class="text-muted" style="font-size: 0.72rem;">Rata-rata: <strong id="dashRataPraktek">-</strong></small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-6 col-xl-3">
-                            <div class="stat-box">
-                                <div class="stat-icon red"><i class="fas fa-exclamation-triangle"></i></div>
-                                <div>
-                                    <div class="small text-muted fw-medium">Belum Tuntas</div>
-                                    <div class="h6 fw-bold mb-0 text-danger">
-                                        <span id="dashBelumLaporan">-</span> Laporan &bull; <span id="dashBelumPraktek">-</span> Praktek
-                                    </div>
-                                    <small class="text-muted" style="font-size: 0.72rem;">KKM Minimal: 75.0</small>
-                                </div>
-                            </div>
-                        </div>
+                  </div>
+                </div>
+                <div class="col-sm-6 col-xl-3">
+                  <div class="stat-box">
+                    <div class="stat-icon green">
+                      <i class="fas fa-file-signature"></i>
                     </div>
-
-                    <!-- DETAIL PROGRES PER KELAS: LAPORAN VS PRAKTEK -->
-                    <div class="row g-3 mb-4">
-                        <div class="col-lg-6">
-                            <div class="modern-card p-4 h-100">
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <h6 class="fw-bold text-dark mb-0"><i class="fas fa-file-alt text-primary me-2"></i>Progres Nilai Laporan per Kelas</h6>
-                                    <span class="badge bg-primary-subtle text-primary">PKSM</span>
-                                </div>
-                                <div id="dashProgresKelasContainer" class="d-flex flex-column gap-3">
-                                    <div class="text-center py-4 text-muted small">
-                                        <div class="spinner-border spinner-border-sm text-primary me-2"></div> Menghitung statistik laporan...
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-6">
-                            <div class="modern-card p-4 h-100">
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <h6 class="fw-bold text-dark mb-0"><i class="fas fa-wrench text-success me-2"></i>Progres Nilai Praktek per Kelas</h6>
-                                    <span class="badge bg-success-subtle text-success" id="dashStatusPraktek">Memeriksa...</span>
-                                </div>
-                                <div id="dashProgresPraktekContainer" class="d-flex flex-column gap-3">
-                                    <div class="text-center py-4 text-muted small">
-                                        <div class="spinner-border spinner-border-sm text-success me-2"></div> Menghitung statistik praktek...
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <div>
+                      <div class="small text-muted fw-medium">
+                        Tuntas Laporan (PKSM)
+                      </div>
+                      <div
+                        class="h4 fw-bold mb-0 text-success"
+                        id="dashTuntasLaporan"
+                      >
+                        ...
+                      </div>
+                      <small class="text-muted" style="font-size: 0.72rem"
+                        >Rata-rata:
+                        <strong id="dashRataLaporan">-</strong></small
+                      >
                     </div>
-
-                    <!-- STATISTIK PENGUNJUNG & RINCIAN HALAMAN -->
-                    <div class="modern-card p-4">
-                        <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
-                            <div>
-                                <h6 class="fw-bold text-dark mb-0">
-                                    <i class="fas fa-chart-line text-primary me-2"></i>Statistik Pengunjung & Halaman Dikunjungi
-                                </h6>
-                                <small class="text-muted">Pantauan aktivitas siswa membuka rekap kelas dan membaca modul PDF</small>
-                            </div>
-                            <span class="badge bg-primary-subtle text-primary" id="badgeStatusVisitor">Memuat log...</span>
-                        </div>
-
-                        <!-- 4 KARTU RINGKASAN -->
-                        <div class="row g-3 text-center mb-4">
-                            <div class="col-6 col-md-3">
-                                <div class="p-3 rounded-3 bg-light border">
-                                    <div class="small text-muted fw-medium">Kunjungan Hari Ini</div>
-                                    <div class="h4 fw-bold text-primary mb-0" id="visHariIni">-</div>
-                                </div>
-                            </div>
-                            <div class="col-6 col-md-3">
-                                <div class="p-3 rounded-3 bg-light border">
-                                    <div class="small text-muted fw-medium">Total Kunjungan</div>
-                                    <div class="h4 fw-bold text-dark mb-0" id="visTotal">-</div>
-                                </div>
-                            </div>
-                            <div class="col-6 col-md-3">
-                                <div class="p-3 rounded-3 bg-light border">
-                                    <div class="small text-muted fw-medium">Aktivitas Siswa</div>
-                                    <div class="h4 fw-bold text-success mb-0" id="visSiswa">-</div>
-                                </div>
-                            </div>
-                            <div class="col-6 col-md-3">
-                                <div class="p-3 rounded-3 bg-light border">
-                                    <div class="small text-muted fw-medium">Akses Admin</div>
-                                    <div class="h4 fw-bold text-warning-emphasis mb-0" id="visAdmin">-</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- RINCIAN PER HALAMAN & LOG TERBARU -->
-                        <div class="row g-3">
-                            <div class="col-lg-5">
-                                <div class="border rounded-3 p-3 h-100 bg-white">
-                                    <h6 class="fw-bold small text-uppercase text-secondary mb-3">
-                                        <i class="fas fa-fire text-danger me-1"></i> Halaman / Materi Paling Sering Dibuka
-                                    </h6>
-                                    <div id="listTopPages" class="d-flex flex-column gap-2 small">
-                                        <div class="text-muted">Memuat data halaman...</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-7">
-                                <div class="border rounded-3 p-3 h-100 bg-white">
-                                    <h6 class="fw-bold small text-uppercase text-secondary mb-3">
-                                        <i class="fas fa-history text-primary me-1"></i> 15 Aktivitas Pengunjung Terakhir
-                                    </h6>
-                                    <div class="table-responsive" style="max-height: 290px; overflow-y: auto;">
-                                        <table class="table table-sm table-hover align-middle mb-0" style="font-size: 0.8rem;">
-                                            <thead class="table-light">
-                                                <tr>
-                                                    <th>Waktu</th>
-                                                    <th>Halaman & Keterangan</th>
-                                                    <th>Perangkat</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="tbodyRecentLogs">
-                                                <tr><td colspan="3" class="text-center text-muted py-3">Memuat riwayat...</td></tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                  </div>
+                </div>
+                <div class="col-sm-6 col-xl-3">
+                  <div class="stat-box">
+                    <div class="stat-icon teal">
+                      <i class="fas fa-tools"></i>
                     </div>
+                    <div>
+                      <div class="small text-muted fw-medium">
+                        Tuntas Nilai Praktek
+                      </div>
+                      <div
+                        class="h4 fw-bold mb-0 text-success"
+                        id="dashTuntasPraktek"
+                      >
+                        ...
+                      </div>
+                      <small class="text-muted" style="font-size: 0.72rem"
+                        >Rata-rata:
+                        <strong id="dashRataPraktek">-</strong></small
+                      >
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-6 col-xl-3">
+                  <div class="stat-box">
+                    <div class="stat-icon red">
+                      <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div>
+                      <div class="small text-muted fw-medium">Belum Tuntas</div>
+                      <div class="h6 fw-bold mb-0 text-danger">
+                        <span id="dashBelumLaporan">-</span> Laporan &bull;
+                        <span id="dashBelumPraktek">-</span> Praktek
+                      </div>
+                      <small class="text-muted" style="font-size: 0.72rem"
+                        >KKM Minimal: 75.0</small
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row g-3 mb-4">
+                <div class="col-lg-6">
+                  <div class="modern-card p-4 h-100">
+                    <div
+                      class="d-flex justify-content-between align-items-center mb-3"
+                    >
+                      <h6 class="fw-bold text-dark mb-0">
+                        <i class="fas fa-file-alt text-primary me-2"></i>Progres
+                        Nilai Laporan per Kelas
+                      </h6>
+                      <span class="badge bg-primary-subtle text-primary"
+                        >PKSM</span
+                      >
+                    </div>
+                    <div
+                      id="dashProgresKelasContainer"
+                      class="d-flex flex-column gap-3"
+                    >
+                      <div class="text-center py-4 text-muted small">
+                        <div
+                          class="spinner-border spinner-border-sm text-primary me-2"
+                        ></div>
+                        Menghitung statistik laporan...
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
-                <!-- 2. FORM INPUT NILAI -->
-                <div id="formKonten" class="modern-card overflow-hidden" style="display:none;">
-                    <div class="p-4 border-bottom bg-white d-flex flex-wrap justify-content-between align-items-center gap-2">
-                        <div>
-                            <h5 class="fw-bold text-dark mb-0" id="judulForm"><i class="fas fa-edit text-primary me-2"></i>Input Nilai</h5>
-                            <small class="text-muted" id="subJudulForm">Data yang disimpan akan langsung tersinkron ke spreadsheet kelas.</small>
-                        </div>
-                        <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill" id="badgeSyncForm">
-                            <i class="fas fa-cloud-upload-alt me-1"></i> Auto-Sync Sheet
-                        </span>
+                <div class="col-lg-6">
+                  <div class="modern-card p-4 h-100">
+                    <div
+                      class="d-flex justify-content-between align-items-center mb-3"
+                    >
+                      <h6 class="fw-bold text-dark mb-0">
+                        <i class="fas fa-wrench text-success me-2"></i>Progres
+                        Nilai Praktek per Kelas
+                      </h6>
+                      <span
+                        class="badge bg-success-subtle text-success"
+                        id="dashStatusPraktek"
+                        >Memeriksa...</span
+                      >
                     </div>
-                    <div class="p-4">
-                        <div id="infoSheetPraktek" class="alert alert-info small py-2 px-3 d-none">
-                            <i class="fas fa-eye-slash me-1"></i> <strong>Mode Admin Only:</strong> Nilai praktek ini tersimpan di tab sheet <code>PRAKTEK_XI SA</code> / <code>SB</code> / <code>SC</code> dan <strong>tidak ditampilkan di portal siswa</strong>.
-                        </div>
-                        <div class="row g-3">
-                            <div class="col-md-4">
-                                <label class="form-label fw-semibold small text-secondary">Pilih Kelas</label>
-                                <select id="kelas" class="form-select" onchange="loadStudentNames()">
-                                    <option value="">-- Pilih Kelas --</option>
-                                    <option value="XI SA">XI SA</option>
-                                    <option value="XI SB">XI SB</option>
-                                    <option value="XI SC">XI SC</option>
-                                </select>
-                            </div>
-                            <div class="col-md-8">
-                                <label class="form-label fw-semibold small text-secondary">Nama Lengkap Siswa</label>
-                                <input type="text" id="nama" class="form-control" list="listSiswa" placeholder="Pilih kelas dulu, lalu ketik nama siswa...">
-                                <datalist id="listSiswa"></datalist>
-                            </div>
-                            <div class="col-md-8">
-                                <label class="form-label fw-semibold small text-secondary">Tugas / Job Praktik</label>
-                                <select id="job_index" class="form-select"></select>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label fw-semibold small text-secondary">Skor Nilai (0 - 100)</label>
-                                <input type="number" id="nilai" class="form-control" min="0" max="100" placeholder="Contoh: 85">
-                            </div>
-                        </div>
-                        <div class="mt-4 pt-2">
-                            <button id="btnSimpan" onclick="simpanNilai()" class="btn btn-primary w-100 fw-semibold py-2 rounded-3 shadow-sm">
-                                <i class="fas fa-save me-2"></i> Simpan Nilai ke Google Sheet
-                            </button>
-                        </div>
+                    <div
+                      id="dashProgresPraktekContainer"
+                      class="d-flex flex-column gap-3"
+                    >
+                      <div class="text-center py-4 text-muted small">
+                        <div
+                          class="spinner-border spinner-border-sm text-success me-2"
+                        ></div>
+                        Menghitung statistik praktek...
+                      </div>
                     </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- STATISTIK PENGUNJUNG & RINCIAN HALAMAN -->
+              <div class="modern-card p-4">
+                <div
+                  class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2"
+                >
+                  <div>
+                    <h6 class="fw-bold text-dark mb-0">
+                      <i class="fas fa-chart-line text-primary me-2"></i
+                      >Statistik Pengunjung & Halaman Dikunjungi
+                    </h6>
+                    <small class="text-muted"
+                      >Pantauan aktivitas siswa membuka rekap kelas dan membaca
+                      modul PDF</small
+                    >
+                  </div>
+                  <span
+                    class="badge bg-primary-subtle text-primary"
+                    id="badgeStatusVisitor"
+                    >Memuat log...</span
+                  >
                 </div>
 
-                <!-- 3. TABEL REKAP, EXPORT & EDIT NILAI -->
-                <div id="tabelKonten" style="display:none;">
-                    <div class="print-header-only mb-3 pb-2 border-bottom">
-                        <h4 class="fw-bold mb-0" id="printJudulDokumen">REKAP NILAI PKSM</h4>
-                        <div class="small text-muted" id="printSubJudulDokumen">SMK Muhammadiyah Pakem &bull; Kelas XI</div>
+                <div class="row g-3 text-center mb-4">
+                  <div class="col-6 col-md-3">
+                    <div class="p-3 rounded-3 bg-light border">
+                      <div class="small text-muted fw-medium">
+                        Kunjungan Hari Ini
+                      </div>
+                      <div class="h4 fw-bold text-primary mb-0" id="visHariIni">
+                        -
+                      </div>
                     </div>
-
-                    <div class="row g-3 mb-4 no-print">
-                        <div class="col-md-4">
-                            <div class="stat-box">
-                                <div class="stat-icon blue"><i class="fas fa-users"></i></div>
-                                <div>
-                                    <div class="small text-muted fw-medium">Total Siswa</div>
-                                    <div class="h4 fw-bold mb-0 text-dark" id="statTotal">-</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="stat-box">
-                                <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
-                                <div>
-                                    <div class="small text-muted fw-medium">Tuntas KKM (&ge; 75)</div>
-                                    <div class="h4 fw-bold mb-0 text-success" id="statTuntas">-</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="stat-box">
-                                <div class="stat-icon red"><i class="fas fa-exclamation-circle"></i></div>
-                                <div>
-                                    <div class="small text-muted fw-medium">Belum Tuntas / &lt; 75</div>
-                                    <div class="h4 fw-bold mb-0 text-danger" id="statKurang">-</div>
-                                </div>
-                            </div>
-                        </div>
+                  </div>
+                  <div class="col-6 col-md-3">
+                    <div class="p-3 rounded-3 bg-light border">
+                      <div class="small text-muted fw-medium">
+                        Total Kunjungan
+                      </div>
+                      <div class="h4 fw-bold text-dark mb-0" id="visTotal">
+                        -
+                      </div>
                     </div>
-
-                    <div class="modern-card overflow-hidden">
-                        <div class="p-4 border-bottom bg-white d-flex flex-wrap justify-content-between align-items-center gap-3 no-print">
-                            <div>
-                                <h5 id="judulTabel" class="fw-bold text-dark mb-0"><i class="fas fa-table text-primary me-2"></i>DATA TABEL NILAI</h5>
-                                <small class="text-muted">Klik <b>Edit</b> untuk mengubah nilai via modal/inline, atau unduh rekap ke Excel/PDF.</small>
-                            </div>
-                            <div class="d-flex flex-wrap align-items-center gap-2">
-                                <select id="kelasTabel" class="form-select form-select-sm w-auto fw-bold bg-light" onchange="refreshTabel()">
-                                    <option value="XI SA">XI SA</option>
-                                    <option value="XI SB">XI SB</option>
-                                    <option value="XI SC">XI SC</option>
-                                </select>
-                                <button onclick="exportRekapCSV()" class="btn btn-success btn-sm rounded-3 px-3 fw-semibold" title="Unduh Rekap ke Excel (.csv)">
-                                    <i class="fas fa-file-excel me-1"></i> Export Excel
-                                </button>
-                                <button onclick="cetakRekapPDF()" class="btn btn-outline-secondary btn-sm rounded-3 px-3 fw-semibold" title="Cetak atau Simpan PDF">
-                                    <i class="fas fa-print me-1"></i> Cetak / PDF
-                                </button>
-                                <button onclick="refreshTabel()" class="btn btn-outline-primary btn-sm rounded-3 px-3" title="Muat Ulang Data">
-                                    <i class="fas fa-sync-alt"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="p-4">
-                            <div class="row g-2 mb-3 no-print">
-                                <div class="col-md-5">
-                                    <div class="input-group input-group-sm">
-                                        <span class="input-group-text bg-light border-end-0"><i class="fas fa-search text-muted"></i></span>
-                                        <input type="search" id="cariNamaTabel" class="form-control border-start-0 bg-light" placeholder="Cari nama siswa..." oninput="filterBarisTabel()">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <select id="filterKetuntasan" class="form-select form-select-sm bg-light" onchange="filterBarisTabel()">
-                                        <option value="all">Tampilkan Semua Siswa</option>
-                                        <option value="kurang">Belum Tuntas (&lt; 75 / Kosong)</option>
-                                        <option value="tuntas">Sudah Tuntas Semua Job</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="table-responsive rounded-3 border">
-                                <table class="table table-hover table-modern align-middle mb-0 text-center" style="font-size: 0.86rem;">
-                                    <thead><tr id="headerTable"></tr></thead>
-                                    <tbody id="bodyTable"></tbody>
-                                </table>
-                            </div>
-                        </div>
+                  </div>
+                  <div class="col-6 col-md-3">
+                    <div class="p-3 rounded-3 bg-light border">
+                      <div class="small text-muted fw-medium">
+                        Aktivitas Siswa
+                      </div>
+                      <div class="h4 fw-bold text-success mb-0" id="visSiswa">
+                        -
+                      </div>
                     </div>
+                  </div>
+                  <div class="col-6 col-md-3">
+                    <div class="p-3 rounded-3 bg-light border">
+                      <div class="small text-muted fw-medium">Akses Admin</div>
+                      <div
+                        class="h4 fw-bold text-warning-emphasis mb-0"
+                        id="visAdmin"
+                      >
+                        -
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
+                <div class="row g-3">
+                  <div class="col-lg-5">
+                    <div class="border rounded-3 p-3 h-100 bg-white">
+                      <h6
+                        class="fw-bold small text-uppercase text-secondary mb-3"
+                      >
+                        <i class="fas fa-fire text-danger me-1"></i> Halaman /
+                        Materi Paling Sering Dibuka
+                      </h6>
+                      <div
+                        id="listTopPages"
+                        class="d-flex flex-column gap-2 small"
+                      >
+                        <div class="text-muted">Memuat data halaman...</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-7">
+                    <div class="border rounded-3 p-3 h-100 bg-white">
+                      <h6
+                        class="fw-bold small text-uppercase text-secondary mb-3"
+                      >
+                        <i class="fas fa-history text-primary me-1"></i> 15
+                        Aktivitas Pengunjung Terakhir
+                      </h6>
+                      <div
+                        class="table-responsive"
+                        style="max-height: 290px; overflow-y: auto"
+                      >
+                        <table
+                          class="table table-sm table-hover align-middle mb-0"
+                          style="font-size: 0.8rem"
+                        >
+                          <thead class="table-light">
+                            <tr>
+                              <th>Waktu</th>
+                              <th>Halaman & Keterangan</th>
+                              <th>Perangkat</th>
+                            </tr>
+                          </thead>
+                          <tbody id="tbodyRecentLogs">
+                            <tr>
+                              <td
+                                colspan="3"
+                                class="text-center text-muted py-3"
+                              >
+                                Memuat riwayat...
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
+
+            <!-- 2. FORM INPUT NILAI -->
+            <div
+              id="formKonten"
+              class="modern-card overflow-hidden"
+              style="display: none"
+            >
+              <div
+                class="p-4 border-bottom bg-white d-flex flex-wrap justify-content-between align-items-center gap-2"
+              >
+                <div>
+                  <h5 class="fw-bold text-dark mb-0" id="judulForm">
+                    <i class="fas fa-edit text-primary me-2"></i>Input Nilai
+                  </h5>
+                  <small class="text-muted" id="subJudulForm"
+                    >Data yang disimpan akan langsung tersinkron ke spreadsheet
+                    kelas.</small
+                  >
+                </div>
+                <span
+                  class="badge bg-success-subtle text-success px-3 py-2 rounded-pill"
+                  id="badgeSyncForm"
+                >
+                  <i class="fas fa-cloud-upload-alt me-1"></i> Auto-Sync Sheet
+                </span>
+              </div>
+              <div class="p-4">
+                <div
+                  id="infoSheetPraktek"
+                  class="alert alert-info small py-2 px-3 d-none"
+                >
+                  <i class="fas fa-eye-slash me-1"></i>
+                  <strong>Mode Admin Only:</strong> Nilai praktek ini tersimpan
+                  di tab sheet <code>PRAKTEK_XI SA</code> / <code>SB</code> /
+                  <code>SC</code> dan
+                  <strong>tidak ditampilkan di portal siswa</strong>.
+                </div>
+                <div class="row g-3">
+                  <div class="col-md-4">
+                    <label class="form-label fw-semibold small text-secondary"
+                      >Pilih Kelas</label
+                    >
+                    <select
+                      id="kelas"
+                      class="form-select"
+                      onchange="loadStudentNames()"
+                    >
+                      <option value="">-- Pilih Kelas --</option>
+                      <option value="XI SA">XI SA</option>
+                      <option value="XI SB">XI SB</option>
+                      <option value="XI SC">XI SC</option>
+                    </select>
+                  </div>
+                  <div class="col-md-8">
+                    <label class="form-label fw-semibold small text-secondary"
+                      >Nama Lengkap Siswa</label
+                    >
+                    <input
+                      type="text"
+                      id="nama"
+                      class="form-control"
+                      list="listSiswa"
+                      placeholder="Pilih kelas dulu, lalu ketik nama siswa..."
+                    />
+                    <datalist id="listSiswa"></datalist>
+                  </div>
+                  <div class="col-md-8">
+                    <label class="form-label fw-semibold small text-secondary"
+                      >Tugas / Job Praktik</label
+                    >
+                    <select id="job_index" class="form-select"></select>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label fw-semibold small text-secondary"
+                      >Skor Nilai (0 - 100)</label
+                    >
+                    <input
+                      type="number"
+                      id="nilai"
+                      class="form-control"
+                      min="0"
+                      max="100"
+                      placeholder="Contoh: 85"
+                    />
+                  </div>
+                </div>
+                <div class="mt-4 pt-2">
+                  <button
+                    id="btnSimpan"
+                    onclick="simpanNilai()"
+                    class="btn btn-primary w-100 fw-semibold py-2 rounded-3 shadow-sm"
+                  >
+                    <i class="fas fa-save me-2"></i> Simpan Nilai ke Google
+                    Sheet
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3. TABEL REKAP, EXPORT & EDIT NILAI -->
+            <div id="tabelKonten" style="display: none">
+              <div class="print-header-only mb-3 pb-2 border-bottom">
+                <h4 class="fw-bold mb-0" id="printJudulDokumen">
+                  REKAP NILAI PKSM
+                </h4>
+                <div class="small text-muted" id="printSubJudulDokumen">
+                  SMK Muhammadiyah Pakem &bull; Kelas XI
+                </div>
+              </div>
+
+              <div class="row g-3 mb-4 no-print">
+                <div class="col-md-4">
+                  <div class="stat-box">
+                    <div class="stat-icon blue">
+                      <i class="fas fa-users"></i>
+                    </div>
+                    <div>
+                      <div class="small text-muted fw-medium">Total Siswa</div>
+                      <div class="h4 fw-bold mb-0 text-dark" id="statTotal">
+                        -
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="stat-box">
+                    <div class="stat-icon green">
+                      <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div>
+                      <div class="small text-muted fw-medium">
+                        Tuntas KKM (&ge; 75)
+                      </div>
+                      <div class="h4 fw-bold mb-0 text-success" id="statTuntas">
+                        -
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="stat-box">
+                    <div class="stat-icon red">
+                      <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                    <div>
+                      <div class="small text-muted fw-medium">
+                        Belum Tuntas / &lt; 75
+                      </div>
+                      <div class="h4 fw-bold mb-0 text-danger" id="statKurang">
+                        -
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="modern-card overflow-hidden">
+                <div
+                  class="p-4 border-bottom bg-white d-flex flex-wrap justify-content-between align-items-center gap-3 no-print"
+                >
+                  <div>
+                    <h5 id="judulTabel" class="fw-bold text-dark mb-0">
+                      <i class="fas fa-table text-primary me-2"></i>DATA TABEL
+                      NILAI
+                    </h5>
+                    <small class="text-muted"
+                      >Klik <b>Edit</b> untuk mengubah nilai via modal/inline,
+                      atau unduh rekap ke Excel/PDF.</small
+                    >
+                  </div>
+                  <div class="d-flex flex-wrap align-items-center gap-2">
+                    <select
+                      id="kelasTabel"
+                      class="form-select form-select-sm w-auto fw-bold bg-light"
+                      onchange="refreshTabel()"
+                    >
+                      <option value="XI SA">XI SA</option>
+                      <option value="XI SB">XI SB</option>
+                      <option value="XI SC">XI SC</option>
+                    </select>
+                    <button
+                      onclick="exportRekapCSV()"
+                      class="btn btn-success btn-sm rounded-3 px-3 fw-semibold"
+                      title="Unduh Rekap ke Excel (.csv)"
+                    >
+                      <i class="fas fa-file-excel me-1"></i> Export Excel
+                    </button>
+                    <button
+                      onclick="cetakRekapPDF()"
+                      class="btn btn-outline-secondary btn-sm rounded-3 px-3 fw-semibold"
+                      title="Cetak atau Simpan PDF"
+                    >
+                      <i class="fas fa-print me-1"></i> Cetak / PDF
+                    </button>
+                    <button
+                      onclick="refreshTabel()"
+                      class="btn btn-outline-primary btn-sm rounded-3 px-3"
+                      title="Muat Ulang Data"
+                    >
+                      <i class="fas fa-sync-alt"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="p-4">
+                  <div class="row g-2 mb-3 no-print">
+                    <div class="col-md-5">
+                      <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-light border-end-0"
+                          ><i class="fas fa-search text-muted"></i
+                        ></span>
+                        <input
+                          type="search"
+                          id="cariNamaTabel"
+                          class="form-control border-start-0 bg-light"
+                          placeholder="Cari nama siswa..."
+                          oninput="filterBarisTabel()"
+                        />
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <select
+                        id="filterKetuntasan"
+                        class="form-select form-select-sm bg-light"
+                        onchange="filterBarisTabel()"
+                      >
+                        <option value="all">Tampilkan Semua Siswa</option>
+                        <option value="kurang">
+                          Belum Tuntas (&lt; 75 / Kosong)
+                        </option>
+                        <option value="tuntas">Sudah Tuntas Semua Job</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="table-responsive rounded-3 border">
+                    <table
+                      class="table table-hover table-modern align-middle mb-0 text-center"
+                      style="font-size: 0.86rem"
+                    >
+                      <thead>
+                        <tr id="headerTable"></tr>
+                      </thead>
+                      <tbody id="bodyTable"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </main>
 
         <!-- FOOTER -->
-        <footer class="app-footer small d-flex flex-wrap justify-content-between align-items-center gap-2">
-            <div>
-                &copy; 2026 <strong>TSM SMK Muhammadiyah Pakem</strong>. Dikembangkan oleh <strong>Sigit Prabowo</strong>.
-            </div>
-            <div>
-                <span class="badge bg-light text-secondary border px-2 py-1">Portal PKSM & Praktek v1.4</span>
-            </div>
+        <footer
+          class="app-footer small d-flex flex-wrap justify-content-between align-items-center gap-2"
+        >
+          <div>
+            &copy; 2026 <strong>TSM SMK Muhammadiyah Pakem</strong>.
+            Dikembangkan oleh <strong>Sigit Prabowo</strong>.
+          </div>
+          <div>
+            <span class="badge bg-light text-secondary border px-2 py-1"
+              >Portal PKSM & Praktek v1.5</span
+            >
+          </div>
         </footer>
+      </div>
     </div>
-</div>
 
-<!-- MODAL EDIT SEMUA NILAI SISWA (MOBILE FRIENDLY) -->
-<div class="modal fade" id="modalEditNilaiSiswa" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 18px;">
-            <div class="modal-header border-bottom bg-light">
-                <div>
-                    <span class="badge bg-primary-subtle text-primary mb-1" id="modalEditKelasBadge">XI SA</span>
-                    <h5 class="modal-title fw-bold text-dark mb-0" id="modalEditNamaSiswa">Nama Siswa</h5>
-                    <small class="text-muted" id="modalEditSubJudul">Edit seluruh nilai job praktik</small>
-                </div>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+    <!-- MODAL EDIT SEMUA NILAI SISWA (MOBILE FRIENDLY) -->
+    <div
+      class="modal fade"
+      id="modalEditNilaiSiswa"
+      tabindex="-1"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div
+          class="modal-content border-0 shadow-lg"
+          style="border-radius: 18px"
+        >
+          <div class="modal-header border-bottom bg-light">
+            <div>
+              <span
+                class="badge bg-primary-subtle text-primary mb-1"
+                id="modalEditKelasBadge"
+                >XI SA</span
+              >
+              <h5
+                class="modal-title fw-bold text-dark mb-0"
+                id="modalEditNamaSiswa"
+              >
+                Nama Siswa
+              </h5>
+              <small class="text-muted" id="modalEditSubJudul"
+                >Edit seluruh nilai job praktik</small
+              >
             </div>
-            <div class="modal-body p-3 p-sm-4">
-                <div id="modalEditJobsList" class="d-flex flex-column gap-2"></div>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Tutup"
+            ></button>
+          </div>
+          <div class="modal-body p-3 p-sm-4">
+            <div id="modalEditJobsList" class="d-flex flex-column gap-2"></div>
 
-                <div class="mt-3 p-3 rounded-3 bg-light border d-flex justify-content-between align-items-center">
-                    <div>
-                        <div class="small fw-semibold text-secondary">Rata-Rata Nilai Akhir (NA)</div>
-                        <small class="text-muted" style="font-size: 0.72rem;">KKM Minimal: 75</small>
-                    </div>
-                    <div class="h3 fw-bold mb-0" id="modalEditPreviewNA">0</div>
+            <div
+              class="mt-3 p-3 rounded-3 bg-light border d-flex justify-content-between align-items-center"
+            >
+              <div>
+                <div class="small fw-semibold text-secondary">
+                  Rata-Rata Nilai Akhir (NA)
                 </div>
+                <small class="text-muted" style="font-size: 0.72rem"
+                  >KKM Minimal: 75</small
+                >
+              </div>
+              <div class="h3 fw-bold mb-0" id="modalEditPreviewNA">0</div>
             </div>
-            <div class="modal-footer border-top bg-white">
-                <button type="button" class="btn btn-outline-secondary rounded-3 px-3" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-1"></i> Batal
-                </button>
-                <button type="button" class="btn btn-success fw-semibold rounded-3 px-4" id="btnSimpanModalNilai" onclick="simpanDariModal()">
-                    <i class="fas fa-save me-1"></i> Simpan Semua Perubahan
-                </button>
-            </div>
+          </div>
+          <div class="modal-footer border-top bg-white">
+            <button
+              type="button"
+              class="btn btn-outline-secondary rounded-3 px-3"
+              data-bs-dismiss="modal"
+            >
+              <i class="fas fa-times me-1"></i> Batal
+            </button>
+            <button
+              type="button"
+              class="btn btn-success fw-semibold rounded-3 px-4"
+              id="btnSimpanModalNilai"
+              onclick="simpanDariModal()"
+            >
+              <i class="fas fa-save me-1"></i> Simpan Semua Perubahan
+            </button>
+          </div>
         </div>
+      </div>
     </div>
-</div>
 
-<!-- MODAL BANTUAN -->
-<div class="modal fade" id="modalBantuan" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
-            <div class="modal-header border-bottom">
-                <h5 class="modal-title fw-bold text-dark"><i class="fas fa-circle-question text-primary me-2"></i> Panduan Penggunaan Panel Admin</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body p-4">
-                <h6 class="fw-bold text-primary mb-2">1. Input Nilai Laporan & Nilai Praktek</h6>
-                <ul class="text-muted small">
-                    <li><b>Input Nilai Laporan (PKSM):</b> Data masuk ke sheet <code>XI SA</code>, <code>XI SB</code>, <code>XI SC</code> dan langsung tampil di portal siswa.</li>
-                    <li><b>Input Nilai Praktek:</b> Data masuk ke sheet <code>PRAKTEK_XI SA</code>, <code>PRAKTEK_XI SB</code>, <code>PRAKTEK_XI SC</code> (khusus arsip admin).</li>
-                </ul>
-                <hr>
-                <h6 class="fw-bold text-primary mb-2">2. Export Excel & Cetak Rekap</h6>
-                <ul class="text-muted small mb-0">
-                    <li>Buka menu <b>Rekap Nilai Laporan</b> atau <b>Rekap Nilai Praktek</b>, pilih kelas, lalu klik <b>Export Excel</b> untuk mengunduh file <code>.csv</code> yang siap dibuka di Microsoft Excel.</li>
-                    <li>Klik <b>Cetak / PDF</b> untuk mencetak daftar nilai atau menyimpannya sebagai PDF.</li>
-                </ul>
-            </div>
-            <div class="modal-footer border-top">
-                <button type="button" class="btn btn-secondary btn-sm px-4" data-bs-dismiss="modal">Tutup</button>
-            </div>
+    <!-- MODAL BANTUAN -->
+    <div class="modal fade" id="modalBantuan" tabindex="-1" aria-hidden="true">
+      <div
+        class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered"
+      >
+        <div
+          class="modal-content border-0 shadow-lg"
+          style="border-radius: 16px"
+        >
+          <div class="modal-header border-bottom">
+            <h5 class="modal-title fw-bold text-dark">
+              <i class="fas fa-circle-question text-primary me-2"></i> Panduan
+              Penggunaan Panel Admin
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body p-4">
+            <h6 class="fw-bold text-primary mb-2">
+              1. Input Nilai Laporan & Nilai Praktek
+            </h6>
+            <ul class="text-muted small">
+              <li>
+                <b>Input Nilai Laporan (PKSM):</b> Data masuk ke sheet
+                <code>XI SA</code>, <code>XI SB</code>, <code>XI SC</code> dan
+                langsung tampil di portal siswa.
+              </li>
+              <li>
+                <b>Input Nilai Praktek:</b> Data masuk ke sheet
+                <code>PRAKTEK_XI SA</code>, <code>PRAKTEK_XI SB</code>,
+                <code>PRAKTEK_XI SC</code> (khusus arsip admin).
+              </li>
+            </ul>
+            <hr />
+            <h6 class="fw-bold text-primary mb-2">
+              2. Export Excel & Cetak Rekap
+            </h6>
+            <ul class="text-muted small mb-0">
+              <li>
+                Buka menu <b>Rekap Nilai Laporan</b> atau
+                <b>Rekap Nilai Praktek</b>, pilih kelas, lalu klik
+                <b>Export Excel</b> untuk mengunduh file <code>.csv</code> yang
+                siap dibuka di Microsoft Excel.
+              </li>
+              <li>
+                Klik <b>Cetak / PDF</b> untuk mencetak daftar nilai atau
+                menyimpannya sebagai PDF.
+              </li>
+            </ul>
+          </div>
+          <div class="modal-footer border-top">
+            <button
+              type="button"
+              class="btn btn-secondary btn-sm px-4"
+              data-bs-dismiss="modal"
+            >
+              Tutup
+            </button>
+          </div>
         </div>
+      </div>
     </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwswDuj1YQHP4C6fXfdEa1G1rqW6hvbx6ZCnnfsRJsHC1fb5byCpHtMmU0vIZBgoYqaPg/exec";
-    const AUTH_URL = "https://script.google.com/macros/s/AKfycbxsVNyON7D61zX2jKKZ4gnEbsicM8b_ViaO4cEY0rnS-UkIaTV2EUplyy1wahtiHE6X2w/exec";
-
-    let currentMapel = '';
-    let editModeMapel = '';
-    let dataGabungan = [];
-    let daftarHeaderJob = [];
-    let tempNames = null, tempTable = null;
-    let activeModalSiswaId = null;
-    let activeModalScores = [];
-    let modalEditInstance = null;
-
-    if (sessionStorage.getItem("admin_tsm_logged_in") === "true") {
-        document.getElementById('loginWrapper').style.display = 'none';
-        document.getElementById('adminPanel').style.display = 'block';
-        muatStatistikDashboard();
-    }
-
-    function toggleSidebar() {
-        if (window.innerWidth <= 768) {
-            document.body.classList.toggle('sidebar-mobile-open');
-        } else {
-            document.body.classList.toggle('sidebar-collapsed');
-        }
-    }
-
-    function tutupSidebarMobile() {
-        document.body.classList.remove('sidebar-mobile-open');
-    }
-
-    function getNamaSheet(kelas, mode) {
-        if (mode === 'PRAKTEK') return `PRAKTEK_${kelas}`;
-        return kelas;
-    }
-
-    async function handleLogin(e) {
-        if (e) e.preventDefault();
-        const u = document.getElementById('user').value.trim();
-        const p = document.getElementById('pass').value.trim();
-        const btn = document.getElementById('btnLogin');
-
-        if (!u || !p) return alert("Username dan Password harus diisi!");
-
-        const originalText = btn.innerHTML;
-        btn.disabled = true;
-        btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Memverifikasi...`;
-
-        try {
-            const resp = await fetch(`${AUTH_URL}?user=${encodeURIComponent(u)}&pass=${encodeURIComponent(p)}`);
-            const hasil = await resp.json();
-
-            if (hasil.status === "success") {
-                sessionStorage.setItem("admin_tsm_logged_in", "true");
-                document.getElementById('loginWrapper').style.display = 'none';
-                document.getElementById('adminPanel').style.display = 'block';
-                muatStatistikDashboard();
-            } else {
-                alert("Gagal: " + hasil.message);
-                btn.disabled = false;
-                btn.innerHTML = originalText;
-            }
-        } catch (err) {
-            alert("Terjadi kesalahan koneksi ke server login.");
-            btn.disabled = false;
-            btn.innerHTML = originalText;
-        }
-    }
-
-    function handleLogout() {
-        sessionStorage.removeItem("admin_tsm_logged_in");
-        location.reload();
-    }
-
-    document.getElementById('togglePassword').addEventListener('click', function () {
-        const passwordField = document.getElementById('pass');
-        const eyeIcon = document.getElementById('eyeIcon');
-        const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
-        passwordField.setAttribute('type', type);
-        eyeIcon.classList.toggle('fa-eye');
-        eyeIcon.classList.toggle('fa-eye-slash');
-    });
-
-    /* ======================================================
-       NAVIGASI MENU DASHBOARD & STATISTIK NILAI + PENGUNJUNG
-    ====================================================== */
-    function tampilkanDashboard(el) {
-        tutupSidebarMobile();
-        document.getElementById('dashboardView').style.display = 'block';
-        document.getElementById('formKonten').style.display = 'none';
-        document.getElementById('tabelKonten').style.display = 'none';
-        document.getElementById('nav-status').innerText = 'Dashboard Admin';
-
-        document.querySelectorAll('.list-group-item').forEach(i => i.classList.remove('active-menu'));
-        if (el) el.classList.add('active-menu');
-
-        muatStatistikDashboard();
-    }
-
-    function bukaKelasLangsung(mode, kelas) {
-        const menuEl = mode === 'PRAKTEK'
-            ? document.getElementById('menuTabelPraktek')
-            : document.getElementById('menuTabelPKSM');
-        document.getElementById('kelasTabel').value = kelas;
-        pilihModeEdit(mode, menuEl);
-    }
-
-    function bacaSheetJsonp(sheetName) {
-        return new Promise((resolve) => {
-            const cbName = "cbDash_" + sheetName.replace(/\s+/g, "_") + "_" + Date.now() + "_" + Math.floor(Math.random() * 1000);
-            const timer = setTimeout(() => {
-                delete window[cbName];
-                const el = document.getElementById(cbName);
-                if (el) el.remove();
-                resolve([]);
-            }, 9000);
-
-            window[cbName] = function(data) {
-                clearTimeout(timer);
-                delete window[cbName];
-                const el = document.getElementById(cbName);
-                if (el) el.remove();
-                resolve(Array.isArray(data) ? data : []);
-            };
-
-            const s = document.createElement('script');
-            s.id = cbName;
-            s.src = `${SCRIPT_URL}?action=read&sheet=${encodeURIComponent(sheetName)}&callback=${cbName}&t=${Date.now()}`;
-            s.onerror = () => {
-                clearTimeout(timer);
-                delete window[cbName];
-                s.remove();
-                resolve([]);
-            };
-            document.head.appendChild(s);
-        });
-    }
-
-    function hitungMetrikKumpulanKelas(daftarKelas, hasilTabelKelas, mode) {
-        let totalSiswa = 0;
-        let totalTuntas = 0;
-        let sumNilai = 0;
-        let countNilai = 0;
-        let sheetSiap = 0;
-
-        const htmlList = daftarKelas.map((kelas, idx) => {
-            const table = hasilTabelKelas[idx];
-            if (!table || table.length < 2) {
-                return `
-                    <div class="p-3 rounded-3 border bg-light d-flex justify-content-between align-items-center">
-                        <div>
-                            <div class="fw-bold text-dark">${kelas}</div>
-                            <small class="text-muted">${mode === 'PRAKTEK' ? `Tab PRAKTEK_${kelas} belum dibuat / kosong` : 'Belum ada data terbaca'}</small>
-                        </div>
-                        <button class="btn btn-sm btn-outline-primary rounded-3" onclick="bukaKelasLangsung('${mode}', '${kelas}')">Buka</button>
-                    </div>
-                `;
-            }
-
-            sheetSiap++;
-            const headers = table[0].map(h => String(h || "").trim());
-            const rows = table.slice(1).filter(r => String(r[0] || "").trim() !== "");
-            const idxAkhir = headers.findIndex(h => /nilai\s*akhir|akhir|\bna\b/i.test(h));
-            const jobIndices = [];
-            headers.forEach((h, i) => {
-                if (i > 0 && i !== idxAkhir && h !== "") jobIndices.push(i);
-            });
-
-            let tuntasKelas = 0;
-            rows.forEach(r => {
-                const scores = jobIndices.map(ci => {
-                    const num = parseFloat(String(r[ci] ?? "").trim());
-                    return isNaN(num) ? 0 : num;
-                });
-                scores.forEach(v => {
-                    sumNilai += v;
-                    countNilai++;
-                });
-                if (scores.length > 0 && scores.every(v => v >= 75)) {
-                    tuntasKelas++;
-                }
-            });
-
-            const totalKelas = rows.length;
-            const persen = totalKelas > 0 ? Math.round((tuntasKelas / totalKelas) * 100) : 0;
-            totalSiswa += totalKelas;
-            totalTuntas += tuntasKelas;
-
-            const barColor = persen >= 80 ? 'bg-success' : (persen >= 50 ? (mode === 'PRAKTEK' ? 'bg-info' : 'bg-primary') : 'bg-warning');
-
-            return `
-                <div class="p-3 rounded-3 border bg-white">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <div>
-                            <span class="fw-bold text-dark me-2">${kelas}</span>
-                            <span class="badge bg-light text-secondary border">${tuntasKelas}/${totalKelas} Tuntas</span>
-                        </div>
-                        <div class="d-flex align-items-center gap-2">
-                            <span class="fw-bold small ${persen >= 75 ? 'text-success' : 'text-primary'}">${persen}%</span>
-                            <button type="button" class="btn btn-sm btn-light border py-0 px-2" onclick="bukaKelasLangsung('${mode}', '${kelas}')" title="Lihat Detail ${kelas}">
-                                <i class="fas fa-arrow-right small"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="progress" style="height: 8px; border-radius: 6px;">
-                        <div class="progress-bar ${barColor}" role="progressbar" style="width: ${persen}%;"></div>
-                    </div>
-                </div>
-            `;
-        }).join('');
-
-        return {
-            totalSiswa,
-            totalTuntas,
-            totalBelum: totalSiswa - totalTuntas,
-            rataRata: countNilai > 0 ? (sumNilai / countNilai).toFixed(1) : "0.0",
-            sheetSiap,
-            htmlList
-        };
-    }
-
-    async function muatStatistikDashboard() {
-        // Panggil statistik pengunjung bersamaan dengan statistik nilai
-        muatStatistikPengunjung();
-
-        const daftarKelas = ["XI SA", "XI SB", "XI SC"];
-        const [hasilLaporan, hasilPraktek] = await Promise.all([
-            Promise.all(daftarKelas.map(k => bacaSheetJsonp(k))),
-            Promise.all(daftarKelas.map(k => bacaSheetJsonp(`PRAKTEK_${k}`)))
-        ]);
-
-        const metrikLaporan = hitungMetrikKumpulanKelas(daftarKelas, hasilLaporan, 'PKSM');
-        const metrikPraktek = hitungMetrikKumpulanKelas(daftarKelas, hasilPraktek, 'PRAKTEK');
-
-        // Isi Kartu Ringkasan Atas
-        document.getElementById('dashTotalSiswa').innerText = metrikLaporan.totalSiswa || metrikPraktek.totalSiswa;
-        document.getElementById('dashTuntasLaporan').innerText = `${metrikLaporan.totalTuntas} / ${metrikLaporan.totalSiswa}`;
-        document.getElementById('dashRataLaporan').innerText = metrikLaporan.rataRata;
-        document.getElementById('dashBelumLaporan').innerText = metrikLaporan.totalBelum;
-
-        document.getElementById('dashTuntasPraktek').innerText = metrikPraktek.sheetSiap > 0
-            ? `${metrikPraktek.totalTuntas} / ${metrikPraktek.totalSiswa}`
-            : "-";
-        document.getElementById('dashRataPraktek').innerText = metrikPraktek.sheetSiap > 0 ? metrikPraktek.rataRata : "-";
-        document.getElementById('dashBelumPraktek').innerText = metrikPraktek.sheetSiap > 0 ? metrikPraktek.totalBelum : "-";
-
-        // Isi Detail Progres per Kelas (Kiri: Laporan, Kanan: Praktek)
-        document.getElementById('dashProgresKelasContainer').innerHTML = metrikLaporan.htmlList;
-        document.getElementById('dashProgresPraktekContainer').innerHTML = metrikPraktek.htmlList;
-
-        const statusPraktekEl = document.getElementById('dashStatusPraktek');
-        if (metrikPraktek.sheetSiap > 0) {
-            statusPraktekEl.className = "badge bg-success-subtle text-success";
-            statusPraktekEl.innerText = `${metrikPraktek.sheetSiap}/3 Sheet Aktif`;
-        } else {
-            statusPraktekEl.className = "badge bg-warning-subtle text-warning-emphasis";
-            statusPraktekEl.innerText = "Belum Ada Sheet";
-        }
-
-        const now = new Date();
-        document.getElementById('dashLastUpdate').innerText = `Terakhir diperbarui: ${now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}`;
-    }
-
-    function muatStatistikPengunjung() {
-        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ? "HP / Mobile" : "Laptop / PC";
-        const sudahTercatat = sessionStorage.getItem("pksm_admin_visited");
-        const aksi = sudahTercatat ? "get_stats" : "visit";
-        const badgeEl = document.getElementById("badgeStatusVisitor");
-        if (badgeEl) badgeEl.innerText = "Menyinkronkan...";
-
-        window.onVisitorAdminResp = function(res) {
-            if (!res || res.status !== "success") {
-                if (badgeEl) badgeEl.innerText = "Gagal Memuat";
-                return;
-            }
-            sessionStorage.setItem("pksm_admin_visited", "1");
-            if (badgeEl) badgeEl.innerText = "Real-Time Log";
-
-            document.getElementById("visHariIni").innerText = res.hari_ini ?? 0;
-            document.getElementById("visTotal").innerText = res.total ?? 0;
-            document.getElementById("visSiswa").innerText = res.siswa ?? 0;
-            document.getElementById("visAdmin").innerText = res.admin ?? 0;
-
-            // Render Daftar Halaman Paling Sering Dikunjungi
-            const topContainer = document.getElementById("listTopPages");
-            if (res.top_pages && res.top_pages.length > 0) {
-                topContainer.innerHTML = res.top_pages.map(item => `
-                    <div class="d-flex justify-content-between align-items-center p-2 rounded-2 bg-light border">
-                        <span class="fw-semibold text-dark text-truncate me-2" title="${item.halaman}">${item.halaman}</span>
-                        <span class="badge bg-primary rounded-pill">${item.jumlah}x</span>
-                    </div>
-                `).join('');
-            } else {
-                topContainer.innerHTML = `<div class="text-muted">Belum ada catatan halaman.</div>`;
-            }
-
-            // Render Tabel 15 Aktivitas Terakhir beserta Keterangan
-            const tbodyLog = document.getElementById("tbodyRecentLogs");
-            if (res.recent_logs && res.recent_logs.length > 0) {
-                tbodyLog.innerHTML = res.recent_logs.map(log => {
-                    const isAdm = String(log.halaman || "").toLowerCase().includes("admin");
-                    const badgeCls = isAdm ? "bg-warning-subtle text-warning-emphasis" : "bg-success-subtle text-success";
-                    const ketHtml = (log.ket && log.ket !== "-")
-                        ? `<div class="text-muted mt-1" style="font-size: 0.72rem;">${log.ket}</div>`
-                        : "";
-                    return `
-                        <tr>
-                            <td class="text-muted text-nowrap">${log.waktu}</td>
-                            <td>
-                                <span class="badge ${badgeCls} fw-semibold">${log.halaman}</span>
-                                ${ketHtml}
-                            </td>
-                            <td class="text-muted text-nowrap">${log.perangkat}</td>
-                        </tr>
-                    `;
-                }).join('');
-            } else {
-                tbodyLog.innerHTML = `<tr><td colspan="3" class="text-center text-muted py-3">Belum ada riwayat aktivitas.</td></tr>`;
-            }
-        };
-
-        const old = document.getElementById("scriptVisitorAdmin");
-        if (old) old.remove();
-
-        const s = document.createElement("script");
-        s.id = "scriptVisitorAdmin";
-        s.src = `${SCRIPT_URL}?action=${aksi}&page=Dashboard%20Admin&device=${encodeURIComponent(isMobile)}&info=${encodeURIComponent("Membuka & memantau dashboard admin")}&callback=onVisitorAdminResp&t=${Date.now()}`;
-        document.head.appendChild(s);
-    }
-
-    /* ======================================================
-       BAGIAN INPUT NILAI (LAPORAN PKSM & PRAKTEK ADMIN)
-    ====================================================== */
-    function pilihMapel(m, el) {
-        currentMapel = m;
-        tutupSidebarMobile();
-        document.getElementById('dashboardView').style.display = 'none';
-        document.getElementById('tabelKonten').style.display = 'none';
-        document.getElementById('formKonten').style.display = 'block';
-
-        const isPraktek = (m === 'PRAKTEK');
-        document.getElementById('judulForm').innerHTML = isPraktek
-            ? `<i class="fas fa-tools text-success me-2"></i>Input Nilai Praktek (Admin Only)`
-            : `<i class="fas fa-edit text-primary me-2"></i>Input Nilai Laporan (PKSM)`;
-        document.getElementById('nav-status').innerText = isPraktek ? `Input Nilai / Praktek` : `Input Nilai / Laporan PKSM`;
-
-        const infoBox = document.getElementById('infoSheetPraktek');
-        if (infoBox) infoBox.classList.toggle('d-none', !isPraktek);
-
-        document.querySelectorAll('.list-group-item').forEach(i => i.classList.remove('active-menu'));
-        if (el) el.classList.add('active-menu');
-
-        updateJobSelect('job_index', m);
-        loadStudentNames();
-    }
-
-    function updateJobSelect(id, m) {
-        const js = document.getElementById(id);
-const j = {
-            'PKSM': [
-                "Sistem Pengapian",
-                "Sistem Starter",
-                "Sistem Pengisian",
-                "Sistem Penerangan"
-            ],
-            'PRAKTEK': [
-                "Sistem Pengapian",
-                "Sistem Starter",
-                "Sistem Pengisian",
-                "Sistem Penerangan"
-            ]
-        };
-        js.innerHTML = '<option value="">-- Pilih Job / Materi Praktik --</option>';
-        (j[m] || []).forEach((item, i) => js.innerHTML += `<option value="${i + 1}">Job ${i + 1} - ${item}</option>`);
-    }
-
-    function loadStudentNames() {
-        const k = document.getElementById('kelas').value;
-        if (!k) return;
-        fetch(`${SCRIPT_URL}?sheet=${encodeURIComponent(k)}`).then(r => r.json()).then(d => {
-            const dl = document.getElementById('listSiswa');
-            dl.innerHTML = "";
-            d.forEach(item => {
-                const nama = Array.isArray(item) ? item[0] : item;
-                if (nama) dl.innerHTML += `<option value="${String(nama).trim()}">`;
-            });
-        });
-    }
-
-    function simpanNilai() {
-        const btn = document.getElementById('btnSimpan');
-        const k = document.getElementById('kelas').value;
-        const n = document.getElementById('nama').value;
-        const j = document.getElementById('job_index').value;
-        const ni = document.getElementById('nilai').value;
-        if (!k || !n || !j || !ni) return alert("Mohon lengkapi semua data!");
-
-        const targetSheet = getNamaSheet(k, currentMapel);
-        btn.disabled = true;
-        btn.innerText = "Mengirim...";
-        sendUpdate(targetSheet, n, j, ni, "handleUpdateResponse");
-    }
-
-    function sendUpdate(sheetTarget, n, j, ni, cb) {
-        const url = `${SCRIPT_URL}?action=update&sheet=${encodeURIComponent(sheetTarget)}&nama=${encodeURIComponent(n)}&job_index=${j}&nilai=${ni}&callback=${cb}`;
-        const s = document.createElement('script');
-        s.src = url;
-        document.head.appendChild(s);
-    }
-
-    window.handleUpdateResponse = function (r) {
-        document.getElementById('btnSimpan').disabled = false;
-        document.getElementById('btnSimpan').innerHTML = `<i class="fas fa-save me-2"></i> Simpan Nilai ke Google Sheet`;
-        if (r && r.status === "success") {
-            alert("✅ Nilai berhasil disimpan!");
-            document.getElementById('nilai').value = "";
-        } else {
-            alert("⚠️ Gagal menyimpan: " + (r?.message || "Pastikan tab sheet sudah dibuat di Google Spreadsheet."));
-        }
-    };
-
-    /* ======================================================
-       BAGIAN TABEL REKAP, EXPORT EXCEL/PDF & EDIT NILAI
-    ====================================================== */
-    function exportRekapCSV() {
-        if (!dataGabungan || dataGabungan.length === 0) {
-            return alert("Tidak ada data siswa untuk di-export!");
-        }
-
-        const kelas = document.getElementById('kelasTabel').value;
-        const jenisLabel = editModeMapel === 'PRAKTEK' ? 'Nilai_Praktek' : 'Nilai_Laporan_PKSM';
-
-        const headers = ['No', 'Nama Siswa', ...daftarHeaderJob, 'Nilai Akhir (NA)', 'Status KKM (75)'];
-        const rows = dataGabungan.map((s, idx) => {
-            const tuntas = s.scores.length > 0 && s.scores.every(v => v >= 75) ? 'TUNTAS' : 'BELUM TUNTAS';
-            const namaAman = `"${s.nama.replace(/"/g, '""')}"`;
-            return [idx + 1, namaAman, ...s.scores, s.na, tuntas].join(';');
-        });
-
-        const csvContent = "\uFEFF" + [headers.join(';'), ...rows].join('\r\n');
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-
-        const link = document.createElement('a');
-        const tgl = new Date().toISOString().slice(0, 10);
-        link.href = url;
-        link.download = `Rekap_${jenisLabel}_${kelas.replace(/\s+/g, '_')}_${tgl}.csv`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-    }
-
-    function cetakRekapPDF() {
-        if (!dataGabungan || dataGabungan.length === 0) {
-            return alert("Tidak ada data siswa untuk dicetak!");
-        }
-        const kelas = document.getElementById('kelasTabel').value;
-        const jenisLabel = editModeMapel === 'PRAKTEK' ? 'REKAP NILAI PRAKTEK BENGKEL' : 'REKAP NILAI LAPORAN PKSM';
-        document.getElementById('printJudulDokumen').innerText = `${jenisLabel} - KELAS ${kelas}`;
-        document.getElementById('printSubJudulDokumen').innerText = `TSM SMK Muhammadiyah Pakem • Dicetak pada ${new Date().toLocaleDateString('id-ID')}`;
-        window.print();
-    }
-
-    function sendUpdatePromise(sheetTarget, n, j, ni) {
-        return new Promise((resolve, reject) => {
-            const cbName = "cbUpd_" + Date.now() + "_" + Math.floor(Math.random() * 10000);
-            const timer = setTimeout(() => {
-                delete window[cbName];
-                const el = document.getElementById(cbName);
-                if (el) el.remove();
-                reject(new Error("Timeout saat menyimpan ke Google Sheet"));
-            }, 12000);
-
-            window[cbName] = function(r) {
-                clearTimeout(timer);
-                delete window[cbName];
-                const el = document.getElementById(cbName);
-                if (el) el.remove();
-                resolve(r);
-            };
-
-            const url = `${SCRIPT_URL}?action=update&sheet=${encodeURIComponent(sheetTarget)}&nama=${encodeURIComponent(n)}&job_index=${j}&nilai=${ni}&callback=${cbName}&t=${Date.now()}`;
-            const s = document.createElement('script');
-            s.id = cbName;
-            s.src = url;
-            s.onerror = () => {
-                clearTimeout(timer);
-                delete window[cbName];
-                s.remove();
-                reject(new Error("Gagal menghubungi server"));
-            };
-            document.head.appendChild(s);
-        });
-    }
-
-    function pilihModeEdit(m, el) {
-        editModeMapel = m;
-        tutupSidebarMobile();
-        document.getElementById('dashboardView').style.display = 'none';
-        document.getElementById('formKonten').style.display = 'none';
-        document.getElementById('tabelKonten').style.display = 'block';
-
-        const isPraktek = (m === 'PRAKTEK');
-        document.getElementById('judulTabel').innerHTML = isPraktek
-            ? `<i class="fas fa-clipboard-list text-success me-2"></i>Rekap & Edit Nilai Praktek (Admin)`
-            : `<i class="fas fa-table text-primary me-2"></i>Rekap & Edit Nilai Laporan (PKSM)`;
-        document.getElementById('nav-status').innerText = isPraktek ? `Rekap Nilai / Praktek` : `Rekap Nilai / Laporan PKSM`;
-
-        document.querySelectorAll('.list-group-item').forEach(i => i.classList.remove('active-menu'));
-        if (el) el.classList.add('active-menu');
-        refreshTabel();
-    }
-
-    function refreshTabel() {
-        const k = document.getElementById('kelasTabel').value;
-        const targetSheet = getNamaSheet(k, editModeMapel);
-        const b = document.getElementById('bodyTable');
-        tempNames = null;
-        tempTable = null;
-        b.innerHTML = `<tr><td colspan="10" class="py-4 text-muted"><div class="spinner-border spinner-border-sm text-primary me-2"></div> Memuat data sheet <strong>${targetSheet}</strong>...</td></tr>`;
-
-        ["adminGasNames", "adminGasTable"].forEach(id => { const old = document.getElementById(id); if (old) old.remove(); });
-
-        const s1 = document.createElement('script');
-        s1.id = "adminGasNames";
-        s1.src = `${SCRIPT_URL}?sheet=${encodeURIComponent(targetSheet)}&callback=adminOnNames&t=${Date.now()}`;
-        document.head.appendChild(s1);
-
-        const s2 = document.createElement('script');
-        s2.id = "adminGasTable";
-        s2.src = `${SCRIPT_URL}?action=read&sheet=${encodeURIComponent(targetSheet)}&callback=adminOnTable&t=${Date.now()}`;
-        document.head.appendChild(s2);
-    }
-
-    window.adminOnNames = function(names) {
-        tempNames = Array.isArray(names) ? names : [];
-        gabungDataAdmin();
-    };
-
-    window.adminOnTable = function(table) {
-        tempTable = Array.isArray(table) ? table : [];
-        gabungDataAdmin();
-    };
-
-    function gabungDataAdmin() {
-        if (tempNames === null || tempTable === null) return;
-
-        const k = document.getElementById('kelasTabel').value;
-        const targetSheet = getNamaSheet(k, editModeMapel);
-
-        if (tempTable.length < 2) {
-            dataGabungan = [];
-            perbaruiStatistikAdmin();
-            document.getElementById('bodyTable').innerHTML = `
-                <tr>
-                    <td colspan="10" class="py-4 text-muted">
-                        Data di sheet <strong>${targetSheet}</strong> belum ditemukan atau masih kosong.<br>
-                        <small>Pastikan tab <code>${targetSheet}</code> sudah dibuat di Google Spreadsheet.</small>
-                    </td>
-                </tr>
-            `;
-            return;
-        }
-
-        const headers = tempTable[0].map(h => String(h || "").trim());
-        const rows = tempTable.slice(1);
-        const idxAkhir = headers.findIndex(h => /nilai\s*akhir|akhir|\bna\b/i.test(h));
-
-        const jobCols = [];
-        headers.forEach((h, i) => {
-            if (i > 0 && i !== idxAkhir && h !== "") jobCols.push({ i, judul: h });
-        });
-        daftarHeaderJob = jobCols.map(c => c.judul);
-
-        document.getElementById('headerTable').innerHTML = `
-            <th width="45">No</th>
-            <th class="text-start">Nama Siswa</th>
-            ${daftarHeaderJob.map(j => `<th>${j}</th>`).join('')}
-            <th>NA</th>
-            <th width="165" class="col-aksi">Aksi</th>
-        `;
-
-        dataGabungan = tempNames.map((namaRaw, idx) => {
-            const nama = String(Array.isArray(namaRaw) ? namaRaw[0] : (namaRaw || "")).trim();
-            const r = rows[idx] || [];
-
-            const scores = jobCols.map(c => {
-                const raw = String(r[c.i] ?? "").trim();
-                const num = parseFloat(raw);
-                return (raw === "" || isNaN(num)) ? 0 : num;
-            });
-
-            let na = hitungNA(scores);
-            if (idxAkhir >= 0 && r[idxAkhir] !== "" && r[idxAkhir] != null) {
-                const n = parseFloat(r[idxAkhir]);
-                if (!isNaN(n)) na = Number(n.toFixed(1));
-            }
-
-            return {
-                id: idx,
-                nama,
-                scores,
-                originalScores: [...scores],
-                na,
-                editing: false,
-                saving: false
-            };
-        }).filter(s => s.nama !== "");
-
-        perbaruiStatistikAdmin();
-        filterBarisTabel();
-    }
-
-    function hitungNA(scores) {
-        if (!scores || !scores.length) return 0;
-        const total = scores.reduce((a, b) => a + (Number(b) || 0), 0);
-        return Number((total / scores.length).toFixed(1));
-    }
-
-    function perbaruiStatistikAdmin() {
-        document.getElementById('statTotal').innerText = dataGabungan.length;
-        const tuntasCount = dataGabungan.filter(s => s.scores.length > 0 && s.scores.every(v => v >= 75)).length;
-        document.getElementById('statTuntas').innerText = tuntasCount;
-        document.getElementById('statKurang').innerText = dataGabungan.length - tuntasCount;
-    }
-
-    function filterBarisTabel() {
-        const q = document.getElementById('cariNamaTabel').value.toLowerCase().trim();
-        const st = document.getElementById('filterKetuntasan').value;
-
-        const filtered = dataGabungan.filter(s => {
-            if (!s.nama.toLowerCase().includes(q)) return false;
-            const tuntasSemua = s.scores.length > 0 && s.scores.every(v => v >= 75);
-            if (st === "tuntas") return tuntasSemua;
-            if (st === "kurang") return !tuntasSemua;
-            return true;
-        });
-
-        renderTabelAdmin(filtered);
-    }
-
-    function renderTabelAdmin(list) {
-        const b = document.getElementById('bodyTable');
-        b.innerHTML = "";
-        if (!list.length) {
-            b.innerHTML = `<tr><td colspan="${daftarHeaderJob.length + 4}" class="py-4 text-muted">Data siswa tidak ditemukan.</td></tr>`;
-            return;
-        }
-
-        list.forEach((s, noUrut) => {
-            const tr = document.createElement('tr');
-            tr.id = `rowSiswa_${s.id}`;
-            if (s.editing) tr.classList.add('row-editing');
-
-            const noHtml = `<td class="text-muted fw-medium">${noUrut + 1}</td>`;
-            const namaHtml = `<td class="text-start fw-semibold text-dark">${s.nama}</td>`;
-
-            const jobsHtml = s.scores.map((val, jobIdx) => {
-                const cls = val >= 75 ? 'score-pass' : 'score-fail';
-                if (s.editing) {
-                    return `
-                        <td>
-                            <input
-                                type="number"
-                                min="0"
-                                max="100"
-                                class="form-control inline-score-input ${cls}"
-                                id="inp_${s.id}_${jobIdx}"
-                                value="${val}"
-                                onfocus="this.select()"
-                                oninput="ubahNilaiInline(${s.id}, ${jobIdx}, this)"
-                            >
-                        </td>
-                    `;
-                } else {
-                    return `<td><span class="score-pill ${cls}">${val}</span></td>`;
-                }
-            }).join('');
-
-            const naCls = s.na >= 75 ? 'text-success' : 'text-danger';
-            const naHtml = `<td class="fw-bold ${naCls}" id="naSiswa_${s.id}">${s.na}</td>`;
-
-            let aksiHtml = `<td class="col-aksi">`;
-            if (s.saving) {
-                aksiHtml += `<button class="btn btn-sm btn-secondary rounded-3 px-2" disabled><span class="spinner-border spinner-border-sm me-1"></span>Menyimpan</button>`;
-            } else if (s.editing) {
-                aksiHtml += `
-                    <div class="d-inline-flex gap-1">
-                        <button type="button" class="btn btn-sm btn-success fw-semibold rounded-3 px-2" onclick="simpanBarisInline(${s.id})" title="Simpan Perubahan">
-                            <i class="fas fa-save me-1"></i>Simpan
-                        </button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary rounded-3 px-2" onclick="batalEditBaris(${s.id})" title="Batal">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                `;
-            } else {
-                aksiHtml += `
-                    <div class="d-inline-flex gap-1">
-                        <button type="button" class="btn btn-sm btn-primary fw-semibold rounded-3 px-2" onclick="bukaModalEditNilai(${s.id})" title="Edit Semua Nilai via Modal (Nyaman di HP)">
-                            <i class="fas fa-edit me-1"></i>Edit
-                        </button>
-                        <button type="button" class="btn btn-sm btn-outline-warning text-dark rounded-3 px-2" onclick="mulaiEditBaris(${s.id})" title="Edit Langsung di Tabel (Inline)">
-                            <i class="fas fa-table"></i>
-                        </button>
-                    </div>
-                `;
-            }
-            aksiHtml += `</td>`;
-
-            tr.innerHTML = noHtml + namaHtml + jobsHtml + naHtml + aksiHtml;
-            b.appendChild(tr);
-        });
-    }
-
-    /* ======================================================
-       MODAL EDIT SEMUA NILAI (MOBILE FRIENDLY)
-    ====================================================== */
-    function bukaModalEditNilai(siswaId) {
-        const s = dataGabungan.find(item => item.id === siswaId);
-        if (!s) return;
-
-        activeModalSiswaId = siswaId;
-        activeModalScores = [...s.scores];
-
-        const kelas = document.getElementById('kelasTabel').value;
-        const labelMode = editModeMapel === 'PRAKTEK' ? 'Nilai Praktek (Admin)' : 'Nilai Laporan (PKSM)';
-
-        document.getElementById('modalEditKelasBadge').innerText = `${kelas} • ${labelMode}`;
-        document.getElementById('modalEditNamaSiswa').innerText = s.nama;
-        document.getElementById('modalEditSubJudul').innerText = `Ubah semua skor job praktik di bawah lalu klik Simpan`;
-
-        const container = document.getElementById('modalEditJobsList');
-        container.innerHTML = activeModalScores.map((val, idx) => {
-            const namaJob = daftarHeaderJob[idx] || `Job ${idx + 1}`;
-            const isPass = val >= 75;
-            return `
-                <div class="modal-job-card ${isPass ? 'pass-card' : 'fail-card'} d-flex justify-content-between align-items-center gap-3" id="modalJobCard_${idx}">
-                    <div>
-                        <div class="fw-bold text-dark small">${namaJob}</div>
-                        <small class="${isPass ? 'text-success' : 'text-danger'} fw-medium" id="modalJobStatus_${idx}">
-                            ${isPass ? '<i class="fas fa-check-circle me-1"></i>Tuntas KKM' : '<i class="fas fa-exclamation-circle me-1"></i>Belum Tuntas (< 75)'}
-                        </small>
-                    </div>
-                    <input
-                        type="number"
-                        inputmode="numeric"
-                        min="0"
-                        max="100"
-                        class="form-control modal-score-input"
-                        id="modalJobInp_${idx}"
-                        value="${val}"
-                        onfocus="this.select()"
-                        oninput="ubahNilaiDiModal(${idx}, this)"
-                    >
-                </div>
-            `;
-        }).join('');
-
-        perbaruiPreviewNAModal();
-
-        if (!modalEditInstance) {
-            modalEditInstance = new bootstrap.Modal(document.getElementById('modalEditNilaiSiswa'));
-        }
-        modalEditInstance.show();
-    }
-
-    function ubahNilaiDiModal(jobIdx, inputEl) {
-        let val = parseFloat(inputEl.value);
-        if (isNaN(val)) val = 0;
-        if (val < 0) val = 0;
-        if (val > 100) val = 100;
-
-        activeModalScores[jobIdx] = val;
-
-        const isPass = val >= 75;
-        const card = document.getElementById(`modalJobCard_${jobIdx}`);
-        const statusEl = document.getElementById(`modalJobStatus_${jobIdx}`);
-
-        if (card) {
-            card.classList.remove('pass-card', 'fail-card');
-            card.classList.add(isPass ? 'pass-card' : 'fail-card');
-        }
-        if (statusEl) {
-            statusEl.className = `${isPass ? 'text-success' : 'text-danger'} fw-medium`;
-            statusEl.innerHTML = isPass
-                ? '<i class="fas fa-check-circle me-1"></i>Tuntas KKM'
-                : '<i class="fas fa-exclamation-circle me-1"></i>Belum Tuntas (< 75)';
-        }
-
-        perbaruiPreviewNAModal();
-    }
-
-    function perbaruiPreviewNAModal() {
-        const na = hitungNA(activeModalScores);
-        const naEl = document.getElementById('modalEditPreviewNA');
-        if (naEl) {
-            naEl.innerText = na;
-            naEl.className = `h3 fw-bold mb-0 ${na >= 75 ? 'text-success' : 'text-danger'}`;
-        }
-    }
-
-    async function simpanDariModal() {
-        const s = dataGabungan.find(item => item.id === activeModalSiswaId);
-        if (!s) return;
-
-        const btn = document.getElementById('btnSimpanModalNilai');
-        const originalText = btn.innerHTML;
-        btn.disabled = true;
-        btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Menyimpan...`;
-
-        const k = document.getElementById('kelasTabel').value;
-        const targetSheet = getNamaSheet(k, editModeMapel);
-
-        try {
-            for (let idx = 0; idx < activeModalScores.length; idx++) {
-                if (activeModalScores[idx] !== s.originalScores[idx]) {
-                    const res = await sendUpdatePromise(targetSheet, s.nama, idx + 1, activeModalScores[idx]);
-                    if (!res || res.status !== "success") {
-                        throw new Error(`Gagal menyimpan ${daftarHeaderJob[idx] || 'Job ' + (idx + 1)} untuk ${s.nama}`);
-                    }
-                    s.originalScores[idx] = activeModalScores[idx];
-                }
-            }
-            s.scores = [...activeModalScores];
-            s.na = hitungNA(s.scores);
-            s.editing = false;
-
-            if (modalEditInstance) modalEditInstance.hide();
-            perbaruiStatistikAdmin();
-            filterBarisTabel();
-        } catch (err) {
-            alert("❌ " + (err.message || "Gagal menyimpan perubahan."));
-        } finally {
-            btn.disabled = false;
-            btn.innerHTML = originalText;
-        }
-    }
-
-    /* ======================================================
-       INLINE EDIT DI TABEL (UNTUK DESKTOP / LAPTOP)
-    ====================================================== */
-    function mulaiEditBaris(siswaId) {
-        const s = dataGabungan.find(item => item.id === siswaId);
-        if (!s) return;
-        s.editing = true;
-        filterBarisTabel();
-        const firstInput = document.getElementById(`inp_${siswaId}_0`);
-        if (firstInput) firstInput.focus();
-    }
-
-    function batalEditBaris(siswaId) {
-        const s = dataGabungan.find(item => item.id === siswaId);
-        if (!s) return;
-        s.scores = [...s.originalScores];
-        s.na = hitungNA(s.scores);
-        s.editing = false;
-        filterBarisTabel();
-    }
-
-    function ubahNilaiInline(siswaId, jobIdx, inputEl) {
-        const s = dataGabungan.find(item => item.id === siswaId);
-        if (!s) return;
-
-        let val = parseFloat(inputEl.value);
-        if (isNaN(val)) val = 0;
-        if (val < 0) val = 0;
-        if (val > 100) val = 100;
-
-        s.scores[jobIdx] = val;
-        s.na = hitungNA(s.scores);
-
-        inputEl.classList.remove('score-pass', 'score-fail');
-        inputEl.classList.add(val >= 75 ? 'score-pass' : 'score-fail');
-
-        const naEl = document.getElementById(`naSiswa_${siswaId}`);
-        if (naEl) {
-            naEl.innerText = s.na;
-            naEl.className = `fw-bold ${s.na >= 75 ? 'text-success' : 'text-danger'}`;
-        }
-    }
-
-    async function simpanBarisInline(siswaId) {
-        const s = dataGabungan.find(item => item.id === siswaId);
-        if (!s) return;
-
-        const k = document.getElementById('kelasTabel').value;
-        const targetSheet = getNamaSheet(k, editModeMapel);
-        s.saving = true;
-        filterBarisTabel();
-
-        try {
-            for (let idx = 0; idx < s.scores.length; idx++) {
-                if (s.scores[idx] !== s.originalScores[idx]) {
-                    const res = await sendUpdatePromise(targetSheet, s.nama, idx + 1, s.scores[idx]);
-                    if (!res || res.status !== "success") {
-                        throw new Error(`Gagal menyimpan Job ${idx + 1} untuk ${s.nama}`);
-                    }
-                    s.originalScores[idx] = s.scores[idx];
-                }
-            }
-            s.editing = false;
-        } catch (err) {
-            alert("❌ " + (err.message || "Gagal menyimpan perubahan."));
-        } finally {
-            s.saving = false;
-            perbaruiStatistikAdmin();
-            filterBarisTabel();
-        }
-    }
-</script>
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/config.js?v=1.5"></script>
+    <script src="assets/js/admin.js?v=1.5"></script>
+  </body>
 </html>

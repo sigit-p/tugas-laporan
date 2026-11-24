@@ -413,7 +413,7 @@
                 </a>
             </div>
             <div class="text-center text-muted mt-4 pt-3 border-top" style="font-size: 0.75rem;">
-                &copy; 2026 TSM SMK Muhammadiyah Pakem &bull; Portal PKSM v1.3
+                &copy; 2026 TSM SMK Muhammadiyah Pakem &bull; Portal PKSM v1.4
             </div>
         </div>
     </div>
@@ -495,7 +495,7 @@
         <main class="content-wrapper">
             <div class="container-fluid px-0">
 
-                <!-- 1. VIEW DASHBOARD UTAMA (HERO + STATISTIK LAPORAN + STATISTIK PRAKTEK) -->
+                <!-- 1. VIEW DASHBOARD UTAMA -->
                 <div id="dashboardView">
                     <!-- HERO WELCOME -->
                     <div class="hero-welcome p-4 p-md-5 mb-4 shadow-sm">
@@ -578,8 +578,7 @@
                     </div>
 
                     <!-- DETAIL PROGRES PER KELAS: LAPORAN VS PRAKTEK -->
-                    <div class="row g-3">
-                        <!-- KOLOM KIRI: PROGRES LAPORAN (PKSM) -->
+                    <div class="row g-3 mb-4">
                         <div class="col-lg-6">
                             <div class="modern-card p-4 h-100">
                                 <div class="d-flex justify-content-between align-items-center mb-3">
@@ -594,7 +593,6 @@
                             </div>
                         </div>
 
-                        <!-- KOLOM KANAN: PROGRES NILAI PRAKTEK (ADMIN) -->
                         <div class="col-lg-6">
                             <div class="modern-card p-4 h-100">
                                 <div class="d-flex justify-content-between align-items-center mb-3">
@@ -608,86 +606,83 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- STATISTIK PENGUNJUNG & RINCIAN HALAMAN -->
-<div class="modern-card p-4 mt-3">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <div>
-            <h6 class="fw-bold text-dark mb-0">
-                <i class="fas fa-chart-line text-primary me-2"></i>Statistik Pengunjung & Halaman Dikunjungi
-            </h6>
-            <small class="text-muted">Pantauan aktivitas siswa membuka rekap kelas dan membaca modul PDF</small>
-        </div>
-        <span class="badge bg-primary-subtle text-primary">Real-Time Log</span>
-    </div>
+                    <!-- STATISTIK PENGUNJUNG & RINCIAN HALAMAN -->
+                    <div class="modern-card p-4">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+                            <div>
+                                <h6 class="fw-bold text-dark mb-0">
+                                    <i class="fas fa-chart-line text-primary me-2"></i>Statistik Pengunjung & Halaman Dikunjungi
+                                </h6>
+                                <small class="text-muted">Pantauan aktivitas siswa membuka rekap kelas dan membaca modul PDF</small>
+                            </div>
+                            <span class="badge bg-primary-subtle text-primary" id="badgeStatusVisitor">Memuat log...</span>
+                        </div>
 
-    <!-- 4 KARTU RINGKASAN -->
-    <div class="row g-3 text-center mb-4">
-        <div class="col-6 col-md-3">
-            <div class="p-3 rounded-3 bg-light border">
-                <div class="small text-muted fw-medium">Kunjungan Hari Ini</div>
-                <div class="h4 fw-bold text-primary mb-0" id="visHariIni">-</div>
-            </div>
-        </div>
-        <div class="col-6 col-md-3">
-            <div class="p-3 rounded-3 bg-light border">
-                <div class="small text-muted fw-medium">Total Kunjungan</div>
-                <div class="h4 fw-bold text-dark mb-0" id="visTotal">-</div>
-            </div>
-        </div>
-        <div class="col-6 col-md-3">
-            <div class="p-3 rounded-3 bg-light border">
-                <div class="small text-muted fw-medium">Aktivitas Siswa</div>
-                <div class="h4 fw-bold text-success mb-0" id="visSiswa">-</div>
-            </div>
-        </div>
-        <div class="col-6 col-md-3">
-            <div class="p-3 rounded-3 bg-light border">
-                <div class="small text-muted fw-medium">Akses Admin</div>
-                <div class="h4 fw-bold text-warning-emphasis mb-0" id="visAdmin">-</div>
-            </div>
-        </div>
-    </div>
+                        <!-- 4 KARTU RINGKASAN -->
+                        <div class="row g-3 text-center mb-4">
+                            <div class="col-6 col-md-3">
+                                <div class="p-3 rounded-3 bg-light border">
+                                    <div class="small text-muted fw-medium">Kunjungan Hari Ini</div>
+                                    <div class="h4 fw-bold text-primary mb-0" id="visHariIni">-</div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="p-3 rounded-3 bg-light border">
+                                    <div class="small text-muted fw-medium">Total Kunjungan</div>
+                                    <div class="h4 fw-bold text-dark mb-0" id="visTotal">-</div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="p-3 rounded-3 bg-light border">
+                                    <div class="small text-muted fw-medium">Aktivitas Siswa</div>
+                                    <div class="h4 fw-bold text-success mb-0" id="visSiswa">-</div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="p-3 rounded-3 bg-light border">
+                                    <div class="small text-muted fw-medium">Akses Admin</div>
+                                    <div class="h4 fw-bold text-warning-emphasis mb-0" id="visAdmin">-</div>
+                                </div>
+                            </div>
+                        </div>
 
-    <!-- RINCIAN PER HALAMAN & LOG TERBARU -->
-    <div class="row g-3">
-        <!-- KIRI: HALAMAN TERPOPULER -->
-        <div class="col-lg-5">
-            <div class="border rounded-3 p-3 h-100 bg-white">
-                <h6 class="fw-bold small text-uppercase text-secondary mb-3">
-                    <i class="fas fa-fire text-danger me-1"></i> Halaman / Materi Paling Sering Dibuka
-                </h6>
-                <div id="listTopPages" class="d-flex flex-column gap-2 small">
-                    <div class="text-muted">Memuat data halaman...</div>
-                </div>
-            </div>
-        </div>
+                        <!-- RINCIAN PER HALAMAN & LOG TERBARU -->
+                        <div class="row g-3">
+                            <div class="col-lg-5">
+                                <div class="border rounded-3 p-3 h-100 bg-white">
+                                    <h6 class="fw-bold small text-uppercase text-secondary mb-3">
+                                        <i class="fas fa-fire text-danger me-1"></i> Halaman / Materi Paling Sering Dibuka
+                                    </h6>
+                                    <div id="listTopPages" class="d-flex flex-column gap-2 small">
+                                        <div class="text-muted">Memuat data halaman...</div>
+                                    </div>
+                                </div>
+                            </div>
 
-        <!-- KANAN: 15 AKTIVITAS TERAKHIR -->
-        <div class="col-lg-7">
-            <div class="border rounded-3 p-3 h-100 bg-white">
-                <h6 class="fw-bold small text-uppercase text-secondary mb-3">
-                    <i class="fas fa-history text-primary me-1"></i> 15 Aktivitas Pengunjung Terakhir
-                </h6>
-                <div class="table-responsive" style="max-height: 270px; overflow-y: auto;">
-                    <table class="table table-sm table-hover align-middle mb-0" style="font-size: 0.8rem;">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Waktu</th>
-                                <th>Halaman / Aktivitas</th>
-                                <th>Perangkat</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbodyRecentLogs">
-                            <tr><td colspan="3" class="text-center text-muted py-3">Memuat riwayat...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-                        
+                            <div class="col-lg-7">
+                                <div class="border rounded-3 p-3 h-100 bg-white">
+                                    <h6 class="fw-bold small text-uppercase text-secondary mb-3">
+                                        <i class="fas fa-history text-primary me-1"></i> 15 Aktivitas Pengunjung Terakhir
+                                    </h6>
+                                    <div class="table-responsive" style="max-height: 290px; overflow-y: auto;">
+                                        <table class="table table-sm table-hover align-middle mb-0" style="font-size: 0.8rem;">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>Waktu</th>
+                                                    <th>Halaman & Keterangan</th>
+                                                    <th>Perangkat</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tbodyRecentLogs">
+                                                <tr><td colspan="3" class="text-center text-muted py-3">Memuat riwayat...</td></tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -740,13 +735,11 @@
 
                 <!-- 3. TABEL REKAP, EXPORT & EDIT NILAI -->
                 <div id="tabelKonten" style="display:none;">
-                    <!-- KOP KHUSUS PRINT PDF -->
                     <div class="print-header-only mb-3 pb-2 border-bottom">
                         <h4 class="fw-bold mb-0" id="printJudulDokumen">REKAP NILAI PKSM</h4>
                         <div class="small text-muted" id="printSubJudulDokumen">SMK Muhammadiyah Pakem &bull; Kelas XI</div>
                     </div>
 
-                    <!-- STAT CARDS -->
                     <div class="row g-3 mb-4 no-print">
                         <div class="col-md-4">
                             <div class="stat-box">
@@ -777,7 +770,6 @@
                         </div>
                     </div>
 
-                    <!-- TABLE CARD -->
                     <div class="modern-card overflow-hidden">
                         <div class="p-4 border-bottom bg-white d-flex flex-wrap justify-content-between align-items-center gap-3 no-print">
                             <div>
@@ -838,7 +830,7 @@
                 &copy; 2026 <strong>TSM SMK Muhammadiyah Pakem</strong>. Dikembangkan oleh <strong>Sigit Prabowo</strong>.
             </div>
             <div>
-                <span class="badge bg-light text-secondary border px-2 py-1">Portal PKSM & Praktek v1.3</span>
+                <span class="badge bg-light text-secondary border px-2 py-1">Portal PKSM & Praktek v1.4</span>
             </div>
         </footer>
     </div>
@@ -859,7 +851,6 @@
             <div class="modal-body p-3 p-sm-4">
                 <div id="modalEditJobsList" class="d-flex flex-column gap-2"></div>
 
-                <!-- LIVE PREVIEW NILAI AKHIR -->
                 <div class="mt-3 p-3 rounded-3 bg-light border d-flex justify-content-between align-items-center">
                     <div>
                         <div class="small fw-semibold text-secondary">Rata-Rata Nilai Akhir (NA)</div>
@@ -993,7 +984,7 @@
     });
 
     /* ======================================================
-       NAVIGASI MENU DASHBOARD & STATISTIK LAPORAN + PRAKTEK
+       NAVIGASI MENU DASHBOARD & STATISTIK NILAI + PENGUNJUNG
     ====================================================== */
     function tampilkanDashboard(el) {
         tutupSidebarMobile();
@@ -1131,6 +1122,9 @@
     }
 
     async function muatStatistikDashboard() {
+        // Panggil statistik pengunjung bersamaan dengan statistik nilai
+        muatStatistikPengunjung();
+
         const daftarKelas = ["XI SA", "XI SB", "XI SC"];
         const [hasilLaporan, hasilPraktek] = await Promise.all([
             Promise.all(daftarKelas.map(k => bacaSheetJsonp(k))),
@@ -1167,6 +1161,73 @@
 
         const now = new Date();
         document.getElementById('dashLastUpdate').innerText = `Terakhir diperbarui: ${now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}`;
+    }
+
+    function muatStatistikPengunjung() {
+        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ? "HP / Mobile" : "Laptop / PC";
+        const sudahTercatat = sessionStorage.getItem("pksm_admin_visited");
+        const aksi = sudahTercatat ? "get_stats" : "visit";
+        const badgeEl = document.getElementById("badgeStatusVisitor");
+        if (badgeEl) badgeEl.innerText = "Menyinkronkan...";
+
+        window.onVisitorAdminResp = function(res) {
+            if (!res || res.status !== "success") {
+                if (badgeEl) badgeEl.innerText = "Gagal Memuat";
+                return;
+            }
+            sessionStorage.setItem("pksm_admin_visited", "1");
+            if (badgeEl) badgeEl.innerText = "Real-Time Log";
+
+            document.getElementById("visHariIni").innerText = res.hari_ini ?? 0;
+            document.getElementById("visTotal").innerText = res.total ?? 0;
+            document.getElementById("visSiswa").innerText = res.siswa ?? 0;
+            document.getElementById("visAdmin").innerText = res.admin ?? 0;
+
+            // Render Daftar Halaman Paling Sering Dikunjungi
+            const topContainer = document.getElementById("listTopPages");
+            if (res.top_pages && res.top_pages.length > 0) {
+                topContainer.innerHTML = res.top_pages.map(item => `
+                    <div class="d-flex justify-content-between align-items-center p-2 rounded-2 bg-light border">
+                        <span class="fw-semibold text-dark text-truncate me-2" title="${item.halaman}">${item.halaman}</span>
+                        <span class="badge bg-primary rounded-pill">${item.jumlah}x</span>
+                    </div>
+                `).join('');
+            } else {
+                topContainer.innerHTML = `<div class="text-muted">Belum ada catatan halaman.</div>`;
+            }
+
+            // Render Tabel 15 Aktivitas Terakhir beserta Keterangan
+            const tbodyLog = document.getElementById("tbodyRecentLogs");
+            if (res.recent_logs && res.recent_logs.length > 0) {
+                tbodyLog.innerHTML = res.recent_logs.map(log => {
+                    const isAdm = String(log.halaman || "").toLowerCase().includes("admin");
+                    const badgeCls = isAdm ? "bg-warning-subtle text-warning-emphasis" : "bg-success-subtle text-success";
+                    const ketHtml = (log.ket && log.ket !== "-")
+                        ? `<div class="text-muted mt-1" style="font-size: 0.72rem;">${log.ket}</div>`
+                        : "";
+                    return `
+                        <tr>
+                            <td class="text-muted text-nowrap">${log.waktu}</td>
+                            <td>
+                                <span class="badge ${badgeCls} fw-semibold">${log.halaman}</span>
+                                ${ketHtml}
+                            </td>
+                            <td class="text-muted text-nowrap">${log.perangkat}</td>
+                        </tr>
+                    `;
+                }).join('');
+            } else {
+                tbodyLog.innerHTML = `<tr><td colspan="3" class="text-center text-muted py-3">Belum ada riwayat aktivitas.</td></tr>`;
+            }
+        };
+
+        const old = document.getElementById("scriptVisitorAdmin");
+        if (old) old.remove();
+
+        const s = document.createElement("script");
+        s.id = "scriptVisitorAdmin";
+        s.src = `${SCRIPT_URL}?action=${aksi}&page=Dashboard%20Admin&device=${encodeURIComponent(isMobile)}&info=${encodeURIComponent("Membuka & memantau dashboard admin")}&callback=onVisitorAdminResp&t=${Date.now()}`;
+        document.head.appendChild(s);
     }
 
     /* ======================================================
@@ -1273,7 +1334,6 @@
         const kelas = document.getElementById('kelasTabel').value;
         const jenisLabel = editModeMapel === 'PRAKTEK' ? 'Nilai_Praktek' : 'Nilai_Laporan_PKSM';
 
-        // Header CSV dengan pemisah titik koma (;) agar rapi dibuka langsung di Excel Indonesia
         const headers = ['No', 'Nama Siswa', ...daftarHeaderJob, 'Nilai Akhir (NA)', 'Status KKM (75)'];
         const rows = dataGabungan.map((s, idx) => {
             const tuntas = s.scores.length > 0 && s.scores.every(v => v >= 75) ? 'TUNTAS' : 'BELUM TUNTAS';
@@ -1752,32 +1812,7 @@
             perbaruiStatistikAdmin();
             filterBarisTabel();
         }
-        
     }
-
-    function muatStatistikPengunjung() {
-    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ? "HP / Mobile" : "Laptop / PC";
-    const sudahTercatat = sessionStorage.getItem("pksm_admin_visited");
-    const aksi = sudahTercatat ? "get_stats" : "visit";
-
-    window.onVisitorAdminResp = function(res) {
-        if (res && res.status === "success") {
-            sessionStorage.setItem("pksm_admin_visited", "1");
-            document.getElementById("visHariIni").innerText = res.hari_ini;
-            document.getElementById("visTotal").innerText = res.total;
-            document.getElementById("visSiswa").innerText = res.siswa;
-            document.getElementById("visAdmin").innerText = res.admin;
-        }
-    };
-
-    const old = document.getElementById("scriptVisitorAdmin");
-    if (old) old.remove();
-
-    const s = document.createElement("script");
-    s.id = "scriptVisitorAdmin";
-    s.src = `${SCRIPT_URL}?action=${aksi}&page=admin.html&device=${encodeURIComponent(isMobile)}&callback=onVisitorAdminResp&t=${Date.now()}`;
-    document.head.appendChild(s);
-}
 </script>
 </body>
 </html>

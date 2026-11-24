@@ -608,6 +608,86 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- STATISTIK PENGUNJUNG & RINCIAN HALAMAN -->
+<div class="modern-card p-4 mt-3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h6 class="fw-bold text-dark mb-0">
+                <i class="fas fa-chart-line text-primary me-2"></i>Statistik Pengunjung & Halaman Dikunjungi
+            </h6>
+            <small class="text-muted">Pantauan aktivitas siswa membuka rekap kelas dan membaca modul PDF</small>
+        </div>
+        <span class="badge bg-primary-subtle text-primary">Real-Time Log</span>
+    </div>
+
+    <!-- 4 KARTU RINGKASAN -->
+    <div class="row g-3 text-center mb-4">
+        <div class="col-6 col-md-3">
+            <div class="p-3 rounded-3 bg-light border">
+                <div class="small text-muted fw-medium">Kunjungan Hari Ini</div>
+                <div class="h4 fw-bold text-primary mb-0" id="visHariIni">-</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="p-3 rounded-3 bg-light border">
+                <div class="small text-muted fw-medium">Total Kunjungan</div>
+                <div class="h4 fw-bold text-dark mb-0" id="visTotal">-</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="p-3 rounded-3 bg-light border">
+                <div class="small text-muted fw-medium">Aktivitas Siswa</div>
+                <div class="h4 fw-bold text-success mb-0" id="visSiswa">-</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="p-3 rounded-3 bg-light border">
+                <div class="small text-muted fw-medium">Akses Admin</div>
+                <div class="h4 fw-bold text-warning-emphasis mb-0" id="visAdmin">-</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RINCIAN PER HALAMAN & LOG TERBARU -->
+    <div class="row g-3">
+        <!-- KIRI: HALAMAN TERPOPULER -->
+        <div class="col-lg-5">
+            <div class="border rounded-3 p-3 h-100 bg-white">
+                <h6 class="fw-bold small text-uppercase text-secondary mb-3">
+                    <i class="fas fa-fire text-danger me-1"></i> Halaman / Materi Paling Sering Dibuka
+                </h6>
+                <div id="listTopPages" class="d-flex flex-column gap-2 small">
+                    <div class="text-muted">Memuat data halaman...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- KANAN: 15 AKTIVITAS TERAKHIR -->
+        <div class="col-lg-7">
+            <div class="border rounded-3 p-3 h-100 bg-white">
+                <h6 class="fw-bold small text-uppercase text-secondary mb-3">
+                    <i class="fas fa-history text-primary me-1"></i> 15 Aktivitas Pengunjung Terakhir
+                </h6>
+                <div class="table-responsive" style="max-height: 270px; overflow-y: auto;">
+                    <table class="table table-sm table-hover align-middle mb-0" style="font-size: 0.8rem;">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Waktu</th>
+                                <th>Halaman / Aktivitas</th>
+                                <th>Perangkat</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyRecentLogs">
+                            <tr><td colspan="3" class="text-center text-muted py-3">Memuat riwayat...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+                        
                     </div>
                 </div>
 

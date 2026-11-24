@@ -757,6 +757,30 @@
     if (m) m.hide();
     kembaliKeBeranda();
   }
+
+  // Catat kunjungan siswa otomatis 1x per sesi browser
+  function catatKunjunganSiswa() {
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ? "HP / Mobile" : "Laptop / PC";
+    const sudahTercatat = sessionStorage.getItem("pksm_siswa_visited");
+    const aksi = sudahTercatat ? "get_stats" : "visit";
+
+    window.onVisitorSiswaResp = function(res) {
+      if (res && res.status === "success") {
+        sessionStorage.setItem("pksm_siswa_visited", "1");
+        const el = document.getElementById("footerVisitorBadge");
+        if (el) {
+          el.innerHTML = `<i class="fas fa-eye text-primary me-1"></i> ${res.total.toLocaleString('id-ID')} Kunjungan (${res.hari_ini} Hari Ini)`;
+        }
+      }
+    };
+
+    const s = document.createElement("script");
+    s.src = `${API_URL}?action=${aksi}&page=Portal%20Siswa&device=${encodeURIComponent(isMobile)}&callback=onVisitorSiswaResp&t=${Date.now()}`;
+    document.head.appendChild(s);
+  }
+
+  // Jalankan saat halaman dibuka
+  catatKunjunganSiswa();
 </script>
 </body>
 </html>

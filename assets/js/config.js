@@ -64,12 +64,10 @@ const APP_CONFIG = {
       "Sistem Penerangan",
     ],
     PRAKTEK: [
-      "Praktek 1 (Servis Berkala / Tune Up)",
-      "Praktek 2 (Sistem Rem & Roda)",
-      "Praktek 3 (CVT / Transmisi)",
-      "Praktek 4 (Suspensi & Kemudi)",
-      "Praktek 5 (Sistem Bahan Bakar / Injeksi)",
-      "Praktek 6 (Uji Kompetensi Praktek)",
+     "Sistem Pengapian",
+      "Sistem Starter",
+      "Sistem Pengisian",
+      "Sistem Penerangan",
     ],
   },
 };

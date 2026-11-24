@@ -314,11 +314,22 @@ function kembaliKeBeranda(e) {
 }
 
 function bukaPanduanDariModal() {
-  const m = bootstrap.Modal.getInstance(
-    document.getElementById("modalDetailSiswa"),
-  );
+  const m = bootstrap.Modal.getInstance(document.getElementById("modalDetailSiswa"));
   if (m) m.hide();
-  kembaliKeBeranda();
+
+  // Tampilkan beranda tanpa memaksa scroll ke paling atas
+  document.getElementById("viewRekapKelas").classList.add("d-none");
+  document.getElementById("viewBeranda").classList.remove("d-none");
+
+  // Langsung gulir mulus menuju bagian Daftar Job Praktek & Jobsheet
+  setTimeout(() => {
+    const target = document.getElementById("sectionJobsheet");
+    if (target) {
+      const yOffset = -80; // Memberi jarak agar judul tidak tertutup navbar atas
+      const y = target.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: "smooth" });
+    }
+  }, 150);
 }
 
 // Catat kunjungan awal saat halaman portal siswa dibuka

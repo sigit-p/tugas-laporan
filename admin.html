@@ -555,16 +555,20 @@
                 </div>
 
                 <div class="row g-3">
-<div class="col-lg-5">
-                <div class="border rounded-3 p-3 h-100 bg-white">
-                  <h6 class="fw-bold small text-uppercase text-secondary mb-3">
-                    <i class="fas fa-fire text-danger me-1"></i> Halaman / Materi Paling Sering Dibuka
-                  </h6>
-                  <div id="listTopPages" class="d-flex flex-column gap-2 small pe-1" style="max-height: 290px; overflow-y: auto;">
-                    <div class="text-muted">Memuat data halaman...</div>
+                  <div class="col-lg-5">
+                    <div class="border rounded-3 p-3 h-100 bg-white">
+                      <h6 class="fw-bold small text-uppercase text-secondary mb-3">
+                        <i class="fas fa-fire text-danger me-1"></i> Halaman / Materi Paling Sering Dibuka
+                      </h6>
+                      <div
+                        id="listTopPages"
+                        class="d-flex flex-column gap-2 small pe-1"
+                        style="max-height: 290px; overflow-y: auto"
+                      >
+                        <div class="text-muted">Memuat data halaman...</div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
 
                   <div class="col-lg-7">
                     <div class="border rounded-3 p-3 h-100 bg-white">
@@ -811,8 +815,8 @@
                 </div>
 
                 <div class="p-4">
-                  <div class="row g-2 mb-3 no-print">
-                    <div class="col-md-5">
+                  <div class="row g-2 mb-3 no-print align-items-center">
+                    <div class="col-md-4">
                       <div class="input-group input-group-sm">
                         <span class="input-group-text bg-light border-end-0"
                           ><i class="fas fa-search text-muted"></i
@@ -826,7 +830,7 @@
                         />
                       </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                       <select
                         id="filterKetuntasan"
                         class="form-select form-select-sm bg-light"
@@ -838,6 +842,44 @@
                         </option>
                         <option value="tuntas">Sudah Tuntas Semua Job</option>
                       </select>
+                    </div>
+                    <div class="col-md-5">
+                      <div
+                        class="d-flex flex-wrap justify-content-md-end gap-2"
+                        id="batchEditControls"
+                      >
+                        <select
+                          id="selectBatchJob"
+                          class="form-select form-select-sm w-auto bg-light fw-semibold"
+                        >
+                          <option value="">-- Edit Massal per Job --</option>
+                        </select>
+                        <button
+                          type="button"
+                          id="btnMulaiBatch"
+                          class="btn btn-warning btn-sm fw-semibold rounded-3 px-3 text-dark"
+                          onclick="mulaiBatchEditJob()"
+                        >
+                          <i class="fas fa-bolt me-1"></i> Edit Kolom
+                        </button>
+                        <button
+                          type="button"
+                          id="btnSimpanBatch"
+                          class="btn btn-success btn-sm fw-semibold rounded-3 px-3 d-none"
+                          onclick="simpanBatchEditJob()"
+                        >
+                          <i class="fas fa-save me-1"></i> Simpan Semua
+                        </button>
+                        <button
+                          type="button"
+                          id="btnBatalBatch"
+                          class="btn btn-outline-secondary btn-sm rounded-3 px-2 d-none"
+                          onclick="batalBatchEditJob()"
+                          title="Batal Edit Massal"
+                        >
+                          <i class="fas fa-times"></i>
+                        </button>
+                      </div>
                     </div>
                   </div>
 

@@ -6,11 +6,12 @@ let currentMapel = "";
 let editModeMapel = "";
 let dataGabungan = [];
 let daftarHeaderJob = [];
-let tempNames = null,
-  tempTable = null;
+let tempNames = null;
+let tempTable = null;
 let activeModalSiswaId = null;
 let activeModalScores = [];
 let modalEditInstance = null;
+let activeBatchJobIdx = null;
 
 if (sessionStorage.getItem("admin_tsm_logged_in") === "true") {
   document.getElementById("loginWrapper").style.display = "none";
@@ -37,9 +38,9 @@ function getNamaSheet(kelas, mode) {
 
 async function handleLogin(e) {
   if (e) e.preventDefault();
-  const u = document.getElementById('user').value.trim();
-  const p = document.getElementById('pass').value.trim();
-  const btn = document.getElementById('btnLogin');
+  const u = document.getElementById("user").value.trim();
+  const p = document.getElementById("pass").value.trim();
+  const btn = document.getElementById("btnLogin");
 
   if (!u || !p) return alert("Username dan Password harus diisi!");
 
@@ -53,9 +54,9 @@ async function handleLogin(e) {
 
     if (hasil.status === "success") {
       sessionStorage.setItem("admin_tsm_logged_in", "true");
-      sessionStorage.setItem("admin_tsm_token", hasil.token || ""); // Simpan token rahasia dari server
-      document.getElementById('loginWrapper').style.display = 'none';
-      document.getElementById('adminPanel').style.display = 'block';
+      sessionStorage.setItem("admin_tsm_token", hasil.token || "");
+      document.getElementById("loginWrapper").style.display = "none";
+      document.getElementById("adminPanel").style.display = "block";
       muatStatistikDashboard();
     } else {
       alert("Gagal: " + hasil.message);
@@ -71,21 +72,18 @@ async function handleLogin(e) {
 
 function handleLogout() {
   sessionStorage.removeItem("admin_tsm_logged_in");
-  sessionStorage.removeItem("admin_tsm_token"); // Hapus token saat logout
+  sessionStorage.removeItem("admin_tsm_token");
   location.reload();
 }
 
-document
-  .getElementById("togglePassword")
-  .addEventListener("click", function () {
-    const passwordField = document.getElementById("pass");
-    const eyeIcon = document.getElementById("eyeIcon");
-    const type =
-      passwordField.getAttribute("type") === "password" ? "text" : "password";
-    passwordField.setAttribute("type", type);
-    eyeIcon.classList.toggle("fa-eye");
-    eyeIcon.classList.toggle("fa-eye-slash");
-  });
+document.getElementById("togglePassword").addEventListener("click", function () {
+  const passwordField = document.getElementById("pass");
+  const eyeIcon = document.getElementById("eyeIcon");
+  const type = passwordField.getAttribute("type") === "password" ? "text" : "password";
+  passwordField.setAttribute("type", type);
+  eyeIcon.classList.toggle("fa-eye");
+  eyeIcon.classList.toggle("fa-eye-slash");
+});
 
 /* ======================================================
    NAVIGASI MENU DASHBOARD & STATISTIK NILAI + PENGUNJUNG
@@ -97,9 +95,7 @@ function tampilkanDashboard(el) {
   document.getElementById("tabelKonten").style.display = "none";
   document.getElementById("nav-status").innerText = "Dashboard Admin";
 
-  document
-    .querySelectorAll(".list-group-item")
-    .forEach((i) => i.classList.remove("active-menu"));
+  document.querySelectorAll(".list-group-item").forEach((i) => i.classList.remove("active-menu"));
   if (el) el.classList.add("active-menu");
 
   muatStatistikDashboard();
@@ -163,24 +159,20 @@ function hitungMetrikKumpulanKelas(daftarKelas, hasilTabelKelas, mode) {
       const table = hasilTabelKelas[idx];
       if (!table || table.length < 2) {
         return `
-        <div class="p-3 rounded-3 border bg-light d-flex justify-content-between align-items-center">
-          <div>
-            <div class="fw-bold text-dark">${kelas}</div>
-            <small class="text-muted">${mode === "PRAKTEK" ? `Tab PRAKTEK_${kelas} belum dibuat / kosong` : "Belum ada data terbaca"}</small>
+          <div class="p-3 rounded-3 border bg-light d-flex justify-content-between align-items-center">
+            <div>
+              <div class="fw-bold text-dark">${kelas}</div>
+              <small class="text-muted">${mode === "PRAKTEK" ? `Tab PRAKTEK_${kelas} belum dibuat / kosong` : "Belum ada data terbaca"}</small>
+            </div>
+            <button class="btn btn-sm btn-outline-primary rounded-3" onclick="bukaKelasLangsung('${mode}', '${kelas}')">Buka</button>
           </div>
-          <button class="btn btn-sm btn-outline-primary rounded-3" onclick="bukaKelasLangsung('${mode}', '${kelas}')">Buka</button>
-        </div>
-      `;
+        `;
       }
 
       sheetSiap++;
       const headers = table[0].map((h) => String(h || "").trim());
-      const rows = table
-        .slice(1)
-        .filter((r) => String(r[0] || "").trim() !== "");
-      const idxAkhir = headers.findIndex((h) =>
-        /nilai\s*akhir|akhir|\bna\b/i.test(h),
-      );
+      const rows = table.slice(1).filter((r) => String(r[0] || "").trim() !== "");
+      const idxAkhir = headers.findIndex((h) => /nilai\s*akhir|akhir|\bna\b/i.test(h));
       const jobIndices = [];
       headers.forEach((h, i) => {
         if (i > 0 && i !== idxAkhir && h !== "") jobIndices.push(i);
@@ -202,8 +194,7 @@ function hitungMetrikKumpulanKelas(daftarKelas, hasilTabelKelas, mode) {
       });
 
       const totalKelas = rows.length;
-      const persen =
-        totalKelas > 0 ? Math.round((tuntasKelas / totalKelas) * 100) : 0;
+      const persen = totalKelas > 0 ? Math.round((tuntasKelas / totalKelas) * 100) : 0;
       totalSiswa += totalKelas;
       totalTuntas += tuntasKelas;
 
@@ -217,24 +208,24 @@ function hitungMetrikKumpulanKelas(daftarKelas, hasilTabelKelas, mode) {
             : "bg-warning";
 
       return `
-      <div class="p-3 rounded-3 border bg-white">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-          <div>
-            <span class="fw-bold text-dark me-2">${kelas}</span>
-            <span class="badge bg-light text-secondary border">${tuntasKelas}/${totalKelas} Tuntas</span>
+        <div class="p-3 rounded-3 border bg-white">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div>
+              <span class="fw-bold text-dark me-2">${kelas}</span>
+              <span class="badge bg-light text-secondary border">${tuntasKelas}/${totalKelas} Tuntas</span>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <span class="fw-bold small ${persen >= KKM ? "text-success" : "text-primary"}">${persen}%</span>
+              <button type="button" class="btn btn-sm btn-light border py-0 px-2" onclick="bukaKelasLangsung('${mode}', '${kelas}')" title="Lihat Detail ${kelas}">
+                <i class="fas fa-arrow-right small"></i>
+              </button>
+            </div>
           </div>
-          <div class="d-flex align-items-center gap-2">
-            <span class="fw-bold small ${persen >= KKM ? "text-success" : "text-primary"}">${persen}%</span>
-            <button type="button" class="btn btn-sm btn-light border py-0 px-2" onclick="bukaKelasLangsung('${mode}', '${kelas}')" title="Lihat Detail ${kelas}">
-              <i class="fas fa-arrow-right small"></i>
-            </button>
+          <div class="progress" style="height: 8px; border-radius: 6px;">
+            <div class="progress-bar ${barColor}" role="progressbar" style="width: ${persen}%;"></div>
           </div>
         </div>
-        <div class="progress" style="height: 8px; border-radius: 6px;">
-          <div class="progress-bar ${barColor}" role="progressbar" style="width: ${persen}%;"></div>
-        </div>
-      </div>
-    `;
+      `;
     })
     .join("");
 
@@ -257,38 +248,21 @@ async function muatStatistikDashboard() {
     Promise.all(daftarKelas.map((k) => bacaSheetJsonp(`PRAKTEK_${k}`))),
   ]);
 
-  const metrikLaporan = hitungMetrikKumpulanKelas(
-    daftarKelas,
-    hasilLaporan,
-    "PKSM",
-  );
-  const metrikPraktek = hitungMetrikKumpulanKelas(
-    daftarKelas,
-    hasilPraktek,
-    "PRAKTEK",
-  );
+  const metrikLaporan = hitungMetrikKumpulanKelas(daftarKelas, hasilLaporan, "PKSM");
+  const metrikPraktek = hitungMetrikKumpulanKelas(daftarKelas, hasilPraktek, "PRAKTEK");
 
-  document.getElementById("dashTotalSiswa").innerText =
-    metrikLaporan.totalSiswa || metrikPraktek.totalSiswa;
-  document.getElementById("dashTuntasLaporan").innerText =
-    `${metrikLaporan.totalTuntas} / ${metrikLaporan.totalSiswa}`;
+  document.getElementById("dashTotalSiswa").innerText = metrikLaporan.totalSiswa || metrikPraktek.totalSiswa;
+  document.getElementById("dashTuntasLaporan").innerText = `${metrikLaporan.totalTuntas} / ${metrikLaporan.totalSiswa}`;
   document.getElementById("dashRataLaporan").innerText = metrikLaporan.rataRata;
-  document.getElementById("dashBelumLaporan").innerText =
-    metrikLaporan.totalBelum;
+  document.getElementById("dashBelumLaporan").innerText = metrikLaporan.totalBelum;
 
   document.getElementById("dashTuntasPraktek").innerText =
-    metrikPraktek.sheetSiap > 0
-      ? `${metrikPraktek.totalTuntas} / ${metrikPraktek.totalSiswa}`
-      : "-";
-  document.getElementById("dashRataPraktek").innerText =
-    metrikPraktek.sheetSiap > 0 ? metrikPraktek.rataRata : "-";
-  document.getElementById("dashBelumPraktek").innerText =
-    metrikPraktek.sheetSiap > 0 ? metrikPraktek.totalBelum : "-";
+    metrikPraktek.sheetSiap > 0 ? `${metrikPraktek.totalTuntas} / ${metrikPraktek.totalSiswa}` : "-";
+  document.getElementById("dashRataPraktek").innerText = metrikPraktek.sheetSiap > 0 ? metrikPraktek.rataRata : "-";
+  document.getElementById("dashBelumPraktek").innerText = metrikPraktek.sheetSiap > 0 ? metrikPraktek.totalBelum : "-";
 
-  document.getElementById("dashProgresKelasContainer").innerHTML =
-    metrikLaporan.htmlList;
-  document.getElementById("dashProgresPraktekContainer").innerHTML =
-    metrikPraktek.htmlList;
+  document.getElementById("dashProgresKelasContainer").innerHTML = metrikLaporan.htmlList;
+  document.getElementById("dashProgresPraktekContainer").innerHTML = metrikPraktek.htmlList;
 
   const statusPraktekEl = document.getElementById("dashStatusPraktek");
   if (metrikPraktek.sheetSiap > 0) {
@@ -305,9 +279,7 @@ async function muatStatistikDashboard() {
 }
 
 function muatStatistikPengunjung() {
-  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
-    ? "HP / Mobile"
-    : "Laptop / PC";
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ? "HP / Mobile" : "Laptop / PC";
   const sudahTercatat = sessionStorage.getItem("pksm_admin_visited");
   const aksi = sudahTercatat ? "get_stats" : "visit";
   const badgeEl = document.getElementById("badgeStatusVisitor");
@@ -331,11 +303,11 @@ function muatStatistikPengunjung() {
       topContainer.innerHTML = res.top_pages
         .map(
           (item) => `
-        <div class="d-flex justify-content-between align-items-center p-2 rounded-2 bg-light border">
-          <span class="fw-semibold text-dark text-truncate me-2" title="${item.halaman}">${item.halaman}</span>
-          <span class="badge bg-primary rounded-pill">${item.jumlah}x</span>
-        </div>
-      `,
+            <div class="d-flex justify-content-between align-items-center p-2 rounded-2 bg-light border">
+              <span class="fw-semibold text-dark text-truncate me-2" title="${item.halaman}">${item.halaman}</span>
+              <span class="badge bg-primary rounded-pill">${item.jumlah}x</span>
+            </div>
+          `
         )
         .join("");
     } else {
@@ -346,26 +318,22 @@ function muatStatistikPengunjung() {
     if (res.recent_logs && res.recent_logs.length > 0) {
       tbodyLog.innerHTML = res.recent_logs
         .map((log) => {
-          const isAdm = String(log.halaman || "")
-            .toLowerCase()
-            .includes("admin");
-          const badgeCls = isAdm
-            ? "bg-warning-subtle text-warning-emphasis"
-            : "bg-success-subtle text-success";
+          const isAdm = String(log.halaman || "").toLowerCase().includes("admin");
+          const badgeCls = isAdm ? "bg-warning-subtle text-warning-emphasis" : "bg-success-subtle text-success";
           const ketHtml =
             log.ket && log.ket !== "-"
               ? `<div class="text-muted mt-1" style="font-size: 0.72rem;">${log.ket}</div>`
               : "";
           return `
-          <tr>
-            <td class="text-muted text-nowrap">${log.waktu}</td>
-            <td>
-              <span class="badge ${badgeCls} fw-semibold">${log.halaman}</span>
-              ${ketHtml}
-            </td>
-            <td class="text-muted text-nowrap">${log.perangkat}</td>
-          </tr>
-        `;
+            <tr>
+              <td class="text-muted text-nowrap">${log.waktu}</td>
+              <td>
+                <span class="badge ${badgeCls} fw-semibold">${log.halaman}</span>
+                ${ketHtml}
+              </td>
+              <td class="text-muted text-nowrap">${log.perangkat}</td>
+            </tr>
+          `;
         })
         .join("");
     } else {
@@ -396,16 +364,12 @@ function pilihMapel(m, el) {
   document.getElementById("judulForm").innerHTML = isPraktek
     ? `<i class="fas fa-tools text-success me-2"></i>Input Nilai Praktek (Admin Only)`
     : `<i class="fas fa-edit text-primary me-2"></i>Input Nilai Laporan (PKSM)`;
-  document.getElementById("nav-status").innerText = isPraktek
-    ? `Input Nilai / Praktek`
-    : `Input Nilai / Laporan PKSM`;
+  document.getElementById("nav-status").innerText = isPraktek ? `Input Nilai / Praktek` : `Input Nilai / Laporan PKSM`;
 
   const infoBox = document.getElementById("infoSheetPraktek");
   if (infoBox) infoBox.classList.toggle("d-none", !isPraktek);
 
-  document
-    .querySelectorAll(".list-group-item")
-    .forEach((i) => i.classList.remove("active-menu"));
+  document.querySelectorAll(".list-group-item").forEach((i) => i.classList.remove("active-menu"));
   if (el) el.classList.add("active-menu");
 
   updateJobSelect("job_index", m);
@@ -416,10 +380,7 @@ function updateJobSelect(id, m) {
   const js = document.getElementById(id);
   const daftar = APP_CONFIG.DAFTAR_JOB_ADMIN[m] || [];
   js.innerHTML = '<option value="">-- Pilih Job / Materi Praktik --</option>';
-  daftar.forEach(
-    (item, i) =>
-      (js.innerHTML += `<option value="${i + 1}">Job ${i + 1} - ${item}</option>`),
-  );
+  daftar.forEach((item, i) => (js.innerHTML += `<option value="${i + 1}">Job ${i + 1} - ${item}</option>`));
 }
 
 function loadStudentNames() {
@@ -454,24 +415,19 @@ function simpanNilai() {
 function sendUpdate(sheetTarget, n, j, ni, cb) {
   const token = sessionStorage.getItem("admin_tsm_token") || "";
   const url = `${SCRIPT_URL}?action=update&sheet=${encodeURIComponent(sheetTarget)}&nama=${encodeURIComponent(n)}&job_index=${j}&nilai=${ni}&key=${encodeURIComponent(token)}&callback=${cb}`;
-  const s = document.createElement('script');
+  const s = document.createElement("script");
   s.src = url;
   document.head.appendChild(s);
 }
 
 window.handleUpdateResponse = function (r) {
   document.getElementById("btnSimpan").disabled = false;
-  document.getElementById("btnSimpan").innerHTML =
-    `<i class="fas fa-save me-2"></i> Simpan Nilai ke Google Sheet`;
+  document.getElementById("btnSimpan").innerHTML = `<i class="fas fa-save me-2"></i> Simpan Nilai ke Google Sheet`;
   if (r && r.status === "success") {
     alert("✅ Nilai berhasil disimpan!");
     document.getElementById("nilai").value = "";
   } else {
-    alert(
-      "⚠️ Gagal menyimpan: " +
-        (r?.message ||
-          "Pastikan tab sheet sudah dibuat di Google Spreadsheet."),
-    );
+    alert("⚠️ Gagal menyimpan: " + (r?.message || "Pastikan tab sheet sudah dibuat di Google Spreadsheet."));
   }
 };
 
@@ -484,21 +440,11 @@ function exportRekapCSV() {
   }
 
   const kelas = document.getElementById("kelasTabel").value;
-  const jenisLabel =
-    editModeMapel === "PRAKTEK" ? "Nilai_Praktek" : "Nilai_Laporan_PKSM";
+  const jenisLabel = editModeMapel === "PRAKTEK" ? "Nilai_Praktek" : "Nilai_Laporan_PKSM";
 
-  const headers = [
-    "No",
-    "Nama Siswa",
-    ...daftarHeaderJob,
-    "Nilai Akhir (NA)",
-    `Status KKM (${KKM})`,
-  ];
+  const headers = ["No", "Nama Siswa", ...daftarHeaderJob, "Nilai Akhir (NA)", `Status KKM (${KKM})`];
   const rows = dataGabungan.map((s, idx) => {
-    const tuntas =
-      s.scores.length > 0 && s.scores.every((v) => v >= KKM)
-        ? "TUNTAS"
-        : "BELUM TUNTAS";
+    const tuntas = s.scores.length > 0 && s.scores.every((v) => v >= KKM) ? "TUNTAS" : "BELUM TUNTAS";
     const namaAman = `"${s.nama.replace(/"/g, '""')}"`;
     return [idx + 1, namaAman, ...s.scores, s.na, tuntas].join(";");
   });
@@ -522,12 +468,8 @@ function cetakRekapPDF() {
     return alert("Tidak ada data siswa untuk dicetak!");
   }
   const kelas = document.getElementById("kelasTabel").value;
-  const jenisLabel =
-    editModeMapel === "PRAKTEK"
-      ? "REKAP NILAI PRAKTEK BENGKEL"
-      : "REKAP NILAI LAPORAN PKSM";
-  document.getElementById("printJudulDokumen").innerText =
-    `${jenisLabel} - KELAS ${kelas}`;
+  const jenisLabel = editModeMapel === "PRAKTEK" ? "REKAP NILAI PRAKTEK BENGKEL" : "REKAP NILAI LAPORAN PKSM";
+  document.getElementById("printJudulDokumen").innerText = `${jenisLabel} - KELAS ${kelas}`;
   document.getElementById("printSubJudulDokumen").innerText =
     `TSM SMK Muhammadiyah Pakem • Dicetak pada ${new Date().toLocaleDateString("id-ID")}`;
   window.print();
@@ -544,7 +486,7 @@ function sendUpdatePromise(sheetTarget, n, j, ni) {
       reject(new Error("Timeout saat menyimpan ke Google Sheet"));
     }, 12000);
 
-    window[cbName] = function(r) {
+    window[cbName] = function (r) {
       clearTimeout(timer);
       delete window[cbName];
       const el = document.getElementById(cbName);
@@ -553,7 +495,7 @@ function sendUpdatePromise(sheetTarget, n, j, ni) {
     };
 
     const url = `${SCRIPT_URL}?action=update&sheet=${encodeURIComponent(sheetTarget)}&nama=${encodeURIComponent(n)}&job_index=${j}&nilai=${ni}&key=${encodeURIComponent(token)}&callback=${cbName}&t=${Date.now()}`;
-    const s = document.createElement('script');
+    const s = document.createElement("script");
     s.id = cbName;
     s.src = url;
     s.onerror = () => {
@@ -577,13 +519,9 @@ function pilihModeEdit(m, el) {
   document.getElementById("judulTabel").innerHTML = isPraktek
     ? `<i class="fas fa-clipboard-list text-success me-2"></i>Rekap & Edit Nilai Praktek (Admin)`
     : `<i class="fas fa-table text-primary me-2"></i>Rekap & Edit Nilai Laporan (PKSM)`;
-  document.getElementById("nav-status").innerText = isPraktek
-    ? `Rekap Nilai / Praktek`
-    : `Rekap Nilai / Laporan PKSM`;
+  document.getElementById("nav-status").innerText = isPraktek ? `Rekap Nilai / Praktek` : `Rekap Nilai / Laporan PKSM`;
 
-  document
-    .querySelectorAll(".list-group-item")
-    .forEach((i) => i.classList.remove("active-menu"));
+  document.querySelectorAll(".list-group-item").forEach((i) => i.classList.remove("active-menu"));
   if (el) el.classList.add("active-menu");
   refreshTabel();
 }
@@ -644,15 +582,22 @@ function gabungDataAdmin() {
 
   const headers = tempTable[0].map((h) => String(h || "").trim());
   const rows = tempTable.slice(1);
-  const idxAkhir = headers.findIndex((h) =>
-    /nilai\s*akhir|akhir|\bna\b/i.test(h),
-  );
+  const idxAkhir = headers.findIndex((h) => /nilai\s*akhir|akhir|\bna\b/i.test(h));
 
   const jobCols = [];
   headers.forEach((h, i) => {
     if (i > 0 && i !== idxAkhir && h !== "") jobCols.push({ i, judul: h });
   });
   daftarHeaderJob = jobCols.map((c) => c.judul);
+
+  activeBatchJobIdx = null;
+  perbaruiTombolBatchUI();
+  const selBatch = document.getElementById("selectBatchJob");
+  if (selBatch) {
+    selBatch.innerHTML =
+      `<option value="">-- Edit Massal per Job --</option>` +
+      daftarHeaderJob.map((j, idx) => `<option value="${idx}">Job ${idx + 1}: ${j}</option>`).join("");
+  }
 
   document.getElementById("headerTable").innerHTML = `
     <th width="45">No</th>
@@ -664,9 +609,7 @@ function gabungDataAdmin() {
 
   dataGabungan = tempNames
     .map((namaRaw, idx) => {
-      const nama = String(
-        Array.isArray(namaRaw) ? namaRaw[0] : namaRaw || "",
-      ).trim();
+      const nama = String(Array.isArray(namaRaw) ? namaRaw[0] : namaRaw || "").trim();
       const r = rows[idx] || [];
 
       const scores = jobCols.map((c) => {
@@ -705,12 +648,9 @@ function hitungNA(scores) {
 
 function perbaruiStatistikAdmin() {
   document.getElementById("statTotal").innerText = dataGabungan.length;
-  const tuntasCount = dataGabungan.filter(
-    (s) => s.scores.length > 0 && s.scores.every((v) => v >= KKM),
-  ).length;
+  const tuntasCount = dataGabungan.filter((s) => s.scores.length > 0 && s.scores.every((v) => v >= KKM)).length;
   document.getElementById("statTuntas").innerText = tuntasCount;
-  document.getElementById("statKurang").innerText =
-    dataGabungan.length - tuntasCount;
+  document.getElementById("statKurang").innerText = dataGabungan.length - tuntasCount;
 }
 
 function filterBarisTabel() {
@@ -739,7 +679,7 @@ function renderTabelAdmin(list) {
   list.forEach((s, noUrut) => {
     const tr = document.createElement("tr");
     tr.id = `rowSiswa_${s.id}`;
-    if (s.editing) tr.classList.add("row-editing");
+    if (s.editing || activeBatchJobIdx !== null) tr.classList.add("row-editing");
 
     const noHtml = `<td class="text-muted fw-medium">${noUrut + 1}</td>`;
     const namaHtml = `<td class="text-start fw-semibold text-dark">${s.nama}</td>`;
@@ -747,21 +687,24 @@ function renderTabelAdmin(list) {
     const jobsHtml = s.scores
       .map((val, jobIdx) => {
         const cls = val >= KKM ? "score-pass" : "score-fail";
-        if (s.editing) {
+        const isBatchCol = activeBatchJobIdx === jobIdx;
+
+        if (s.editing || isBatchCol) {
           return `
-          <td>
-            <input
-              type="number"
-              min="0"
-              max="100"
-              class="form-control inline-score-input ${cls}"
-              id="inp_${s.id}_${jobIdx}"
-              value="${val}"
-              onfocus="this.select()"
-              oninput="ubahNilaiInline(${s.id}, ${jobIdx}, this)"
-            >
-          </td>
-        `;
+            <td>
+              <input
+                type="number"
+                min="0"
+                max="100"
+                class="form-control inline-score-input ${cls} ${isBatchCol ? "batch-input-cell" : ""}"
+                id="inp_${s.id}_${jobIdx}"
+                value="${val}"
+                onfocus="this.select()"
+                oninput="ubahNilaiInline(${s.id}, ${jobIdx}, this)"
+                onkeydown="navigasiInputBatch(event, ${noUrut}, ${jobIdx})"
+              >
+            </td>
+          `;
         } else {
           return `<td><span class="score-pill ${cls}">${val}</span></td>`;
         }
@@ -772,7 +715,9 @@ function renderTabelAdmin(list) {
     const naHtml = `<td class="fw-bold ${naCls}" id="naSiswa_${s.id}">${s.na}</td>`;
 
     let aksiHtml = `<td class="col-aksi">`;
-    if (s.saving) {
+    if (activeBatchJobIdx !== null) {
+      aksiHtml += `<span class="badge bg-warning-subtle text-warning-emphasis border">Mode Massal</span>`;
+    } else if (s.saving) {
       aksiHtml += `<button class="btn btn-sm btn-secondary rounded-3 px-2" disabled><span class="spinner-border spinner-border-sm me-1"></span>Menyimpan</button>`;
     } else if (s.editing) {
       aksiHtml += `
@@ -805,6 +750,107 @@ function renderTabelAdmin(list) {
 }
 
 /* ======================================================
+   BATCH / EDIT MASSAL PER KOLOM JOB
+====================================================== */
+function perbaruiTombolBatchUI() {
+  const isBatch = activeBatchJobIdx !== null;
+  const sel = document.getElementById("selectBatchJob");
+  const btnMulai = document.getElementById("btnMulaiBatch");
+  const btnSimpan = document.getElementById("btnSimpanBatch");
+  const btnBatal = document.getElementById("btnBatalBatch");
+
+  if (!sel || !btnMulai || !btnSimpan || !btnBatal) return;
+  sel.disabled = isBatch;
+  btnMulai.classList.toggle("d-none", isBatch);
+  btnSimpan.classList.toggle("d-none", !isBatch);
+  btnBatal.classList.toggle("d-none", !isBatch);
+}
+
+function mulaiBatchEditJob() {
+  const sel = document.getElementById("selectBatchJob");
+  if (!sel || sel.value === "") {
+    return alert("Pilih dulu kolom Job mana yang ingin diedit massal!");
+  }
+  activeBatchJobIdx = parseInt(sel.value);
+  perbaruiTombolBatchUI();
+  filterBarisTabel();
+
+  const firstCell = document.querySelector(".batch-input-cell");
+  if (firstCell) firstCell.focus();
+}
+
+function batalBatchEditJob() {
+  dataGabungan.forEach((s) => {
+    s.scores = [...s.originalScores];
+    s.na = hitungNA(s.scores);
+  });
+  activeBatchJobIdx = null;
+  perbaruiTombolBatchUI();
+  perbaruiStatistikAdmin();
+  filterBarisTabel();
+}
+
+function navigasiInputBatch(e, rowIndex, jobIdx) {
+  if (activeBatchJobIdx === null) return;
+  if (e.key === "Enter" || e.key === "ArrowDown") {
+    e.preventDefault();
+    const cells = document.querySelectorAll(".batch-input-cell");
+    if (cells[rowIndex + 1]) cells[rowIndex + 1].focus();
+  } else if (e.key === "ArrowUp") {
+    e.preventDefault();
+    const cells = document.querySelectorAll(".batch-input-cell");
+    if (cells[rowIndex - 1]) cells[rowIndex - 1].focus();
+  }
+}
+
+async function simpanBatchEditJob() {
+  if (activeBatchJobIdx === null) return;
+  const jobIdx = activeBatchJobIdx;
+
+  const daftarBerubah = dataGabungan.filter((s) => s.scores[jobIdx] !== s.originalScores[jobIdx]);
+
+  if (daftarBerubah.length === 0) {
+    activeBatchJobIdx = null;
+    perbaruiTombolBatchUI();
+    filterBarisTabel();
+    return alert("Tidak ada perubahan nilai untuk disimpan.");
+  }
+
+  const btnSimpan = document.getElementById("btnSimpanBatch");
+  const btnBatal = document.getElementById("btnBatalBatch");
+  const originalText = btnSimpan.innerHTML;
+  btnSimpan.disabled = true;
+  btnBatal.disabled = true;
+
+  const k = document.getElementById("kelasTabel").value;
+  const targetSheet = getNamaSheet(k, editModeMapel);
+
+  try {
+    for (let i = 0; i < daftarBerubah.length; i++) {
+      const s = daftarBerubah[i];
+      btnSimpan.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Menyimpan (${i + 1}/${daftarBerubah.length})...`;
+      const res = await sendUpdatePromise(targetSheet, s.nama, jobIdx + 1, s.scores[jobIdx]);
+      if (!res || res.status !== "success") {
+        throw new Error(`Gagal menyimpan nilai ${s.nama}: ${res?.message || "Server error"}`);
+      }
+      s.originalScores[jobIdx] = s.scores[jobIdx];
+    }
+
+    activeBatchJobIdx = null;
+    perbaruiTombolBatchUI();
+    perbaruiStatistikAdmin();
+    filterBarisTabel();
+    alert(`✅ Berhasil menyimpan ${daftarBerubah.length} perubahan nilai!`);
+  } catch (err) {
+    alert("❌ " + (err.message || "Terjadi kesalahan saat menyimpan massal."));
+  } finally {
+    btnSimpan.disabled = false;
+    btnBatal.disabled = false;
+    btnSimpan.innerHTML = originalText;
+  }
+}
+
+/* ======================================================
    MODAL EDIT SEMUA NILAI (MOBILE FRIENDLY)
 ====================================================== */
 function bukaModalEditNilai(siswaId) {
@@ -815,16 +861,11 @@ function bukaModalEditNilai(siswaId) {
   activeModalScores = [...s.scores];
 
   const kelas = document.getElementById("kelasTabel").value;
-  const labelMode =
-    editModeMapel === "PRAKTEK"
-      ? "Nilai Praktek (Admin)"
-      : "Nilai Laporan (PKSM)";
+  const labelMode = editModeMapel === "PRAKTEK" ? "Nilai Praktek (Admin)" : "Nilai Laporan (PKSM)";
 
-  document.getElementById("modalEditKelasBadge").innerText =
-    `${kelas} • ${labelMode}`;
+  document.getElementById("modalEditKelasBadge").innerText = `${kelas} • ${labelMode}`;
   document.getElementById("modalEditNamaSiswa").innerText = s.nama;
-  document.getElementById("modalEditSubJudul").innerText =
-    `Ubah semua skor job praktik di bawah lalu klik Simpan`;
+  document.getElementById("modalEditSubJudul").innerText = `Ubah semua skor job praktik di bawah lalu klik Simpan`;
 
   const container = document.getElementById("modalEditJobsList");
   container.innerHTML = activeModalScores
@@ -832,35 +873,33 @@ function bukaModalEditNilai(siswaId) {
       const namaJob = daftarHeaderJob[idx] || `Job ${idx + 1}`;
       const isPass = val >= KKM;
       return `
-      <div class="modal-job-card ${isPass ? "pass-card" : "fail-card"} d-flex justify-content-between align-items-center gap-3" id="modalJobCard_${idx}">
-        <div>
-          <div class="fw-bold text-dark small">${namaJob}</div>
-          <small class="${isPass ? "text-success" : "text-danger"} fw-medium" id="modalJobStatus_${idx}">
-            ${isPass ? '<i class="fas fa-check-circle me-1"></i>Tuntas KKM' : `<i class="fas fa-exclamation-circle me-1"></i>Belum Tuntas (< ${KKM})`}
-          </small>
+        <div class="modal-job-card ${isPass ? "pass-card" : "fail-card"} d-flex justify-content-between align-items-center gap-3" id="modalJobCard_${idx}">
+          <div>
+            <div class="fw-bold text-dark small">${namaJob}</div>
+            <small class="${isPass ? "text-success" : "text-danger"} fw-medium" id="modalJobStatus_${idx}">
+              ${isPass ? '<i class="fas fa-check-circle me-1"></i>Tuntas KKM' : `<i class="fas fa-exclamation-circle me-1"></i>Belum Tuntas (< ${KKM})`}
+            </small>
+          </div>
+          <input
+            type="number"
+            inputmode="numeric"
+            min="0"
+            max="100"
+            class="form-control modal-score-input"
+            id="modalJobInp_${idx}"
+            value="${val}"
+            onfocus="this.select()"
+            oninput="ubahNilaiDiModal(${idx}, this)"
+          >
         </div>
-        <input
-          type="number"
-          inputmode="numeric"
-          min="0"
-          max="100"
-          class="form-control modal-score-input"
-          id="modalJobInp_${idx}"
-          value="${val}"
-          onfocus="this.select()"
-          oninput="ubahNilaiDiModal(${idx}, this)"
-        >
-      </div>
-    `;
+      `;
     })
     .join("");
 
   perbaruiPreviewNAModal();
 
   if (!modalEditInstance) {
-    modalEditInstance = new bootstrap.Modal(
-      document.getElementById("modalEditNilaiSiswa"),
-    );
+    modalEditInstance = new bootstrap.Modal(document.getElementById("modalEditNilaiSiswa"));
   }
   modalEditInstance.show();
 }
@@ -915,16 +954,9 @@ async function simpanDariModal() {
   try {
     for (let idx = 0; idx < activeModalScores.length; idx++) {
       if (activeModalScores[idx] !== s.originalScores[idx]) {
-        const res = await sendUpdatePromise(
-          targetSheet,
-          s.nama,
-          idx + 1,
-          activeModalScores[idx],
-        );
+        const res = await sendUpdatePromise(targetSheet, s.nama, idx + 1, activeModalScores[idx]);
         if (!res || res.status !== "success") {
-          throw new Error(
-            `Gagal menyimpan ${daftarHeaderJob[idx] || "Job " + (idx + 1)} untuk ${s.nama}`,
-          );
+          throw new Error(`Gagal menyimpan ${daftarHeaderJob[idx] || "Job " + (idx + 1)} untuk ${s.nama}`);
         }
         s.originalScores[idx] = activeModalScores[idx];
       }
@@ -999,12 +1031,7 @@ async function simpanBarisInline(siswaId) {
   try {
     for (let idx = 0; idx < s.scores.length; idx++) {
       if (s.scores[idx] !== s.originalScores[idx]) {
-        const res = await sendUpdatePromise(
-          targetSheet,
-          s.nama,
-          idx + 1,
-          s.scores[idx],
-        );
+        const res = await sendUpdatePromise(targetSheet, s.nama, idx + 1, s.scores[idx]);
         if (!res || res.status !== "success") {
           throw new Error(`Gagal menyimpan Job ${idx + 1} untuk ${s.nama}`);
         }

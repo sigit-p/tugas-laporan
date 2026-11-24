@@ -284,26 +284,61 @@ function renderTabel(list) {
 function detailSiswa(idx) {
   const s = dataSiswa[idx];
   if (!s) return;
-  kirimLogSiswa(
-    `Cek Detail (${kelasAktif})`,
-    `Mengecek rincian laporan: ${s.nama}`,
-  );
+  kirimLogSiswa(`Cek Detail (${kelasAktif})`, `Mengecek rincian laporan: ${s.nama}`);
   document.getElementById("modalNamaSiswa").textContent = s.nama;
-  document.getElementById("modalInfoKelas").textContent =
-    `Kelas ${kelasAktif} • Nilai Akhir: ${s.na}`;
-  document.getElementById("modalIsiLaporan").innerHTML =
-    `<div class="list-group rounded-3 overflow-hidden">` +
-    s.jobs
-      .map((j) => {
-        if (j.status === "Tuntas")
-          return `<div class="list-group-item p-3"><div class="d-flex justify-content-between align-items-center mb-1"><strong class="text-dark">${j.judul}</strong><span class="badge bg-success-subtle text-success rounded-pill px-3 py-1">Tuntas (${j.nilai})</span></div><small class="text-muted">Laporan sudah dikumpulkan dan tuntas.</small></div>`;
-        if (j.status === "Perlu Perbaikan")
-          return `<div class="list-group-item list-group-item-warning p-3"><div class="d-flex justify-content-between align-items-center mb-1"><strong>${j.judul}</strong><span class="badge bg-warning text-dark rounded-pill px-3 py-1">Di Bawah KKM (${j.nilai})</span></div><small>Nilai di bawah ${KKM}, silakan konfirmasi perbaikan.</small></div>`;
-        return `<div class="list-group-item list-group-item-danger p-3"><div class="d-flex justify-content-between align-items-center mb-1"><strong>${j.judul}</strong><span class="badge bg-danger rounded-pill px-3 py-1">Belum Mengumpulkan</span></div><small class="text-danger">Laporan & nilai praktik belum masuk.</small></div>`;
-      })
-      .join("") +
-    `</div>`;
+  document.getElementById("modalInfoKelas").textContent = `Kelas ${kelasAktif} • Nilai Akhir: ${s.na}`;
+
+  document.getElementById("modalIsiLaporan").innerHTML = `<div class="list-group rounded-3 overflow-hidden">` + s.jobs.map((j, jobIdx) => {
+    // Cari kecocokan jobsheet berdasarkan judul atau urutan indeks
+    const matchedJob = DAFTAR_JOBSHEET.find(dj =>
+      j.judul.toLowerCase().includes(dj.judul.toLowerCase()) ||
+      dj.judul.toLowerCase().includes(j.judul.toLowerCase())
+    ) || DAFTAR_JOBSHEET[jobIdx];
+
+    const btnJobsheet = matchedJob
+      ? `<button type="button" onclick="bukaJobsheetDariDetail(${matchedJob.no - 1})" class="btn btn-sm btn-outline-dark rounded-3 px-2 py-1 fw-semibold flex-shrink-0"><i class="fas fa-file-pdf text-danger me-1"></i>Lihat Jobsheet ${matchedJob.no}</button>`
+      : "";
+
+    if (j.status === "Tuntas") {
+      return `<div class="list-group-item p-3"><div class="d-flex justify-content-between align-items-center mb-1"><strong class="text-dark">${j.judul}</strong><span class="badge bg-success-subtle text-success rounded-pill px-3 py-1">Tuntas (${j.nilai})</span></div><small class="text-muted">Laporan sudah dikumpulkan dan tuntas.</small></div>`;
+    }
+    if (j.status === "Perlu Perbaikan") {
+      return `<div class="list-group-item list-group-item-warning p-3">
+        <div class="d-flex justify-content-between align-items-center mb-1">
+          <strong>${j.judul}</strong>
+          <span class="badge bg-warning text-dark rounded-pill px-3 py-1">Di Bawah KKM (${j.nilai})</span>
+        </div>
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-2">
+          <small>Nilai di bawah ${KKM}, silakan konfirmasi perbaikan.</small>
+          ${btnJobsheet}
+        </div>
+      </div>`;
+    }
+    return `<div class="list-group-item list-group-item-danger p-3">
+      <div class="d-flex justify-content-between align-items-center mb-1">
+        <strong>${j.judul}</strong>
+        <span class="badge bg-danger rounded-pill px-3 py-1">Belum Mengumpulkan</span>
+      </div>
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-2">
+        <small class="text-danger">Laporan & nilai praktik belum masuk.</small>
+        ${btnJobsheet}
+      </div>
+    </div>`;
+  }).join("") + `</div>`;
+
   new bootstrap.Modal(document.getElementById("modalDetailSiswa")).show();
+}
+
+function bukaJobsheetDariDetail(jobIdx) {
+  const job = DAFTAR_JOBSHEET[jobIdx];
+  if (!job) return;
+
+  const modalDetail = bootstrap.Modal.getInstance(document.getElementById("modalDetailSiswa"));
+  if (modalDetail) modalDetail.hide();
+
+  setTimeout(() => {
+    bukaEmbedDokumen(`Jobsheet ${job.no}: ${job.judul}`, job.pdf);
+  }, 200);
 }
 
 function kembaliKeBeranda(e) {

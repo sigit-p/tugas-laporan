@@ -1752,7 +1752,32 @@
             perbaruiStatistikAdmin();
             filterBarisTabel();
         }
+        
     }
+
+    function muatStatistikPengunjung() {
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ? "HP / Mobile" : "Laptop / PC";
+    const sudahTercatat = sessionStorage.getItem("pksm_admin_visited");
+    const aksi = sudahTercatat ? "get_stats" : "visit";
+
+    window.onVisitorAdminResp = function(res) {
+        if (res && res.status === "success") {
+            sessionStorage.setItem("pksm_admin_visited", "1");
+            document.getElementById("visHariIni").innerText = res.hari_ini;
+            document.getElementById("visTotal").innerText = res.total;
+            document.getElementById("visSiswa").innerText = res.siswa;
+            document.getElementById("visAdmin").innerText = res.admin;
+        }
+    };
+
+    const old = document.getElementById("scriptVisitorAdmin");
+    if (old) old.remove();
+
+    const s = document.createElement("script");
+    s.id = "scriptVisitorAdmin";
+    s.src = `${SCRIPT_URL}?action=${aksi}&page=admin.html&device=${encodeURIComponent(isMobile)}&callback=onVisitorAdminResp&t=${Date.now()}`;
+    document.head.appendChild(s);
+}
 </script>
 </body>
 </html>

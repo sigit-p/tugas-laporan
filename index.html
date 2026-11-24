@@ -177,31 +177,26 @@
       border: 1px solid transparent;
       white-space: nowrap;
     }
-    /* 0 Kurang (Lengkap / Tuntas Semua) -> Hijau */
     .pill-ok {
       background: #ecfdf5;
       color: #059669;
       border-color: #a7f3d0;
     }
-    /* Kurang 1 Job -> Biru Muda (Hampir Tuntas) */
     .pill-kurang-1 {
       background: #eff6ff;
       color: #1d4ed8;
       border-color: #bfdbfe;
     }
-    /* Kurang 2 Job -> Kuning / Amber */
     .pill-kurang-2 {
       background: #fffbeb;
       color: #b45309;
       border-color: #fde68a;
     }
-    /* Kurang 3 Job -> Oranye */
     .pill-kurang-3 {
       background: #fff7ed;
       color: #c2410c;
       border-color: #fed7aa;
     }
-    /* Kurang 4 Job (Semua Belum) -> Merah Tegas */
     .pill-kurang-4 {
       background: #fef2f2;
       color: #dc2626;
@@ -249,8 +244,8 @@
     <a class="navbar-brand d-flex align-items-center gap-2.5 fw-bold" href="#" onclick="kembaliKeBeranda(event)">
       <span class="brand-icon"><i class="fas fa-motorcycle"></i></span>
       <div>
-        <div class="lh-sm fs-6">  Portal PKSM Kelas XI</div>
-        <small class="d-block fw-normal text-white-50" style="font-size: 0.72rem;">  TSM SMK Muhammadiyah Pakem</small>
+        <div class="lh-sm fs-6">Portal PKSM Kelas XI</div>
+        <small class="d-block fw-normal text-white-50" style="font-size: 0.72rem;">TSM SMK Muhammadiyah Pakem</small>
       </div>
     </a>
     <a href="admin.html" class="btn btn-outline-light btn-sm rounded-3 px-3 py-1.5 fw-semibold">
@@ -331,7 +326,7 @@
       </div>
     </div>
 
-<!-- BAGIAN DAFTAR JOB PRAKTEK & JOBSHEET (TERBUNGKUS KARTU PUTIH) -->
+    <!-- BAGIAN DAFTAR JOB PRAKTEK & JOBSHEET -->
     <div class="modern-card p-4 mb-4">
       <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
         <div>
@@ -347,7 +342,6 @@
         </span>
       </div>
 
-      <!-- ID HARUS containerJobsheet AGAR TERBACA JAVASCRIPT -->
       <div class="row g-3" id="containerJobsheet"></div>
     </div>
 
@@ -481,7 +475,8 @@
     <div>
       &copy; 2026 <strong>TSM SMK Muhammadiyah Pakem</strong>. Dikembangkan oleh <strong>Sigit Prabowo</strong>.
     </div>
-    <div>
+    <div class="d-flex align-items-center gap-2">
+      <span class="badge bg-light text-secondary border px-2 py-1" id="footerVisitorBadge"></span>
       <span class="badge bg-light text-secondary border px-2 py-1">Portal PKSM Kelas XI &bull; v1.0</span>
     </div>
   </div>
@@ -544,6 +539,33 @@
   let kelasAktif = "", dataSiswa = [], timerLoad = null;
   let tempNames = null, tempTable = null;
 
+  /* ======================================================
+     PENCATAT AKTIVITAS & KETERANGAN PENGUNJUNG SISWA
+  ====================================================== */
+  function kirimLogSiswa(namaHalaman, keterangan, isInitialVisit = false) {
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ? "HP / Mobile" : "Laptop / PC";
+    const aksi = (isInitialVisit && sessionStorage.getItem("pksm_siswa_visited")) ? "get_stats" : "visit";
+
+    const cbName = "cbLogSiswa_" + Date.now() + "_" + Math.floor(Math.random() * 10000);
+    window[cbName] = function(res) {
+      if (isInitialVisit && res && res.status === "success") {
+        sessionStorage.setItem("pksm_siswa_visited", "1");
+        const el = document.getElementById("footerVisitorBadge");
+        if (el) {
+          el.innerHTML = `<i class="fas fa-eye text-primary me-1"></i> ${Number(res.total || 0).toLocaleString('id-ID')} Kunjungan (${res.hari_ini || 0} Hari Ini)`;
+        }
+      }
+      delete window[cbName];
+      const oldScript = document.getElementById(cbName);
+      if (oldScript) oldScript.remove();
+    };
+
+    const s = document.createElement("script");
+    s.id = cbName;
+    s.src = `${API_URL}?action=${aksi}&page=${encodeURIComponent(namaHalaman)}&device=${encodeURIComponent(isMobile)}&info=${encodeURIComponent(keterangan)}&callback=${cbName}&t=${Date.now()}`;
+    document.head.appendChild(s);
+  }
+
   function toDriveEmbedUrl(url) {
     if (!url || url === "#") return "";
     const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
@@ -559,6 +581,7 @@
       alert("Link Google Drive untuk dokumen \"" + judul + "\" belum diisi.");
       return;
     }
+    kirimLogSiswa(judul, "Membaca pratinjau dokumen PDF");
     document.getElementById("viewerDocTitle").innerHTML = `<i class="fas fa-file-pdf text-warning me-2"></i>${judul}`;
     document.getElementById("iframeDocViewer").src = embedUrl;
     new bootstrap.Modal(document.getElementById("modalDocViewer")).show();
@@ -605,6 +628,7 @@
 
   function bukaKelas(kelas) {
     kelasAktif = kelas;
+    kirimLogSiswa(`Rekap Kelas ${kelas}`, `Membuka daftar rekap laporan siswa kelas ${kelas}`);
     document.getElementById("judulKelasAktif").textContent = "Rekap Laporan Kelas " + kelas;
     document.getElementById("inputCariNama").value = "";
     document.getElementById("filterStatusSiswa").value = "all";
@@ -746,6 +770,7 @@
   function detailSiswa(idx) {
     const s = dataSiswa[idx];
     if (!s) return;
+    kirimLogSiswa(`Cek Detail (${kelasAktif})`, `Mengecek rincian laporan: ${s.nama}`);
     document.getElementById("modalNamaSiswa").textContent = s.nama;
     document.getElementById("modalInfoKelas").textContent = `Kelas ${kelasAktif} • Nilai Akhir: ${s.na}`;
     document.getElementById("modalIsiLaporan").innerHTML = `<div class="list-group rounded-3 overflow-hidden">` + s.jobs.map(j => {
@@ -769,29 +794,8 @@
     kembaliKeBeranda();
   }
 
-  // Catat kunjungan siswa otomatis 1x per sesi browser
-  function catatKunjunganSiswa() {
-    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ? "HP / Mobile" : "Laptop / PC";
-    const sudahTercatat = sessionStorage.getItem("pksm_siswa_visited");
-    const aksi = sudahTercatat ? "get_stats" : "visit";
-
-    window.onVisitorSiswaResp = function(res) {
-      if (res && res.status === "success") {
-        sessionStorage.setItem("pksm_siswa_visited", "1");
-        const el = document.getElementById("footerVisitorBadge");
-        if (el) {
-          el.innerHTML = `<i class="fas fa-eye text-primary me-1"></i> ${res.total.toLocaleString('id-ID')} Kunjungan (${res.hari_ini} Hari Ini)`;
-        }
-      }
-    };
-
-    const s = document.createElement("script");
-    s.src = `${API_URL}?action=${aksi}&page=Portal%20Siswa&device=${encodeURIComponent(isMobile)}&callback=onVisitorSiswaResp&t=${Date.now()}`;
-    document.head.appendChild(s);
-  }
-
-  // Jalankan saat halaman dibuka
-  catatKunjunganSiswa();
+  // Catat kunjungan awal saat halaman portal siswa dibuka
+  kirimLogSiswa("Portal Siswa", "Membuka halaman beranda portal siswa", true);
 </script>
 </body>
 </html>

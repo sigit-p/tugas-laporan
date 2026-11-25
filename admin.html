@@ -143,6 +143,32 @@
           >
             <i class="fas fa-home text-primary me-2"></i> Dashboard
           </a>
+          <a
+            href="#"
+            onclick="tampilkanPengumuman(this); return false;"
+            class="list-group-item list-group-item-action"
+            id="menuPengumuman"
+          >
+            <i class="fas fa-bullhorn text-warning me-2"></i> Pengumuman Tugas
+          </a>
+
+          <div class="nav-section-label mt-3">Penilaian Harian</div>
+          <a
+            href="#"
+            onclick="tampilkanAbsensi(this); return false;"
+            class="list-group-item list-group-item-action"
+            id="menuAbsensi"
+          >
+            <i class="fas fa-calendar-check text-info me-2"></i> Absensi Praktik
+          </a>
+          <a
+            href="#"
+            onclick="tampilkanPoinSikap(this); return false;"
+            class="list-group-item list-group-item-action"
+            id="menuPoinSikap"
+          >
+            <i class="fas fa-award text-success me-2"></i> Poin Tugas & Sikap
+          </a>
 
           <div class="nav-section-label mt-2">Input Nilai</div>
           <a
@@ -324,9 +350,35 @@
                 </div>
               </div>
 
+              <!-- STATUS PENGUMUMAN AKTIF DI DASHBOARD -->
+              <div class="modern-card p-4 mb-4">
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+                  <div class="d-flex align-items-center gap-2">
+                    <h6 class="fw-bold text-dark mb-0">
+                      <i class="fas fa-bullhorn text-warning me-2"></i>Pengumuman Aktif di Portal Siswa
+                    </h6>
+                    <span class="badge bg-secondary-subtle text-secondary" id="dashBadgeInfoStatus">Memeriksa...</span>
+                  </div>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-primary rounded-3 fw-semibold"
+                    onclick="tampilkanPengumuman(document.getElementById('menuPengumuman'))"
+                  >
+                    <i class="fas fa-edit me-1"></i> Kelola / Ubah Pengumuman
+                  </button>
+                </div>
+                <div id="dashPreviewPengumuman" class="small text-muted">
+                  Memuat info pengumuman aktif...
+                </div>
+              </div>
+
+
+
               <div
                 class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2"
               >
+
+              
                 <div>
                   <h6 class="fw-bold text-dark mb-0">
                     <i class="fas fa-chart-pie text-primary me-2"></i>Ringkasan
@@ -487,6 +539,7 @@
                   </div>
                 </div>
               </div>
+
 
               <!-- STATISTIK PENGUNJUNG & RINCIAN HALAMAN -->
               <div class="modern-card p-4">
@@ -897,6 +950,235 @@
                 </div>
               </div>
             </div>
+          
+            <!-- 4. HALAMAN KELOLA PENGUMUMAN & INFO TUGAS -->
+            <div id="pengumumanKonten" class="modern-card overflow-hidden" style="display: none">
+              <div class="p-4 border-bottom bg-white d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <div>
+                  <h5 class="fw-bold text-dark mb-0">
+                    <i class="fas fa-bullhorn text-warning me-2"></i>Kelola Pengumuman & Info Tugas
+                  </h5>
+                  <small class="text-muted">Atur informasi batas waktu pengumpulan laporan atau jadwal praktik yang tampil di beranda siswa.</small>
+                </div>
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" role="switch" id="infoAktifSwitch" checked>
+                  <label class="form-check-label fw-semibold small text-dark" for="infoAktifSwitch">Tampilkan di Portal Siswa</label>
+                </div>
+              </div>
+
+              <div class="p-4">
+                <div class="row g-3">
+                  <div class="col-md-8">
+                    <label class="form-label small fw-semibold text-secondary">Judul Pengumuman</label>
+                    <input type="text" id="infoJudulInput" class="form-control bg-light" placeholder="Contoh: Batas Akhir Pengumpulan Laporan Job 1 - 4">
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label small fw-semibold text-secondary">Warna Banner</label>
+                    <select id="infoTipeInput" class="form-select bg-light">
+                      <option value="warning">Kuning (Peringatan / Deadline)</option>
+                      <option value="info">Biru (Informasi Umum)</option>
+                      <option value="danger">Merah (Penting / Mendesak)</option>
+                      <option value="success">Hijau (Jadwal / Selesai)</option>
+                    </select>
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label small fw-semibold text-secondary">Isi Pesan / Keterangan Lengkap</label>
+                    <textarea id="infoIsiInput" class="form-control bg-light" rows="4" placeholder="Contoh: Harap seluruh siswa kelas XI SA, SB, dan SC segera mengumpulkan laporan praktikum paling lambat Jumat pukul 14.00 WIB di bengkel TSM."></textarea>
+                  </div>
+                </div>
+
+                <div class="mt-4 pt-2 d-flex flex-wrap justify-content-between align-items-center gap-2">
+                  <small class="text-muted" id="infoLastSavedStatus">Memuat status pengumuman...</small>
+                  <button type="button" id="btnSimpanInfo" class="btn btn-primary fw-semibold rounded-3 px-4 py-2 shadow-sm" onclick="simpanPengumumanAdmin()">
+                    <i class="fas fa-paper-plane me-2"></i> Simpan & Publikasikan
+                  </button>
+                </div>
+              </div>
+            </div>
+               <!-- 5. HALAMAN ABSENSI PRAKTIK (ADMIN ONLY) -->
+            <div id="absensiKonten" class="modern-card overflow-hidden" style="display: none">
+              <div class="p-4 border-bottom bg-white d-flex flex-wrap justify-content-between align-items-center gap-3">
+                <div>
+                  <h5 class="fw-bold text-dark mb-0">
+                    <i class="fas fa-calendar-check text-info me-2"></i>Presensi Kehadiran Praktik Bengkel
+                  </h5>
+                  <small class="text-muted">Input kehadiran per pertemuan atau lihat rekap persentase kehadiran semester untuk pedoman rapor.</small>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                  <select id="absenKelasSelect" class="form-select form-select-sm bg-light fw-semibold" style="width: 130px" onchange="muatDataAbsensi()">
+                    <option value="XI SA">Kelas XI SA</option>
+                    <option value="XI SB">Kelas XI SB</option>
+                    <option value="XI SC">Kelas XI SC</option>
+                  </select>
+                  <div class="btn-group btn-group-sm" role="group">
+                    <button type="button" id="btnTabInputAbsen" class="btn btn-primary fw-semibold" onclick="gantiSubTabAbsen('input')">
+                      <i class="fas fa-edit me-1"></i> Input Harian
+                    </button>
+                    <button type="button" id="btnTabRekapAbsen" class="btn btn-outline-primary fw-semibold" onclick="gantiSubTabAbsen('rekap')">
+                      <i class="fas fa-chart-bar me-1"></i> Rekap Rapor
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- SUB-TAB A: INPUT ABSENSI HARIAN -->
+              <div id="subAbsenInput" class="p-4">
+                <div class="row g-2 align-items-center mb-3 bg-light p-3 rounded-3 border">
+                  <div class="col-md-4">
+                    <label class="form-label small fw-bold text-secondary mb-1">Tanggal Pertemuan</label>
+                    <input type="date" id="absenTanggalInput" class="form-control form-control-sm" onchange="renderTabelInputAbsen()">
+                  </div>
+                  <div class="col-md-4 d-flex align-items-end gap-2 pt-md-4">
+                    <button type="button" class="btn btn-sm btn-outline-success fw-semibold" onclick="setSemuaHadir()">
+                      <i class="fas fa-check-double me-1"></i> Tandai Semua Hadir (H)
+                    </button>
+                  </div>
+                  <div class="col-md-4 text-md-end pt-md-4">
+                    <button type="button" id="btnSimpanAbsen" class="btn btn-primary btn-sm fw-semibold px-4 py-2 rounded-3 shadow-sm" onclick="simpanAbsensiHarian()">
+                      <i class="fas fa-save me-1"></i> Simpan Presensi
+                    </button>
+                  </div>
+                </div>
+
+                <div class="table-responsive">
+                  <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                      <tr>
+                        <th width="50" class="text-center">No</th>
+                        <th>Nama Siswa</th>
+                        <th class="text-center" width="240">Status Kehadiran</th>
+                        <th>Catatan / Keterangan</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tbodyInputAbsen"></tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- SUB-TAB B: REKAP KEHADIRAN SEMESTER (PEDOMAN RAPOR) -->
+              <div id="subAbsenRekap" class="p-4" style="display: none">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <span class="small text-muted" id="infoTotalPertemuanAbsen">Total pertemuan tercatat: 0 hari</span>
+                  <button type="button" class="btn btn-sm btn-success fw-semibold rounded-3" onclick="exportRekapAbsenCSV()">
+                    <i class="fas fa-file-excel me-1"></i> Export Rekap Kehadiran (CSV)
+                  </button>
+                </div>
+                <div class="table-responsive">
+                  <table class="table table-bordered table-hover align-middle mb-0 text-center">
+                    <thead class="table-light">
+                      <tr>
+                        <th width="50">No</th>
+                        <th class="text-start">Nama Siswa</th>
+                        <th width="70" class="text-success">Hadir (H)</th>
+                        <th width="70" class="text-warning-emphasis">Sakit (S)</th>
+                        <th width="70" class="text-info-emphasis">Izin (I)</th>
+                        <th width="70" class="text-danger">Alpa (A)</th>
+                        <th width="110">Kehadiran (%)</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tbodyRekapAbsen"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- 6. HALAMAN CATATAN POIN TUGAS & SIKAP (ADMIN ONLY) -->
+            <div id="poinKonten" class="modern-card overflow-hidden" style="display: none">
+              <div class="p-4 border-bottom bg-white d-flex flex-wrap justify-content-between align-items-center gap-3">
+                <div>
+                  <h5 class="fw-bold text-dark mb-0">
+                    <i class="fas fa-award text-success me-2"></i>Catatan Poin Tugas & Sikap Bengkel
+                  </h5>
+                  <small class="text-muted">Catat poin keaktifan tugas maupun pelanggaran K3 sebagai pedoman nilai sikap & deskripsi rapor.</small>
+                </div>
+                <select id="poinKelasSelect" class="form-select form-select-sm bg-light fw-semibold" style="width: 140px" onchange="muatDataPoin()">
+                  <option value="XI SA">Kelas XI SA</option>
+                  <option value="XI SB">Kelas XI SB</option>
+                  <option value="XI SC">Kelas XI SC</option>
+                </select>
+              </div>
+
+              <!-- FORM INPUT CEPAT POIN -->
+              <div class="p-4 bg-light border-bottom">
+                <div class="row g-2 align-items-end">
+                  <div class="col-md-3">
+                    <label class="form-label small fw-bold text-secondary mb-1">Nama Siswa</label>
+                    <select id="poinNamaSelect" class="form-select form-select-sm"></select>
+                  </div>
+                  <div class="col-md-2">
+                    <label class="form-label small fw-bold text-secondary mb-1">Kategori</label>
+                    <select id="poinKategoriSelect" class="form-select form-select-sm">
+                      <option value="Keaktifan Tugas">Keaktifan Tugas</option>
+                      <option value="Sikap & K3 Bengkel">Sikap & K3 Bengkel</option>
+                      <option value="Kedisiplinan">Kedisiplinan</option>
+                    </select>
+                  </div>
+                  <div class="col-md-2">
+                    <label class="form-label small fw-bold text-secondary mb-1">Poin (+/-)</label>
+                    <select id="poinNilaiSelect" class="form-select form-select-sm fw-bold">
+                      <option value="10" class="text-success">+10 (Sangat Aktif / Bantu Bengkel)</option>
+                      <option value="5" class="text-success">+5 (Tugas Tepat Waktu / Aktif)</option>
+                      <option value="2" class="text-success">+2 (Apresiasi Positif)</option>
+                      <option value="-2" class="text-danger">-2 (Kurang Rapi / Terlambat Ringan)</option>
+                      <option value="-5" class="text-danger">-5 (Tidak Pakai Wearpack / K3)</option>
+                      <option value="-10" class="text-danger">-10 (Main HP / Mengganggu Praktik)</option>
+                    </select>
+                  </div>
+                  <div class="col-md-3">
+                    <label class="form-label small fw-bold text-secondary mb-1">Keterangan Kejadian</label>
+                    <input type="text" id="poinKetInput" class="form-control form-control-sm" placeholder="Contoh: Merapikan alat bengkel / Tidak bawa wearpack">
+                  </div>
+                  <div class="col-md-2">
+                    <button type="button" id="btnTambahPoin" class="btn btn-success btn-sm w-100 fw-semibold py-2 rounded-3" onclick="simpanCatatanPoin()">
+                      <i class="fas fa-plus-circle me-1"></i> Catat Poin
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- REKAP POIN PER SISWA & RIWAYAT LOG -->
+              <div class="p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <h6 class="fw-bold text-dark mb-0">Rekap Akumulasi Poin & Skor Sikap Siswa (Skor Dasar: 80)</h6>
+                  <button type="button" class="btn btn-sm btn-outline-success fw-semibold rounded-3" onclick="exportRekapPoinCSV()">
+                    <i class="fas fa-file-excel me-1"></i> Export Pedoman Rapor (CSV)
+                  </button>
+                </div>
+                <div class="table-responsive mb-4">
+                  <table class="table table-bordered table-hover align-middle mb-0">
+                    <thead class="table-light text-center">
+                      <tr>
+                        <th width="50">No</th>
+                        <th class="text-start">Nama Siswa</th>
+                        <th width="100" class="text-success">Poin (+)</th>
+                        <th width="100" class="text-danger">Poin (-)</th>
+                        <th width="120">Skor Akhir</th>
+                        <th width="150">Predikat Rapor</th>
+                        <th class="text-start">Ringkasan Catatan</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tbodyRekapPoin"></tbody>
+                  </table>
+                </div>
+
+                <h6 class="fw-bold text-dark mb-2">Riwayat Catatan Poin Terbaru</h6>
+                <div class="table-responsive">
+                  <table class="table table-sm table-striped align-middle mb-0 small">
+                    <thead>
+                      <tr>
+                        <th width="140">Waktu</th>
+                        <th>Nama Siswa</th>
+                        <th>Kategori</th>
+                        <th class="text-center">Poin</th>
+                        <th>Keterangan</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tbodyLogPoin"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>   
+                    
           </div>
         </main>
 
@@ -1058,7 +1340,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/js/config.js?v=1.5"></script>
-    <script src="assets/js/admin.js?v=1.5"></script>
+    <script src="assets/js/config.js?v=1.6"></script>
+    <script src="assets/js/admin.js?v=1.6"></script>
   </body>
 </html>

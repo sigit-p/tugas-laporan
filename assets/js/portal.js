@@ -367,5 +367,97 @@ function bukaPanduanDariModal() {
   }, 150);
 }
 
+/* ======================================================
+   BANNER PENGUMUMAN DINAMIS DARI ADMIN
+====================================================== */
+function muatPengumumanSiswa() {
+  const container = document.getElementById("bannerPengumumanSiswa");
+  if (!container) return;
+
+  const cbName = "cbInfoSiswa_" + Date.now();
+  window[cbName] = function (res) {
+    delete window[cbName];
+    const el = document.getElementById(cbName);
+    if (el) el.remove();
+
+    if (!res || res.status !== "success" || !res.data || !res.data.aktif) {
+      container.classList.add("d-none");
+      return;
+    }
+
+    const d = res.data;
+const tipeMap = {
+      warning: {
+        bgGradient: "linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)",
+        accentBar: "#f59e0b",
+        iconBg: "bg-warning text-dark",
+        badgeBg: "bg-white text-warning-emphasis border border-warning-subtle",
+        label: "INFO TENGGAT TUGAS",
+        icon: "fa-bullhorn"
+      },
+      info: {
+        bgGradient: "linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)",
+        accentBar: "#2563eb",
+        iconBg: "bg-primary text-white",
+        badgeBg: "bg-white text-primary border border-primary-subtle",
+        label: "PENGUMUMAN",
+        icon: "fa-info-circle"
+      },
+      danger: {
+        bgGradient: "linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%)",
+        accentBar: "#dc2626",
+        iconBg: "bg-danger text-white",
+        badgeBg: "bg-white text-danger border border-danger-subtle",
+        label: "PENGUMUMAN PENTING",
+        icon: "fa-exclamation-circle"
+      },
+      success: {
+        bgGradient: "linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)",
+        accentBar: "#16a34a",
+        iconBg: "bg-success text-white",
+        badgeBg: "bg-white text-success border border-success-subtle",
+        label: "INFO PRAKTIK",
+        icon: "fa-calendar-check"
+      }
+    };
+    const style = tipeMap[d.tipe] || tipeMap.warning;
+
+    container.innerHTML = `
+      <div class="modern-card p-3 p-md-4 position-relative overflow-hidden" style="background: ${style.bgGradient};">
+        <div class="d-flex align-items-start gap-3">
+          <!-- Bilah aksen vertikal melengkung di dalam kartu -->
+          <div class="rounded-pill flex-shrink-0 d-none d-sm-block" style="width: 5px; align-self: stretch; background-color: ${style.accentBar};"></div>
+
+          <!-- Kotak Ikon Solid Berbayang -->
+          <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0 shadow-sm ${style.iconBg}" style="width: 48px; height: 48px; font-size: 1.2rem;">
+            <i class="fas ${style.icon}"></i>
+          </div>
+
+          <!-- Konten Pengumuman -->
+          <div class="flex-grow-1">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-1">
+              <span class="badge ${style.badgeBg} rounded-pill px-2 py-1 fw-bold d-inline-flex align-items-center gap-2" style="font-size: 0.7rem; letter-spacing: 0.3px;">
+                <span class="pulse-dot"></span> ${style.label}
+              </span>
+              ${d.waktu ? `<span class="badge bg-white text-muted border fw-normal" style="font-size: 0.72rem;"><i class="far fa-clock me-1"></i>${d.waktu}</span>` : ""}
+            </div>
+            <h6 class="fw-bold text-dark mt-1 mb-1" style="font-size: 1.02rem;">${d.judul}</h6>
+            <p class="text-dark opacity-75 small mb-0" style="line-height: 1.6; white-space: pre-line;">${d.isi}</p>
+          </div>
+        </div>
+      </div>
+    `;
+    container.classList.remove("d-none");
+  };
+
+  const s = document.createElement("script");
+  s.id = cbName;
+  s.src = `${APP_CONFIG.API_URL}?action=get_info&callback=${cbName}&t=${Date.now()}`;
+  document.head.appendChild(s);
+}
+
+// Jalankan otomatis saat portal siswa dibuka
+muatPengumumanSiswa();
+
 // Catat kunjungan awal saat halaman portal siswa dibuka
 kirimLogSiswa("Portal Siswa", "Membuka halaman beranda portal siswa", true);

@@ -94,6 +94,9 @@ function tampilkanDashboard(el) {
   document.getElementById("formKonten").style.display = "none";
   document.getElementById("tabelKonten").style.display = "none";
   document.getElementById("nav-status").innerText = "Dashboard Admin";
+  document.getElementById("pengumumanKonten").style.display = "none";
+document.getElementById("absensiKonten").style.display = "none";
+document.getElementById("poinKonten").style.display = "none";
 
   document.querySelectorAll(".list-group-item").forEach((i) => i.classList.remove("active-menu"));
   if (el) el.classList.add("active-menu");
@@ -241,6 +244,7 @@ function hitungMetrikKumpulanKelas(daftarKelas, hasilTabelKelas, mode) {
 
 async function muatStatistikDashboard() {
   muatStatistikPengunjung();
+muatPengumumanAdmin();
 
   const daftarKelas = APP_CONFIG.DAFTAR_KELAS;
   const [hasilLaporan, hasilPraktek] = await Promise.all([
@@ -350,6 +354,7 @@ function muatStatistikPengunjung() {
   document.head.appendChild(s);
 }
 
+
 /* ======================================================
    BAGIAN INPUT NILAI (LAPORAN PKSM & PRAKTEK ADMIN)
 ====================================================== */
@@ -359,6 +364,9 @@ function pilihMapel(m, el) {
   document.getElementById("dashboardView").style.display = "none";
   document.getElementById("tabelKonten").style.display = "none";
   document.getElementById("formKonten").style.display = "block";
+document.getElementById("pengumumanKonten").style.display = "none";
+document.getElementById("absensiKonten").style.display = "none";
+document.getElementById("poinKonten").style.display = "none";
 
   const isPraktek = m === "PRAKTEK";
   document.getElementById("judulForm").innerHTML = isPraktek
@@ -514,6 +522,9 @@ function pilihModeEdit(m, el) {
   document.getElementById("dashboardView").style.display = "none";
   document.getElementById("formKonten").style.display = "none";
   document.getElementById("tabelKonten").style.display = "block";
+document.getElementById("pengumumanKonten").style.display = "none";
+document.getElementById("absensiKonten").style.display = "none";
+document.getElementById("poinKonten").style.display = "none";
 
   const isPraktek = m === "PRAKTEK";
   document.getElementById("judulTabel").innerHTML = isPraktek
@@ -1046,4 +1057,522 @@ async function simpanBarisInline(siswaId) {
     perbaruiStatistikAdmin();
     filterBarisTabel();
   }
+}
+
+/* ======================================================
+   KELOLA PENGUMUMAN & INFO TUGAS (ADMIN)
+====================================================== */
+/* ======================================================
+   KELOLA PENGUMUMAN & INFO TUGAS (ADMIN)
+====================================================== */
+function tampilkanPengumuman(el) {
+  tutupSidebarMobile();
+  document.getElementById("dashboardView").style.display = "none";
+  document.getElementById("formKonten").style.display = "none";
+  document.getElementById("tabelKonten").style.display = "none";
+  document.getElementById("pengumumanKonten").style.display = "block";
+  document.getElementById("nav-status").innerText = "Pengumuman Tugas";
+document.getElementById("absensiKonten").style.display = "none";
+document.getElementById("poinKonten").style.display = "none";
+
+  document.querySelectorAll(".list-group-item").forEach((i) => i.classList.remove("active-menu"));
+  if (el) el.classList.add("active-menu");
+
+  muatPengumumanAdmin();
+}
+
+function muatPengumumanAdmin() {
+  const statusEl = document.getElementById("infoLastSavedStatus");
+  const dashBadge = document.getElementById("dashBadgeInfoStatus");
+  const dashPreview = document.getElementById("dashPreviewPengumuman");
+  const cbName = "cbGetInfoAdmin_" + Date.now();
+
+  window[cbName] = function (res) {
+    delete window[cbName];
+    const el = document.getElementById(cbName);
+    if (el) el.remove();
+
+    if (!res || res.status !== "success" || !res.data) {
+      if (statusEl) statusEl.innerText = "Belum ada pengumuman tersimpan.";
+      if (dashBadge) {
+        dashBadge.className = "badge bg-secondary-subtle text-secondary";
+        dashBadge.innerText = "Tidak Aktif";
+      }
+      if (dashPreview) {
+        dashPreview.innerHTML = `<span class="text-muted">Belum ada pengumuman yang dipasang di portal siswa.</span>`;
+      }
+      return;
+    }
+
+    const d = res.data;
+    const sw = document.getElementById("infoAktifSwitch");
+    const jdl = document.getElementById("infoJudulInput");
+    const isi = document.getElementById("infoIsiInput");
+    const tipe = document.getElementById("infoTipeInput");
+
+    if (sw) sw.checked = Boolean(d.aktif);
+    if (jdl) jdl.value = d.judul || "";
+    if (isi) isi.value = d.isi || "";
+    if (tipe && d.tipe) tipe.value = d.tipe;
+
+    if (statusEl) {
+      statusEl.innerText = d.waktu
+        ? `Terakhir diperbarui: ${d.waktu} (${d.aktif ? "Status: Aktif tampil di siswa" : "Status: Disembunyikan"})`
+        : "Belum pernah dipublikasikan.";
+    }
+
+    // Update pratinjau ringkas di halaman Dashboard (Selaras dengan Portal Siswa)
+    if (dashBadge && dashPreview) {
+      if (d.aktif && d.judul) {
+        const tipeMap = {
+          warning: {
+            bgGradient: "linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)",
+            accentBar: "#f59e0b",
+            iconBg: "bg-warning text-dark",
+            badgeBg: "bg-white text-warning-emphasis border border-warning-subtle",
+            label: "INFO TENGGAT TUGAS",
+            icon: "fa-bullhorn"
+          },
+          info: {
+            bgGradient: "linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)",
+            accentBar: "#2563eb",
+            iconBg: "bg-primary text-white",
+            badgeBg: "bg-white text-primary border border-primary-subtle",
+            label: "PENGUMUMAN",
+            icon: "fa-info-circle"
+          },
+          danger: {
+            bgGradient: "linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%)",
+            accentBar: "#dc2626",
+            iconBg: "bg-danger text-white",
+            badgeBg: "bg-white text-danger border border-danger-subtle",
+            label: "PENGUMUMAN PENTING",
+            icon: "fa-exclamation-circle"
+          },
+          success: {
+            bgGradient: "linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)",
+            accentBar: "#16a34a",
+            iconBg: "bg-success text-white",
+            badgeBg: "bg-white text-success border border-success-subtle",
+            label: "INFO PRAKTIK",
+            icon: "fa-calendar-check"
+          }
+        };
+        const style = tipeMap[d.tipe] || tipeMap.warning;
+
+        dashBadge.className = "badge bg-success-subtle text-success";
+        dashBadge.innerText = "Aktif Tampil";
+        dashPreview.innerHTML = `
+          <div class="rounded-3 p-3 mt-2 shadow-sm border-0" style="background: ${style.bgGradient};">
+            <div class="d-flex align-items-start gap-3">
+              <div class="rounded-pill flex-shrink-0 d-none d-sm-block" style="width: 4px; align-self: stretch; background-color: ${style.accentBar};"></div>
+              <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0 shadow-sm ${style.iconBg}" style="width: 42px; height: 42px; font-size: 1.05rem;">
+                <i class="fas ${style.icon}"></i>
+              </div>
+              <div class="flex-grow-1">
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-1">
+                  <span class="badge ${style.badgeBg} rounded-pill px-2 py-1 fw-bold" style="font-size: 0.68rem;">${style.label}</span>
+                  ${d.waktu ? `<small class="text-muted bg-white px-2 py-0 rounded-pill border" style="font-size: 0.7rem;"><i class="far fa-clock me-1"></i>${d.waktu}</small>` : ""}
+                </div>
+                <div class="fw-bold text-dark mt-1" style="font-size: 0.95rem;">${d.judul}</div>
+                <div class="text-dark opacity-75 small mt-1" style="line-height: 1.5; white-space: pre-line;">${d.isi}</div>
+              </div>
+            </div>
+          </div>
+        `;
+      } else {
+        dashBadge.className = "badge bg-secondary-subtle text-secondary";
+        dashBadge.innerText = "Nonaktif / Disembunyikan";
+        dashPreview.innerHTML = `<span class="text-muted">Saat ini tidak ada pengumuman yang ditampilkan di portal siswa.</span>`;
+      }
+    }
+  };
+
+  const s = document.createElement("script");
+  s.id = cbName;
+  s.src = `${SCRIPT_URL}?action=get_info&callback=${cbName}&t=${Date.now()}`;
+  document.head.appendChild(s);
+}
+
+function simpanPengumumanAdmin() {
+  const aktif = document.getElementById("infoAktifSwitch").checked;
+  const judul = document.getElementById("infoJudulInput").value.trim();
+  const isi = document.getElementById("infoIsiInput").value.trim();
+  const tipe = document.getElementById("infoTipeInput").value;
+  const btn = document.getElementById("btnSimpanInfo");
+
+  if (aktif && (!judul || !isi)) {
+    return alert("Judul dan Isi Pengumuman wajib diisi jika status aktif!");
+  }
+
+  const token = sessionStorage.getItem("admin_tsm_token") || "";
+  const originalHtml = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Menyimpan...`;
+
+  const cbName = "cbSaveInfo_" + Date.now();
+  window[cbName] = function (res) {
+    delete window[cbName];
+    const el = document.getElementById(cbName);
+    if (el) el.remove();
+
+    btn.disabled = false;
+    btn.innerHTML = originalHtml;
+
+    if (res && res.status === "success") {
+      alert("✅ Pengumuman berhasil diperbarui di Portal Siswa!");
+      muatPengumumanAdmin();
+    } else {
+      alert("❌ Gagal menyimpan pengumuman: " + (res?.message || "Cek koneksi atau token sesi."));
+    }
+  };
+
+  const url = `${SCRIPT_URL}?action=save_info&aktif=${aktif}&judul=${encodeURIComponent(judul)}&isi=${encodeURIComponent(isi)}&tipe=${encodeURIComponent(tipe)}&key=${encodeURIComponent(token)}&callback=${cbName}&t=${Date.now()}`;
+  const s = document.createElement("script");
+  s.id = cbName;
+  s.src = url;
+  document.head.appendChild(s);
+}
+
+/* ======================================================
+   MODUL 1: ABSENSI HARIAN PRAKTIK (ADMIN ONLY)
+====================================================== */
+let daftarSiswaAbsen = [];
+let riwayatAbsenKelas = [];
+
+function tampilkanAbsensi(el) {
+  tutupSidebarMobile();
+  document.getElementById("dashboardView").style.display = "none";
+  document.getElementById("formKonten").style.display = "none";
+  document.getElementById("tabelKonten").style.display = "none";
+  document.getElementById("pengumumanKonten").style.display = "none";
+  document.getElementById("poinKonten").style.display = "none";
+  document.getElementById("absensiKonten").style.display = "block";
+  document.getElementById("nav-status").innerText = "Absensi Praktik";
+
+  document.querySelectorAll(".list-group-item").forEach((i) => i.classList.remove("active-menu"));
+  if (el) el.classList.add("active-menu");
+
+  const tglInput = document.getElementById("absenTanggalInput");
+  if (tglInput && !tglInput.value) {
+    tglInput.value = new Date().toISOString().split("T")[0];
+  }
+  muatDataAbsensi();
+}
+
+function gantiSubTabAbsen(tab) {
+  const isInput = tab === "input";
+  document.getElementById("subAbsenInput").style.display = isInput ? "block" : "none";
+  document.getElementById("subAbsenRekap").style.display = isInput ? "none" : "block";
+  document.getElementById("btnTabInputAbsen").className = isInput ? "btn btn-primary fw-semibold" : "btn btn-outline-primary fw-semibold";
+  document.getElementById("btnTabRekapAbsen").className = !isInput ? "btn btn-primary fw-semibold" : "btn btn-outline-primary fw-semibold";
+  if (!isInput) renderTabelRekapAbsen();
+}
+
+function muatDataAbsensi() {
+  const kelas = document.getElementById("absenKelasSelect").value;
+  document.getElementById("tbodyInputAbsen").innerHTML = `<tr><td colspan="4" class="text-center py-4 text-muted">Memuat daftar siswa ${kelas}...</td></tr>`;
+
+  // 1. Ambil daftar nama siswa dari sheet kelas
+  const cbNama = "cbNamaAbs_" + Date.now();
+  window[cbNama] = function (names) {
+    delete window[cbNama];
+    daftarSiswaAbsen = Array.isArray(names) ? names.map((n) => String(n).trim()).filter(Boolean) : [];
+
+    // 2. Ambil riwayat absensi kelas
+    const cbRec = "cbRecAbs_" + Date.now();
+    window[cbRec] = function (res) {
+      delete window[cbRec];
+      riwayatAbsenKelas = res && res.status === "success" && Array.isArray(res.records) ? res.records : [];
+      renderTabelInputAbsen();
+      renderTabelRekapAbsen();
+    };
+    const s2 = document.createElement("script");
+    s2.src = `${SCRIPT_URL}?action=get_absen&kelas=${encodeURIComponent(kelas)}&callback=${cbRec}&t=${Date.now()}`;
+    document.head.appendChild(s2);
+  };
+
+  const s1 = document.createElement("script");
+  s1.src = `${SCRIPT_URL}?sheet=${encodeURIComponent(kelas)}&callback=${cbNama}&t=${Date.now()}`;
+  document.head.appendChild(s1);
+}
+
+function renderTabelInputAbsen() {
+  const tgl = document.getElementById("absenTanggalInput").value;
+  const tbody = document.getElementById("tbodyInputAbsen");
+  if (!daftarSiswaAbsen.length) {
+    tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-muted">Data siswa tidak ditemukan.</td></tr>`;
+    return;
+  }
+
+  // Cek apakah tanggal ini sudah pernah diabsen sebelumnya
+  const mapTgl = {};
+  riwayatAbsenKelas.filter((r) => r.tanggal === tgl).forEach((r) => {
+    mapTgl[r.nama] = r;
+  });
+
+  tbody.innerHTML = daftarSiswaAbsen.map((nama, idx) => {
+    const existing = mapTgl[nama] || { status: "H", ket: "" };
+    const st = existing.status;
+    return `
+      <tr>
+        <td class="text-center text-muted">${idx + 1}</td>
+        <td class="fw-semibold text-dark">${nama}</td>
+        <td class="text-center">
+          <div class="btn-group btn-group-sm" role="group">
+            ${["H", "S", "I", "A"].map((kode) => `
+              <input type="radio" class="btn-check absen-radio" name="abs_${idx}" id="abs_${idx}_${kode}" value="${kode}" data-nama="${nama}" ${st === kode ? "checked" : ""}>
+              <label class="btn ${kode === "H" ? "btn-outline-success" : kode === "S" ? "btn-outline-warning" : kode === "I" ? "btn-outline-info" : "btn-outline-danger"} fw-bold" for="abs_${idx}_${kode}">${kode}</label>
+            `).join("")}
+          </div>
+        </td>
+        <td>
+          <input type="text" class="form-control form-control-sm absen-ket-input" data-nama="${nama}" value="${existing.ket === "-" ? "" : existing.ket}" placeholder="Opsional (misal: izin lomba / sakit)">
+        </td>
+      </tr>
+    `;
+  }).join("");
+}
+
+function setSemuaHadir() {
+  document.querySelectorAll('.absen-radio[value="H"]').forEach((r) => (r.checked = true));
+}
+
+function simpanAbsensiHarian() {
+  const kelas = document.getElementById("absenKelasSelect").value;
+  const tanggal = document.getElementById("absenTanggalInput").value;
+  if (!tanggal) return alert("Pilih tanggal pertemuan terlebih dahulu!");
+
+  const payload = daftarSiswaAbsen.map((nama, idx) => {
+    const checked = document.querySelector(`input[name="abs_${idx}"]:checked`);
+    const ketEl = document.querySelector(`.absen-ket-input[data-nama="${CSS.escape(nama)}"]`);
+    return {
+      nama: nama,
+      status: checked ? checked.value : "H",
+      ket: ketEl ? ketEl.value.trim() : ""
+    };
+  });
+
+  const token = sessionStorage.getItem("admin_tsm_token") || "";
+  const btn = document.getElementById("btnSimpanAbsen");
+  const orig = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Menyimpan...`;
+
+  const cbName = "cbSaveAbs_" + Date.now();
+  window[cbName] = function (res) {
+    delete window[cbName];
+    btn.disabled = false;
+    btn.innerHTML = orig;
+    if (res && res.status === "success") {
+      alert("✅ " + res.message);
+      muatDataAbsensi();
+    } else {
+      alert("❌ Gagal menyimpan presensi: " + (res?.message || "Cek koneksi."));
+    }
+  };
+
+  const s = document.createElement("script");
+  s.src = `${SCRIPT_URL}?action=save_absen&kelas=${encodeURIComponent(kelas)}&tanggal=${encodeURIComponent(tanggal)}&data=${encodeURIComponent(JSON.stringify(payload))}&key=${encodeURIComponent(token)}&callback=${cbName}&t=${Date.now()}`;
+  document.head.appendChild(s);
+}
+
+function renderTabelRekapAbsen() {
+  const tbody = document.getElementById("tbodyRekapAbsen");
+  const tanggalUnik = [...new Set(riwayatAbsenKelas.map((r) => r.tanggal))];
+  document.getElementById("infoTotalPertemuanAbsen").innerText = `Total pertemuan tercatat: ${tanggalUnik.length} hari`;
+
+  if (!daftarSiswaAbsen.length) return;
+
+  tbody.innerHTML = daftarSiswaAbsen.map((nama, idx) => {
+    const recs = riwayatAbsenKelas.filter((r) => r.nama === nama);
+    const h = recs.filter((r) => r.status === "H").length;
+    const s = recs.filter((r) => r.status === "S").length;
+    const i = recs.filter((r) => r.status === "I").length;
+    const a = recs.filter((r) => r.status === "A").length;
+    const total = h + s + i + a;
+    const persen = total > 0 ? Math.round((h / total) * 100) : 100;
+    const badgeCls = persen >= 85 ? "bg-success-subtle text-success" : persen >= 70 ? "bg-warning-subtle text-warning-emphasis" : "bg-danger-subtle text-danger";
+
+    return `
+      <tr>
+        <td class="text-muted">${idx + 1}</td>
+        <td class="text-start fw-semibold text-dark">${nama}</td>
+        <td class="fw-bold text-success">${h}</td>
+        <td class="fw-semibold text-warning-emphasis">${s}</td>
+        <td class="fw-semibold text-info-emphasis">${i}</td>
+        <td class="fw-bold text-danger">${a}</td>
+        <td><span class="badge ${badgeCls} rounded-pill px-3 py-1 fw-bold">${persen}%</span></td>
+      </tr>
+    `;
+  }).join("");
+}
+
+function exportRekapAbsenCSV() {
+  const kelas = document.getElementById("absenKelasSelect").value;
+  let csv = "No,Nama Siswa,Hadir,Sakit,Izin,Alpa,Persentase Kehadiran\n";
+  daftarSiswaAbsen.forEach((nama, idx) => {
+    const recs = riwayatAbsenKelas.filter((r) => r.nama === nama);
+    const h = recs.filter((r) => r.status === "H").length;
+    const s = recs.filter((r) => r.status === "S").length;
+    const i = recs.filter((r) => r.status === "I").length;
+    const a = recs.filter((r) => r.status === "A").length;
+    const total = h + s + i + a;
+    const persen = total > 0 ? Math.round((h / total) * 100) : 100;
+    csv += `${idx + 1},"${nama}",${h},${s},${i},${a},${persen}%\n`;
+  });
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = `Rekap_Kehadiran_${kelas}.csv`;
+  link.click();
+}
+
+/* ======================================================
+   MODUL 2: CATATAN POIN TUGAS & SIKAP (ADMIN ONLY)
+====================================================== */
+let daftarSiswaPoin = [];
+let riwayatPoinKelas = [];
+
+function tampilkanPoinSikap(el) {
+  tutupSidebarMobile();
+  document.getElementById("dashboardView").style.display = "none";
+  document.getElementById("formKonten").style.display = "none";
+  document.getElementById("tabelKonten").style.display = "none";
+  document.getElementById("pengumumanKonten").style.display = "none";
+  document.getElementById("absensiKonten").style.display = "none";
+  document.getElementById("poinKonten").style.display = "block";
+  document.getElementById("nav-status").innerText = "Poin Tugas & Sikap";
+
+  document.querySelectorAll(".list-group-item").forEach((i) => i.classList.remove("active-menu"));
+  if (el) el.classList.add("active-menu");
+
+  muatDataPoin();
+}
+
+function muatDataPoin() {
+  const kelas = document.getElementById("poinKelasSelect").value;
+  document.getElementById("tbodyRekapPoin").innerHTML = `<tr><td colspan="7" class="text-center py-4 text-muted">Memuat data poin ${kelas}...</td></tr>`;
+
+  const cbNama = "cbNamaPoin_" + Date.now();
+  window[cbNama] = function (names) {
+    delete window[cbNama];
+    daftarSiswaPoin = Array.isArray(names) ? names.map((n) => String(n).trim()).filter(Boolean) : [];
+    const sel = document.getElementById("poinNamaSelect");
+    if (sel) {
+      sel.innerHTML = daftarSiswaPoin.map((n) => `<option value="${n}">${n}</option>`).join("");
+    }
+
+    const cbRec = "cbRecPoin_" + Date.now();
+    window[cbRec] = function (res) {
+      delete window[cbRec];
+      riwayatPoinKelas = res && res.status === "success" && Array.isArray(res.records) ? res.records : [];
+      renderTabelPoin();
+    };
+    const s2 = document.createElement("script");
+    s2.src = `${SCRIPT_URL}?action=get_poin&kelas=${encodeURIComponent(kelas)}&callback=${cbRec}&t=${Date.now()}`;
+    document.head.appendChild(s2);
+  };
+
+  const s1 = document.createElement("script");
+  s1.src = `${SCRIPT_URL}?sheet=${encodeURIComponent(kelas)}&callback=${cbNama}&t=${Date.now()}`;
+  document.head.appendChild(s1);
+}
+
+function simpanCatatanPoin() {
+  const kelas = document.getElementById("poinKelasSelect").value;
+  const nama = document.getElementById("poinNamaSelect").value;
+  const kategori = document.getElementById("poinKategoriSelect").value;
+  const poin = document.getElementById("poinNilaiSelect").value;
+  const ket = document.getElementById("poinKetInput").value.trim() || "-";
+
+  if (!nama) return alert("Pilih nama siswa terlebih dahulu!");
+
+  const token = sessionStorage.getItem("admin_tsm_token") || "";
+  const btn = document.getElementById("btnTambahPoin");
+  const orig = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Menyimpan...`;
+
+  const cbName = "cbAddPoin_" + Date.now();
+  window[cbName] = function (res) {
+    delete window[cbName];
+    btn.disabled = false;
+    btn.innerHTML = orig;
+    if (res && res.status === "success") {
+      document.getElementById("poinKetInput").value = "";
+      alert("✅ Catatan poin berhasil disimpan!");
+      muatDataPoin();
+    } else {
+      alert("❌ Gagal menyimpan poin: " + (res?.message || "Cek koneksi."));
+    }
+  };
+
+  const s = document.createElement("script");
+  s.src = `${SCRIPT_URL}?action=add_poin&kelas=${encodeURIComponent(kelas)}&nama=${encodeURIComponent(nama)}&kategori=${encodeURIComponent(kategori)}&poin=${encodeURIComponent(poin)}&ket=${encodeURIComponent(ket)}&key=${encodeURIComponent(token)}&callback=${cbName}&t=${Date.now()}`;
+  document.head.appendChild(s);
+}
+
+function renderTabelPoin() {
+  const tbody = document.getElementById("tbodyRekapPoin");
+  const tbodyLog = document.getElementById("tbodyLogPoin");
+
+  tbody.innerHTML = daftarSiswaPoin.map((nama, idx) => {
+    const recs = riwayatPoinKelas.filter((r) => r.nama === nama);
+    const plus = recs.filter((r) => r.poin > 0).reduce((a, b) => a + b.poin, 0);
+    const minus = recs.filter((r) => r.poin < 0).reduce((a, b) => a + b.poin, 0);
+    const skorAkhir = Math.min(100, Math.max(0, 80 + plus + minus));
+
+    let predikat = `<span class="badge bg-primary-subtle text-primary rounded-pill px-3">Baik (B)</span>`;
+    if (skorAkhir >= 90) predikat = `<span class="badge bg-success-subtle text-success rounded-pill px-3">Sangat Baik (A)</span>`;
+    else if (skorAkhir < 75) predikat = `<span class="badge bg-danger-subtle text-danger rounded-pill px-3">Perlu Pembinaan (C)</span>`;
+
+    const catatan = recs.length
+      ? recs.map((r) => `${r.poin > 0 ? "+" + r.poin : r.poin} (${r.ket})`).join("; ")
+      : `<span class="text-muted fst-italic">Belum ada catatan khusus</span>`;
+
+    return `
+      <tr>
+        <td class="text-center text-muted">${idx + 1}</td>
+        <td class="fw-semibold text-dark">${nama}</td>
+        <td class="text-center fw-bold text-success">${plus > 0 ? "+" + plus : "0"}</td>
+        <td class="text-center fw-bold text-danger">${minus < 0 ? minus : "0"}</td>
+        <td class="text-center fw-bold fs-6 text-dark">${skorAkhir}</td>
+        <td class="text-center">${predikat}</td>
+        <td class="small text-secondary">${catatan}</td>
+      </tr>
+    `;
+  }).join("");
+
+  const terbaru = [...riwayatPoinKelas].reverse().slice(0, 20);
+  tbodyLog.innerHTML = terbaru.length
+    ? terbaru.map((r) => `
+        <tr>
+          <td class="text-muted">${r.waktu}</td>
+          <td class="fw-semibold">${r.nama}</td>
+          <td><span class="badge bg-light text-dark border">${r.kategori}</span></td>
+          <td class="text-center fw-bold ${r.poin > 0 ? "text-success" : "text-danger"}">${r.poin > 0 ? "+" + r.poin : r.poin}</td>
+          <td>${r.ket}</td>
+        </tr>
+      `).join("")
+    : `<tr><td colspan="5" class="text-center text-muted py-3">Belum ada riwayat catatan poin.</td></tr>`;
+}
+
+function exportRekapPoinCSV() {
+  const kelas = document.getElementById("poinKelasSelect").value;
+  let csv = "No,Nama Siswa,Poin Positif,Poin Negatif,Skor Sikap Akhir,Predikat,Ringkasan Catatan\n";
+  daftarSiswaPoin.forEach((nama, idx) => {
+    const recs = riwayatPoinKelas.filter((r) => r.nama === nama);
+    const plus = recs.filter((r) => r.poin > 0).reduce((a, b) => a + b.poin, 0);
+    const minus = recs.filter((r) => r.poin < 0).reduce((a, b) => a + b.poin, 0);
+    const skorAkhir = Math.min(100, Math.max(0, 80 + plus + minus));
+    const pred = skorAkhir >= 90 ? "Sangat Baik (A)" : skorAkhir >= 75 ? "Baik (B)" : "Perlu Pembinaan (C)";
+    const ket = recs.map((r) => `${r.poin > 0 ? "+" + r.poin : r.poin} (${r.ket})`).join("; ");
+    csv += `${idx + 1},"${nama}",${plus},${minus},${skorAkhir},"${pred}","${ket}"\n`;
+  });
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = `Pedoman_Sikap_Tugas_${kelas}.csv`;
+  link.click();
 }

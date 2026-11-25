@@ -240,3 +240,19 @@ body {
     transform: translateY(0);
   }
 }
+
+/* Efek titik berkedip halus untuk badge pengumuman */
+.pulse-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: currentColor;
+  animation: pulseRing 1.8s infinite;
+}
+
+@keyframes pulseRing {
+  0% { transform: scale(0.95); opacity: 1; }
+  50% { transform: scale(1.35); opacity: 0.55; }
+  100% { transform: scale(0.95); opacity: 1; }
+}
